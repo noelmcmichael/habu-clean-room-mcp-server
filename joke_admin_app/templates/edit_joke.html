@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Joke #{{ joke.id }} - Joke MCP Server{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-light text-gray-700 mb-6">Edit Joke <span class="text-indigo-600 font-semibold">#{{ joke.id }}</span></h1>
+
+<form method="post" class="space-y-6">
+    <div>
+        <label for="joke_text" class="block text-sm font-medium text-gray-700">Joke Text</label>
+        <div class="mt-1">
+            <textarea id="joke_text" name="joke_text" rows="6" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>{{ joke.joke_text }}</textarea>
+        </div>
+        <p class="mt-2 text-xs text-gray-500">Remember, with great power comes great responsibility... to be funny.</p>
+    </div>
+
+    <div class="flex items-center justify-end space-x-3 pt-2">
+        <a href="{{ url_for('index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition duration-150 ease-in-out">
+            Cancel
+        </a>
+        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-75 transition duration-150 ease-in-out">
+            <i class="fas fa-save mr-2"></i>Save Changes
+        </button>
+    </div>
+</form>
+{% endblock %}
