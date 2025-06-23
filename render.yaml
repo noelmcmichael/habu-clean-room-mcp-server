@@ -8,7 +8,7 @@ databases:
 services:
   # MCP Server
   - type: web
-    name: habu-mcp-server
+    name: habu-mcp-server-v2
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
@@ -31,7 +31,7 @@ services:
 
   # Demo API
   - type: web
-    name: habu-demo-api
+    name: habu-demo-api-v2
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
@@ -54,18 +54,18 @@ services:
 
   # React Frontend
   - type: web
-    name: habu-demo-frontend
+    name: habu-demo-frontend-v2
     env: node
     plan: free
     buildCommand: "cd demo_app && npm install && npm run build"
     startCommand: "cd demo_app && npx serve -s build -l $PORT"
     envVars:
       - key: REACT_APP_API_URL
-        value: "https://habu-demo-api.onrender.com"
+        value: "https://habu-demo-api-v2.onrender.com"
 
   # Admin App
   - type: web
-    name: habu-admin-app
+    name: habu-admin-app-v2
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
