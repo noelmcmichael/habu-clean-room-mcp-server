@@ -55,8 +55,9 @@ services:
         value: "5001"
 
   # React Demo Frontend (Static Site)
-  - type: static
+  - type: web
     name: habu-demo-frontend
+    env: static
     buildCommand: "cd demo_app && npm install && npm run build"
     staticPublishPath: demo_app/build
     envVars:
