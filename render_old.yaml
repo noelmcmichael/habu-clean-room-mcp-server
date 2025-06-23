@@ -1,4 +1,6 @@
-# render.yaml - Clean Configuration for Habu Clean Room MCP Server
+# render.yaml
+# Blueprint for deploying the Habu Clean Room MCP Server and React Demo App on Render.com
+
 databases:
   - name: habu-mcp-db
     databaseName: habu_mcp_db
@@ -6,11 +8,11 @@ databases:
     plan: free
 
 services:
-  # MCP Server
+  # FastMCP 2.0 Server with Habu Integration
   - type: web
     name: habu-mcp-server
-    env: python
-    plan: free
+    env: python    
+    plan: free 
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python main.py"
     envVars:
@@ -18,22 +20,22 @@ services:
         fromDatabase:
           name: habu-mcp-db
           property: connectionString
-      - key: JOKE_MCP_SERVER_API_KEY
-        sync: false
+      - key: JOKE_MCP_SERVER_API_KEY 
+        sync: false  # Set manually in Render dashboard
       - key: HABU_CLIENT_ID
-        sync: false
-      - key: HABU_CLIENT_SECRET
-        sync: false
+        sync: false  # Set manually in Render dashboard
+      - key: HABU_CLIENT_SECRET  
+        sync: false  # Set manually in Render dashboard
       - key: HABU_USE_MOCK_DATA
-        value: "true"
+        value: "true"  # Enable mock mode for demos
       - key: PORT
         value: "8000"
 
-  # Demo API
+  # Flask API Bridge for React App
   - type: web
     name: habu-demo-api
-    env: python
-    plan: free
+    env: python    
+    plan: free 
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python demo_api.py"
     envVars:
@@ -41,45 +43,46 @@ services:
         fromDatabase:
           name: habu-mcp-db
           property: connectionString
-      - key: JOKE_MCP_SERVER_API_KEY
-        sync: false
+      - key: JOKE_MCP_SERVER_API_KEY 
+        sync: false  # Set manually in Render dashboard
       - key: HABU_CLIENT_ID
-        sync: false
+        sync: false  # Set manually in Render dashboard  
       - key: HABU_CLIENT_SECRET
-        sync: false
+        sync: false  # Set manually in Render dashboard
       - key: HABU_USE_MOCK_DATA
-        value: "true"
+        value: "true"  # Enable mock mode for demos
       - key: PORT
         value: "5001"
 
-  # React Frontend
+  # React Demo Frontend (Static Site)
   - type: web
     name: habu-demo-frontend
     env: node
     plan: free
-    buildCommand: "cd demo_app && npm install && npm run build"
-    startCommand: "cd demo_app && npx serve -s build -l $PORT"
+    buildCommand: "cd demo_app && npm install && npm run build && npm install -g serve"
+    startCommand: "cd demo_app && serve -s build -l 3000"
     envVars:
       - key: REACT_APP_API_URL
         value: "https://habu-demo-api.onrender.com"
 
-  # Admin App
+  # Flask Admin Web App (Optional)
   - type: web
     name: habu-admin-app
-    env: python
-    plan: free
+    env: python    
+    plan: free 
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python -m gunicorn joke_admin_app.app:app --bind 0.0.0.0:$PORT"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: habu-mcp-db
+          name: habu-mcp-db  
           property: connectionString
-      - key: FLASK_SECRET_KEY
+      - key: FLASK_SECRET_KEY 
         generateValue: true
-      - key: JOKE_MCP_SERVER_API_KEY
-        sync: false
+      - key: JOKE_MCP_SERVER_API_KEY 
+        sync: false  # Set manually in Render dashboard
       - key: ADMIN_EMAIL
-        sync: false
+        sync: false  # Set manually in Render dashboard
       - key: ADMIN_PASSWORD
-        sync: false
+        sync: false  # Set manually in Render dashboard
+
