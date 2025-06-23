@@ -6,10 +6,21 @@ This template provides a FastMCP 2.0 implementation of a Model Context Protocol 
 
 ```
 .
+├── agents/                 # LLM agents for orchestrating tool calls
+│   └── habu_chat_agent.py  # Primary chat agent for Habu integration
+├── config/                 # Configuration modules
+│   └── habu_config.py      # Habu API credentials and OAuth2 setup
+├── tools/                  # MCP tools for external API integration
+│   ├── habu_list_partners.py
+│   ├── habu_list_templates.py
+│   ├── habu_submit_query.py
+│   ├── habu_check_status.py
+│   └── habu_get_results.py
 ├── joke_admin_app/          # Flask web app for database management
 │   ├── app.py              # Flask application with authentication
 │   └── templates/          # HTML templates for web interface
-├── data/                   # Sample data files
+├── .vscode/                # VS Code MCP configuration
+│   └── mcp.json            # MCP server configuration for VS Code
 ├── .env.sample             # Sample environment variables
 ├── .gitignore              # Git ignore file
 ├── database.py             # Async PostgreSQL database configuration
@@ -32,7 +43,14 @@ This is a complete implementation of the Model Context Protocol using FastMCP 2.
 - Tool execution with async database operations
 - Automatic database table creation
 
-The server includes a sample tool (`tell_joke`) that retrieves random jokes from a PostgreSQL database.
+The server includes multiple tools:
+- `tell_joke`: Retrieves random jokes from PostgreSQL database
+- `habu_list_partners`: Lists clean room partners from Habu API
+- `habu_list_templates`: Lists available query templates
+- `habu_submit_query`: Submits clean room queries
+- `habu_check_status`: Checks query processing status  
+- `habu_get_results`: Retrieves completed query results
+- `habu_chat`: Intelligent chat interface for natural language interaction
 
 ### 2. Database Layer (`database.py` & `models.py`)
 
@@ -46,6 +64,44 @@ A Flask web application with authentication for managing database content:
 - Flask-Login authentication system
 - CRUD operations for database entities
 - Web interface for content management
+
+### 4. Habu Clean Room Integration
+
+The server includes comprehensive integration with the Habu Clean Room API:
+
+#### Habu API Tools
+- **`habu_list_partners`**: Returns available clean room partners
+- **`habu_list_templates`**: Lists query templates for different analysis types
+- **`habu_submit_query`**: Submits queries with template ID and parameters
+- **`habu_check_status`**: Monitors query processing status
+- **`habu_get_results`**: Retrieves completed query results with business summaries
+
+#### Intelligent Chat Agent (`habu_chat_agent.py`)
+An LLM-driven agent that provides natural language interface for clean room operations:
+- Interprets user intent from conversational prompts
+- Routes requests to appropriate API tools
+- Maintains context across multi-step workflows
+- Formats results in business-friendly summaries
+
+#### Example Interactions
+```text
+User: "List my clean room partners"
+→ Agent calls habu_list_partners() and formats partner list
+
+User: "Run audience overlap analysis between Meta and Amazon"  
+→ Agent identifies partners, finds overlap template, submits query, monitors progress
+
+User: "What were the results of my last query?"
+→ Agent retrieves and summarizes results with key metrics
+```
+
+#### Authentication
+Uses OAuth2 client credentials flow:
+- **Token URL**: `https://api.habu.com/v1/oauth/token`
+- **Base URL**: `https://api.habu.com/v1`
+- **Credentials**: Set `HABU_CLIENT_ID` and `HABU_CLIENT_SECRET` in environment variables
+
+API Documentation: [Habu External APIs](https://app.swaggerhub.com/apis/Habu-LiveRamp/External_APIs/Generic)
 
 ## Getting Started
 
@@ -62,7 +118,13 @@ A Flask web application with authentication for managing database content:
    ```
    cp .env.sample .env
    ```
-3. Update `.env` with your database credentials and API key
+3. Update `.env` with your database credentials, API key, and Habu credentials:
+   ```
+   DATABASE_URL=postgresql://user@localhost:5432/mcp_jokes_dev
+   JOKE_MCP_SERVER_API_KEY=your-api-key
+   HABU_CLIENT_ID=your_habu_client_id
+   HABU_CLIENT_SECRET=your_habu_client_secret
+   ```
 4. Install dependencies:
    ```
    pip install -r requirements.txt
@@ -88,7 +150,7 @@ The recommended way to test your MCP server is using Visual Studio Code with MCP
    ```json
    {
        "servers": {
-           "joke-server": {
+           "habu-clean-room-server": {
                "url": "http://localhost:8000/mcp/",
                "headers": {
                    "X-API-Key": "your-api-key"
