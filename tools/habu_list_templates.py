@@ -1,26 +1,41 @@
 """
 Habu List Templates Tool
-Returns available clean room query templates from the Habu API
+Returns available clean room questions (templates) from the Habu API
 """
 import httpx
 import json
+import os
 from typing import List, Dict, Any
 from config.habu_config import habu_config
+from tools.mock_data import mock_data
 
 async def habu_list_templates() -> str:
     """
-    Lists all available clean room query templates from the Habu API.
+    Lists all available clean room questions (templates) from the Habu API.
     
     Returns:
         str: JSON string containing template information
     """
+    # Check if mock mode is enabled
+    use_mock = os.getenv("HABU_USE_MOCK_DATA", "false").lower() == "true"
+    
+    if use_mock:
+        templates = mock_data.get_mock_templates()
+        return json.dumps({
+            "status": "success",
+            "count": len(templates),
+            "templates": templates,
+            "summary": f"Found {len(templates)} query templates available for analysis (MOCK MODE)",
+            "mock_mode": True
+        }, indent=2)
+    
     try:
         headers = await habu_config.get_auth_headers()
         
         async with httpx.AsyncClient() as client:
-            # Using the Habu API endpoint for listing query templates
+            # First get cleanrooms, then get questions for each cleanroom
             response = await client.get(
-                f"{habu_config.base_url}/templates",
+                f"{habu_config.base_url}/cleanrooms",
                 headers=headers,
                 timeout=30.0
             )
@@ -30,47 +45,59 @@ async def habu_list_templates() -> str:
                 habu_config.reset_token()
                 headers = await habu_config.get_auth_headers()
                 response = await client.get(
-                    f"{habu_config.base_url}/templates",
+                    f"{habu_config.base_url}/cleanrooms",
                     headers=headers,
                     timeout=30.0
                 )
             
             response.raise_for_status()
-            templates_data = response.json()
+            cleanrooms_data = response.json()
             
-            # Format the response for better readability
-            if isinstance(templates_data, dict) and "templates" in templates_data:
-                templates = templates_data["templates"]
-            elif isinstance(templates_data, list):
-                templates = templates_data
-            else:
-                templates = templates_data
+            # Get all questions from all cleanrooms
+            all_templates = []
+            
+            if isinstance(cleanrooms_data, list):
+                for cleanroom in cleanrooms_data:
+                    cleanroom_id = cleanroom.get("id")
+                    if cleanroom_id:
+                        # Get questions for this cleanroom
+                        questions_response = await client.get(
+                            f"{habu_config.base_url}/cleanrooms/{cleanroom_id}/cleanroom-questions",
+                            headers=headers,
+                            timeout=30.0
+                        )
+                        if questions_response.status_code == 200:
+                            questions_data = questions_response.json()
+                            if isinstance(questions_data, list):
+                                for question in questions_data:
+                                    template_summary = {
+                                        "id": question.get("id"),
+                                        "name": question.get("name"),
+                                        "description": question.get("description", ""),
+                                        "category": question.get("category", "general"),
+                                        "question_type": question.get("questionType", "unknown"),
+                                        "cleanroom_id": cleanroom_id,
+                                        "cleanroom_name": cleanroom.get("name", "Unknown"),
+                                        "status": question.get("status"),
+                                        "created_on": question.get("createdOn")
+                                    }
+                                    all_templates.append(template_summary)
             
             # Create a structured summary for the LLM agent
-            if templates:
-                template_summaries = []
-                for template in (templates if isinstance(templates, list) else [templates]):
-                    template_summary = {
-                        "id": template.get("id"),
-                        "name": template.get("name"),
-                        "description": template.get("description"),
-                        "category": template.get("category", "general"),
-                        "parameters": template.get("parameters", [])
-                    }
-                    template_summaries.append(template_summary)
-                
+            if all_templates:
+                categories = set(t.get('category', 'general') for t in all_templates)
                 summary = {
                     "status": "success",
-                    "count": len(template_summaries),
-                    "templates": template_summaries,
-                    "summary": f"Found {len(template_summaries)} query templates. Available categories: {', '.join(set(t.get('category', 'general') for t in template_summaries))}"
+                    "count": len(all_templates),
+                    "templates": all_templates,
+                    "summary": f"Found {len(all_templates)} query templates across {len(cleanrooms_data) if isinstance(cleanrooms_data, list) else 0} cleanrooms. Categories: {', '.join(categories)}"
                 }
             else:
                 summary = {
                     "status": "success",
                     "count": 0,
                     "templates": [],
-                    "summary": "No query templates are currently available."
+                    "summary": f"No query templates found. You have {len(cleanrooms_data) if isinstance(cleanrooms_data, list) else 0} cleanrooms available."
                 }
             
             return json.dumps(summary, indent=2)

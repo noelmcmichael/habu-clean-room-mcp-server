@@ -3,10 +3,12 @@ load_dotenv() # Load environment variables from .env file
 
 import random
 import os
+import logging
 from contextlib import asynccontextmanager
 
 from starlette.applications import Starlette
 from starlette.responses import JSONResponse
+from starlette.middleware.cors import CORSMiddleware
 
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,6 +17,9 @@ from fastmcp import FastMCP
 
 from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware
+
+# Production config
+from config.production import production_config
 
 # Database imports
 from database import engine
@@ -27,30 +32,79 @@ from tools.habu_submit_query import habu_submit_query
 from tools.habu_check_status import habu_check_status
 from tools.habu_get_results import habu_get_results
 from agents.habu_chat_agent import habu_agent
+from agents.enhanced_habu_chat_agent import enhanced_habu_agent
 
-# 1. Lifespan manager for initial database table creation
+# 1. Configure logging
+logging.basicConfig(
+    level=getattr(logging, production_config.LOG_LEVEL),
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+# 2. Validate production configuration
+config_errors = production_config.validate()
+if config_errors:
+    logger.error("Configuration validation failed:")
+    for error in config_errors:
+        logger.error(f"  - {error}")
+    if not production_config.HABU_USE_MOCK_DATA:
+        logger.warning("Continuing with mock data enabled due to configuration issues")
+        os.environ["HABU_USE_MOCK_DATA"] = "true"
+
+# 3. Lifespan manager for initial database table creation
 @asynccontextmanager
 async def lifespan(app: Starlette):
-    print("MCP Server Lifespan startup. Checking/creating database tables...")
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    print("MCP Server Lifespan startup. Database tables checked/created.")
+    logger.info("MCP Server starting up...")
+    logger.info(f"Mock data mode: {production_config.HABU_USE_MOCK_DATA}")
+    
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("Database tables checked/created successfully")
+    except Exception as e:
+        logger.error(f"Database initialization failed: {e}")
+        raise
+    
     yield
-    print("MCP Server Lifespan shutdown.")
+    logger.info("MCP Server shutting down...")
 
-# 2. Create the MCP server instance
+# 4. Create the MCP server instance
 mcp_server = FastMCP(
     name="HabuCleanRoomServer",
     lifespan=lifespan
 )
 
-# 3. Create Middleware for API Key Authentication
+# 5. Create Middleware for API Key Authentication with better error handling
 class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
-        if request.url.path == "/":
+        # Allow health check and root endpoint
+        if request.url.path in ["/", "/health", "/mcp"]:
             return await call_next(request)
-        if request.headers.get("X-API-Key") != os.getenv("JOKE_MCP_SERVER_API_KEY"):
-            return JSONResponse({"error": "Unauthorized"}, status_code=401)
+        
+        api_key = request.headers.get("X-API-Key")
+        expected_key = production_config.API_KEY
+        
+        if not expected_key:
+            logger.error("API key not configured")
+            return JSONResponse(
+                {"error": "Server configuration error", "detail": "API authentication not configured"}, 
+                status_code=500
+            )
+        
+        if not api_key:
+            logger.warning(f"Missing API key for request to {request.url.path}")
+            return JSONResponse(
+                {"error": "Missing API key", "detail": "X-API-Key header required"}, 
+                status_code=401
+            )
+        
+        if api_key != expected_key:
+            logger.warning(f"Invalid API key for request to {request.url.path}")
+            return JSONResponse(
+                {"error": "Invalid API key", "detail": "Provided API key is not valid"}, 
+                status_code=401
+            )
+        
         return await call_next(request)
 
 
@@ -141,17 +195,68 @@ async def habu_chat_tool(user_request: str) -> str:
     """Process natural language requests for Habu Clean Room operations."""
     return await habu_agent.process_request(user_request)
 
-# 6. Run the server
-if __name__ == "__main__":
-    host = os.getenv("HOST", "0.0.0.0")
-    port = int(os.getenv("PORT", "8000")) 
+@mcp_server.tool(
+    name="habu_enhanced_chat",
+    description="Enhanced LLM-powered natural language interface for Habu Clean Room operations. Uses Claude for intelligent conversation and tool orchestration."
+)
+async def habu_enhanced_chat_tool(user_message: str) -> str:
+    """Enhanced conversational interface with LLM-powered understanding."""
+    return await enhanced_habu_agent.process_request(user_message)
+
+@mcp_server.tool(
+    name="habu_enable_mock_mode",
+    description="Enable mock mode to test Habu functionality with realistic sample data when real cleanrooms aren't available."
+)
+async def habu_enable_mock_mode(enable: bool = True) -> str:
+    """Enable or disable mock mode for testing Habu functionality."""
+    import os
+    import json
     
-    print(f"Starting FastMCP 2.0 streamable-http server at (/mcp) on {host}:{port}")    
-    mcp_server.run(
-        transport="streamable-http",
-        host=host,
-        port=port,
-        path="/mcp",
-        log_level="debug",
-        middleware=[Middleware(ApiKeyAuthMiddleware)]
-    )    
+    if enable:
+        os.environ["HABU_USE_MOCK_DATA"] = "true"
+        return json.dumps({
+            "status": "success", 
+            "message": "Mock mode enabled! All Habu tools will now return realistic sample data for testing.",
+            "mock_data_available": {
+                "cleanrooms": 2,
+                "partners": 5, 
+                "templates": 5
+            }
+        }, indent=2)
+    else:
+        os.environ["HABU_USE_MOCK_DATA"] = "false"
+        return json.dumps({
+            "status": "success",
+            "message": "Mock mode disabled. Tools will use real Habu API endpoints."
+        }, indent=2)
+
+# 6. Add health check endpoint to FastMCP server
+# Note: FastMCP doesn't support direct route decorators, 
+# health check will be handled at the transport level
+
+# 7. Run the server
+if __name__ == "__main__":
+    logger.info(f"Starting Habu Clean Room MCP Server")
+    logger.info(f"Host: {production_config.HOST}")
+    logger.info(f"Port: {production_config.PORT}")
+    logger.info(f"Mock Mode: {production_config.HABU_USE_MOCK_DATA}")
+    
+    try:
+        mcp_server.run(
+            transport="streamable-http",
+            host=production_config.HOST,
+            port=production_config.PORT,
+            path="/mcp",
+            log_level=production_config.LOG_LEVEL.lower(),
+            middleware=[
+                Middleware(CORSMiddleware, 
+                          allow_origins=production_config.CORS_ORIGINS,
+                          allow_credentials=True,
+                          allow_methods=["*"],
+                          allow_headers=["*"]),
+                Middleware(ApiKeyAuthMiddleware)
+            ]
+        )
+    except Exception as e:
+        logger.error(f"Failed to start server: {e}")
+        raise    

@@ -1,0 +1,278 @@
+openapi: 3.0.3
+info:
+  title: Habu Clean Room MCP Server API
+  description: |
+    Model Context Protocol server for Habu clean room data collaboration platform.
+    Enables AI assistants to interact with clean room analytics through natural language.
+  version: 2.0.0
+  contact:
+    name: Development Team
+    url: https://github.com/your-org/habu-mcp-server
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://habu-mcp-server.onrender.com
+    description: Production server
+  - url: https://habu-demo-api.onrender.com
+    description: Demo API server
+  - url: http://localhost:8000
+    description: Local development server
+  - url: http://localhost:5001
+    description: Local demo API server
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      description: Returns server health status and configuration
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /mcp:
+    post:
+      summary: MCP Protocol Endpoint
+      description: Model Context Protocol communication endpoint
+      tags:
+        - MCP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPRequest'
+      responses:
+        '200':
+          description: MCP response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/enhanced-chat:
+    post:
+      summary: Enhanced chat interface
+      description: Natural language interface powered by OpenAI GPT-4
+      tags:
+        - Demo API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+      responses:
+        '200':
+          description: Chat response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/health:
+    get:
+      summary: Demo API health check
+      description: Returns demo API health status
+      tags:
+        - Demo API
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DemoHealthResponse'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+        service:
+          type: string
+          example: "Habu Clean Room MCP Server"
+        version:
+          type: string
+          example: "2.0"
+        mock_mode:
+          type: boolean
+        database_configured:
+          type: boolean
+
+    DemoHealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+        service:
+          type: string
+          example: "Habu Demo API"
+        version:
+          type: string
+          example: "2.0"
+        openai_configured:
+          type: boolean
+        mock_mode:
+          type: boolean
+        cors_origins:
+          type: array
+          items:
+            type: string
+
+    ChatRequest:
+      type: object
+      required:
+        - user_input
+      properties:
+        user_input:
+          type: string
+          description: User's natural language request
+          example: "Show me audience overlap between Meta and Amazon"
+
+    ChatResponse:
+      type: object
+      properties:
+        response:
+          type: string
+          description: Agent's response with results and insights
+
+    MCPRequest:
+      type: object
+      description: MCP protocol request (varies by operation)
+      properties:
+        jsonrpc:
+          type: string
+          example: "2.0"
+        method:
+          type: string
+          example: "tools/list"
+        id:
+          oneOf:
+            - type: string
+            - type: number
+        params:
+          type: object
+
+    MCPResponse:
+      type: object
+      description: MCP protocol response (varies by operation)
+      properties:
+        jsonrpc:
+          type: string
+          example: "2.0"
+        id:
+          oneOf:
+            - type: string
+            - type: number
+        result:
+          type: object
+        error:
+          $ref: '#/components/schemas/MCPError'
+
+    MCPError:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        detail:
+          type: string
+          description: Detailed error information
+        error_type:
+          type: string
+          description: Error type classification
+        error_code:
+          type: string
+          description: Error code
+
+    HabuToolResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success, error]
+        count:
+          type: integer
+          description: Number of items returned
+        summary:
+          type: string
+          description: Human-readable summary
+        mock_mode:
+          type: boolean
+          description: Whether response uses mock data
+        data:
+          type: object
+          description: Response data (varies by tool)
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: MCP
+    description: Model Context Protocol endpoints
+  - name: Demo API
+    description: Demo API endpoints for React frontend
+
+externalDocs:
+  description: Full API Documentation
+  url: https://github.com/your-org/habu-mcp-server/blob/main/docs/API_DOCUMENTATION.md

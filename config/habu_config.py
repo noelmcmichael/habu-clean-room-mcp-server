@@ -29,21 +29,30 @@ class HabuConfig:
             return self._access_token
         
         async with httpx.AsyncClient() as client:
-            data = {
-                "grant_type": "client_credentials",
-                "client_id": self.client_id,
-                "client_secret": self.client_secret
+            # Habu API requires Basic Auth for OAuth2 client credentials
+            import base64
+            credentials = base64.b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
+            
+            headers = {
+                "Authorization": f"Basic {credentials}",
+                "Content-Type": "application/x-www-form-urlencoded"
             }
             
-            response = await client.post(self.token_url, data=data)
+            data = {
+                "grant_type": "client_credentials"
+            }
+            
+            response = await client.post(self.token_url, data=data, headers=headers)
+            
             response.raise_for_status()
             
             token_data = response.json()
-            self._access_token = token_data.get("access_token")
-            self._token_type = token_data.get("token_type", "Bearer")
+            # Habu uses 'accessToken' instead of 'access_token'
+            self._access_token = token_data.get("accessToken") or token_data.get("access_token")
+            self._token_type = token_data.get("tokenType") or token_data.get("token_type", "Bearer")
             
             if not self._access_token:
-                raise ValueError("Failed to obtain access token from Habu API")
+                raise ValueError(f"Failed to obtain access token from Habu API. Response: {token_data}")
             
             return self._access_token
     

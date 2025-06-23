@@ -4,8 +4,10 @@ Checks the processing status of a previously submitted query
 """
 import httpx
 import json
+import os
 from typing import Dict, Any
 from config.habu_config import habu_config
+from tools.mock_data import mock_data
 
 async def habu_check_status(query_id: str) -> str:
     """
@@ -17,6 +19,13 @@ async def habu_check_status(query_id: str) -> str:
     Returns:
         str: JSON string containing query status information
     """
+    # Check if mock mode is enabled
+    use_mock = os.getenv("HABU_USE_MOCK_DATA", "false").lower() == "true"
+    
+    if use_mock:
+        result = mock_data.check_mock_query_status(query_id)
+        return json.dumps(result, indent=2)
+    
     try:
         headers = await habu_config.get_auth_headers()
         
