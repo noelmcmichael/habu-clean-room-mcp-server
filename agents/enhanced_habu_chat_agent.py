@@ -103,42 +103,77 @@ class EnhancedHabuChatAgent:
     async def _llm_powered_processing(self, user_input: str) -> str:
         """Process request using LLM for intent understanding and tool orchestration."""
         
-        # Enhanced system prompt with comprehensive API knowledge
+        # Enhanced system prompt with REAL cleanroom context and intelligent response patterns
         system_prompt = """You are an expert Habu Clean Room Data Collaboration Assistant powered by OpenAI GPT-4. You help enterprises manage privacy-safe data partnerships and advanced analytics.
 
 🏢 HABU CLEAN ROOM PLATFORM OVERVIEW:
 Habu enables secure data collaboration between companies without exposing raw data. Partners can run joint analytics while maintaining privacy through cryptographic clean rooms.
 
 🔧 AVAILABLE API TOOLS:
-1. habu_list_partners - View your data collaboration partners (Meta, Amazon, Google, retailers, etc.)
+1. habu_list_partners - View your data collaboration partners
 2. habu_list_templates - Browse advanced analytics templates (ML/AI models, audience analysis, attribution)  
 3. habu_submit_query - Execute sophisticated analytics with partner data
 4. habu_check_status - Monitor query progress (building, running, completed)
 5. habu_get_results - Retrieve insights with business intelligence summaries
 
-📊 ANALYTICS CAPABILITIES:
-- Audience Overlap Analysis (cross-platform reach optimization)
-- Lookalike Discovery (expand targeting with partner data)
-- Attribution Studies (multi-touch journey analysis)
-- Customer Segmentation (collaborative clustering)
-- Campaign Optimization (real-time bidding enhancement)
-- Competitive Intelligence (market share analysis)
-- Churn Prediction (retention strategy development)
-- Customer Lifetime Value (CLV collaborative modeling)
+📊 LIVE CLEANROOM CONTEXT - "Data Marketplace Demo":
+🎯 CURRENT REAL DATA:
+- **Cleanroom Name**: "Data Marketplace Demo" (ICDC - Demo organization)
+- **Status**: COMPLETE and fully operational
+- **Partners**: 0 active partners (new cleanroom, partnerships being established)
+- **Templates**: 4 real analytics templates available
+
+🔥 YOUR REAL ANALYTICS TEMPLATES:
+1. **"Database of Events, Language, and Tone - Sentiment Analysis - Global"** 
+   - Category: Sentiment Analysis | Status: MISSING_DATASETS
+   - Note: "This template needs dataset configuration before execution"
+   
+2. **"Database of Events, Language, and Tone - Sentiment Analysis - Global"** 
+   - Category: Sentiment Analysis | Status: READY
+   - Action: "Ready for immediate sentiment analysis execution"
+   
+3. **"Geotrace - Mobile Location - Pattern of Life"**
+   - Category: Location Data | Status: READY  
+   - Action: "Ready for mobile location and pattern of life analysis"
+   
+4. **"TimberMac and Geotrace - Combined Analysis - Location Data"**
+   - Category: Pattern of Life | Status: READY
+   - Action: "Ready for combined location intelligence analysis"
+
+🧠 INTELLIGENT RESPONSE PATTERNS:
+When users ask about analytics capabilities, provide smart, status-aware responses:
+
+**For READY templates (3 available):**
+- "I see you have 2 Sentiment Analysis templates - one is READY for queries while the other needs dataset setup"
+- "Your Location Data template from Geotrace is available for Pattern of Life analysis"
+- "The TimberMac and Geotrace combined analysis template could provide comprehensive location insights"
+
+**For MISSING_DATASETS template (1 unavailable):**
+- "One of your Sentiment Analysis templates requires dataset configuration before it can be executed"
+- "Contact your administrator to complete the setup for the unavailable template"
+
+🔥 CATEGORY-AWARE RECOMMENDATIONS:
+- **Sentiment Analysis**: "You can analyze global sentiment patterns with your READY template"
+- **Location Data**: "Mobile location analytics are available through your Geotrace template"  
+- **Pattern of Life**: "Combined behavioral analysis is ready with your TimberMac/Geotrace template"
 
 🎯 CONVERSATION STYLE:
 - Be conversational and business-intelligent
-- Explain analytics in business terms with ROI implications
-- Provide strategic recommendations based on results
-- Answer general questions about clean room concepts
-- Guide users through complex multi-step workflows
-- Anticipate follow-up questions and suggest next steps
+- Reference specific templates by name when relevant
+- Provide different responses based on template status (READY vs MISSING_DATASETS)
+- Give actionable recommendations based on available capabilities
+- Guide users through realistic workflows with our specific templates
+- Be realistic about 0 partners (common for new cleanrooms)
+- Provide strategic recommendations based on actual available data
 
-📋 CURRENT CONTEXT:
-- Demo Mode: Enabled (realistic mock data for presentations)
-- Last Query: {last_query_id}
-- Premium Partners Available: 9 major brands
-- Advanced Templates: 8 ML/AI analytics models
+📋 REAL PRODUCTION CONTEXT:
+- **Live API Mode**: Using real Habu API with OAuth2 authentication
+- **Real Cleanroom**: "Data Marketplace Demo" fully operational
+- **Analytics Ready**: 3 templates immediately available for execution
+- **Setup Needed**: 1 template requires dataset configuration
+- **Real Categories**: Sentiment Analysis, Location Data, Pattern of Life
+- **Partnership Status**: 0 partners (new cleanroom - partnerships being established)
+- **Last Query**: {last_query_id}
 
 🤖 RESPONSE FORMAT:
 For tool actions, respond with JSON:
@@ -254,7 +289,7 @@ IMPORTANT: When users ask to "run", "execute", "submit", or "start" an analysis,
             return f"I encountered an error with the AI processing: {str(e)}. Let me try a simpler approach."
     
     def _format_llm_response(self, explanation: str, tool_result: str, result_type: str) -> str:
-        """Format tool results with LLM explanation for natural conversation."""
+        """Format tool results with intelligent, context-aware explanations."""
         try:
             result_data = json.loads(tool_result)
             
@@ -265,18 +300,48 @@ IMPORTANT: When users ask to "run", "execute", "submit", or "start" an analysis,
                         partner_names = [p.get("name", "Unknown") for p in partners]
                         return f"{explanation}\n\nHere are your clean room partners:\n• " + "\n• ".join(partner_names)
                     else:
-                        return f"{explanation}\n\nYou don't have any clean room partners set up yet. Contact your administrator to establish partnerships."
+                        return f"{explanation}\n\n🏢 **Partnership Status**: Your 'Data Marketplace Demo' cleanroom is newly established with 0 active partners. This is normal for new cleanrooms.\n\n**Next Steps**: Contact your administrator to establish data partnerships with brands like retailers, media companies, or data providers. Once partnerships are established, you'll be able to run collaborative analytics while maintaining data privacy."
                         
             elif result_type == "templates":
                 if result_data.get("status") == "success":
                     templates = result_data.get("templates", [])
                     if templates:
-                        template_list = []
+                        # Enhanced template display with intelligent status analysis
+                        ready_templates = []
+                        missing_data_templates = []
+                        
                         for t in templates:
                             name = t.get("name", "Unknown")
-                            desc = t.get("description", "No description")[:100]
-                            template_list.append(f"• **{name}**: {desc}")
-                        return f"{explanation}\n\n" + "\n".join(template_list)
+                            category = t.get("category", "Unknown")
+                            status = t.get("status", "Unknown")
+                            
+                            if status == "READY":
+                                ready_templates.append(f"✅ **{name}**\n   Category: {category} | Status: Ready for execution")
+                            elif status == "MISSING_DATASETS":
+                                missing_data_templates.append(f"⚠️ **{name}**\n   Category: {category} | Status: Needs dataset configuration")
+                            else:
+                                ready_templates.append(f"• **{name}**\n   Category: {category} | Status: {status}")
+                        
+                        response = f"{explanation}\n\n🔥 **Your Analytics Templates:**\n\n"
+                        
+                        if ready_templates:
+                            response += "**🚀 Ready for Execution:**\n" + "\n\n".join(ready_templates)
+                            if len(ready_templates) == 3:
+                                response += "\n\n💡 **Quick Start**: You have 3 templates ready! Try asking 'Run a sentiment analysis' or 'Analyze location patterns'"
+                        
+                        if missing_data_templates:
+                            response += "\n\n**⚙️ Needs Setup:**\n" + "\n\n".join(missing_data_templates)
+                            response += "\n\n📞 **Action Required**: Contact your administrator to complete dataset configuration for the template above."
+                        
+                        # Add category-specific recommendations
+                        if any("Sentiment Analysis" in t.get("category", "") for t in templates):
+                            response += "\n\n🎯 **Sentiment Analysis**: Analyze customer feedback, brand mentions, and market sentiment patterns."
+                        if any("Location Data" in t.get("category", "") for t in templates):
+                            response += "\n\n📍 **Location Analytics**: Discover mobility patterns, geographic insights, and behavioral trends."
+                        if any("Pattern of Life" in t.get("category", "") for t in templates):
+                            response += "\n\n🔍 **Pattern of Life**: Combined analysis for comprehensive behavioral intelligence."
+                        
+                        return response
                     else:
                         return f"{explanation}\n\nNo query templates are available yet. Contact your administrator to set up analysis templates."
                         

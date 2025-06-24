@@ -12,7 +12,7 @@ const ChatInterface: React.FC = () => {
     {
       id: '1',
       type: 'assistant',
-      content: 'Hello! I\'m your Habu Clean Room assistant powered by OpenAI GPT-4 with **real API integration**. I can help you explore your live cleanroom "Data Marketplace Demo" with 4 real analytics templates. Try asking: "What templates are available?" or "Show me my cleanroom data".',
+      content: 'Hello! I\'m your Habu Clean Room assistant with **intelligent analytics guidance**. I\'m connected to your "Data Marketplace Demo" cleanroom with 3 ready-to-execute templates and 1 requiring setup. I can provide smart recommendations based on your specific capabilities. What would you like to explore?',
       timestamp: new Date()
     }
   ]);
@@ -92,10 +92,10 @@ const ChatInterface: React.FC = () => {
   };
 
   const suggestedQuestions = [
-    "Show me my data partners",
-    "What analyses can I run?", 
-    "Run an audience overlap analysis",
-    "Check my query status"
+    "What templates are ready for execution?",
+    "Tell me about my sentiment analysis capabilities", 
+    "Show me the location data templates",
+    "Which templates need setup?"
   ];
 
   return (
