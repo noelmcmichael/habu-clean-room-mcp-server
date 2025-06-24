@@ -81,14 +81,26 @@ const Cleanrooms: React.FC = () => {
         // Handle API error responses properly
         if (enhancedTemplatesData.status === 'error') {
           console.warn('⚠️ Templates API returned error:', enhancedTemplatesData.error);
-          setEnhancedTemplates({ templates: [], total_templates: 0, ready_templates: 0, missing_datasets_templates: 0, categories: [] });
+          setEnhancedTemplates({ 
+            templates: [], 
+            total_templates: 0, 
+            ready_templates: 0, 
+            missing_datasets_templates: 0, 
+            categories: [],
+            enhancement_features: {
+              parameters_added: 0,
+              data_types_enriched: 0,
+              complexity_assessed: 0,
+              business_intelligence_added: 0
+            }
+          });
         } else {
           setEnhancedTemplates(enhancedTemplatesData);
         }
         
         if (partnersData.status === 'error') {
           console.warn('⚠️ Partners API returned error:', partnersData.error);
-          setPartners([]);
+          setPartners({ count: 0, partners: [], summary: 'No partners available due to API error', mock_mode: true });
         } else {
           setPartners(partnersData);
         }
