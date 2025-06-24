@@ -481,13 +481,33 @@ Response: {"action": "habu_get_results", "tool_params": {"query_id": "last"}, "e
                             enhanced_info = []
                             if question_type:
                                 enhanced_info.append(f"Type: {question_type}")
-                            if data_types and isinstance(data_types, dict):
-                                data_type_names = list(data_types.keys())[:2]  # Show first 2 data types
+                            
+                            # Handle data types (can be dict or list depending on source)
+                            if data_types:
+                                if isinstance(data_types, dict):
+                                    data_type_names = list(data_types.keys())[:2]
+                                elif isinstance(data_types, list):
+                                    data_type_names = data_types[:2]
+                                else:
+                                    data_type_names = [str(data_types)]
+                                
                                 if data_type_names:
                                     enhanced_info.append(f"Data: {', '.join(data_type_names)}")
-                            if parameters and isinstance(parameters, dict) and len(parameters) > 0:
-                                param_count = len(parameters)
-                                enhanced_info.append(f"Parameters: {param_count} fields")
+                            
+                            # Handle parameters
+                            if parameters:
+                                if isinstance(parameters, dict) and len(parameters) > 0:
+                                    # Show specific parameter info
+                                    required = parameters.get('required', [])
+                                    optional = parameters.get('optional', [])
+                                    if required or optional:
+                                        param_info = f"Required: {len(required) if required else 0}"
+                                        if optional:
+                                            param_info += f", Optional: {len(optional)}"
+                                        enhanced_info.append(f"Parameters: {param_info}")
+                                    else:
+                                        # If parameters is just a dict of values
+                                        enhanced_info.append(f"Parameters: {len(parameters)} fields")
                             
                             enhanced_suffix = f" | {' | '.join(enhanced_info)}" if enhanced_info else ""
                             

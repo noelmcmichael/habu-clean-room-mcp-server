@@ -111,13 +111,25 @@ def api_enhanced_templates():
     """API endpoint for listing enhanced templates with detailed metadata"""
     try:
         cleanroom_id = request.args.get('cleanroom_id')
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        
+        # Use asyncio.run to handle the async function properly
+        import asyncio
         try:
-            result = loop.run_until_complete(habu_enhanced_templates(cleanroom_id))
-            return json.loads(result)
-        finally:
-            loop.close()
+            # Check if there's already an event loop running
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                # If loop is running, we need to use a different approach
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future = executor.submit(asyncio.run, habu_enhanced_templates(cleanroom_id))
+                    result = future.result()
+            else:
+                result = asyncio.run(habu_enhanced_templates(cleanroom_id))
+        except RuntimeError:
+            # No event loop exists, create one
+            result = asyncio.run(habu_enhanced_templates(cleanroom_id))
+            
+        return json.loads(result)
     except Exception as e:
         logger.error(f"Error in enhanced_templates: {e}")
         return jsonify({'error': str(e)}), 500
