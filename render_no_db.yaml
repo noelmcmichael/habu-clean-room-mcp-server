@@ -1,0 +1,50 @@
+# render.yaml - No Database Version for Free Tier
+services:
+  # MCP Server (no database)
+  - type: web
+    name: habu-mcp-server-simple
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python main.py"
+    envVars:
+      - key: JOKE_MCP_SERVER_API_KEY
+        value: "secure-habu-demo-key-2024"
+      - key: HABU_CLIENT_ID
+        value: "oP7KnpwzUQvf53P7jY0aCzuZeutqMnKT"
+      - key: HABU_CLIENT_SECRET
+        value: "HA9CiXEXi43fWBqFfZzJUkZga1zbjUngR1P9iH9JczyMgU70DdIW-h0eDrfKpk3w"
+      - key: HABU_USE_MOCK_DATA
+        value: "true"
+      - key: PORT
+        value: "8000"
+
+  # Demo API (no database)
+  - type: web
+    name: habu-demo-api-simple
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python demo_api.py"
+    envVars:
+      - key: JOKE_MCP_SERVER_API_KEY
+        value: "secure-habu-demo-key-2024"
+      - key: HABU_CLIENT_ID
+        value: "oP7KnpwzUQvf53P7jY0aCzuZeutqMnKT"
+      - key: HABU_CLIENT_SECRET
+        value: "HA9CiXEXi43fWBqFfZzJUkZga1zbjUngR1P9iH9JczyMgU70DdIW-h0eDrfKpk3w"
+      - key: HABU_USE_MOCK_DATA
+        value: "true"
+      - key: PORT
+        value: "5001"
+
+  # React Frontend
+  - type: web
+    name: habu-demo-frontend-simple
+    env: node
+    plan: free
+    buildCommand: "cd demo_app && npm install && npm run build"
+    startCommand: "cd demo_app && npx serve -s build -l $PORT"
+    envVars:
+      - key: REACT_APP_API_URL
+        value: "https://habu-demo-api-simple.onrender.com"
