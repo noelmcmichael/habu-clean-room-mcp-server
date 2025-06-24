@@ -1,0 +1,145 @@
+/* Desktop Sidebar Styles */
+
+.desktop-sidebar {
+  width: 280px;
+  height: 100vh;
+  background: #2C3E50;
+  border-right: 1px solid #34495E;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: var(--z-sidebar);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Sidebar Header */
+.sidebar-header {
+  padding: 2rem 1.5rem;
+  border-bottom: 1px solid #34495E;
+  background: rgba(52, 73, 94, 0.5);
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: #ffffff;
+  transition: color 0.2s ease;
+}
+
+.sidebar-logo:hover {
+  color: #667eea;
+}
+
+.sidebar-logo .logo-icon {
+  font-size: 24px;
+}
+
+.sidebar-logo .logo-text {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Navigation */
+.sidebar-nav {
+  flex: 1;
+  padding: 1.5rem 0;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  margin: 2px 0;
+}
+
+.sidebar-nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.sidebar-nav-item:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar-nav-item.active {
+  background: rgba(255, 255, 255, 0.15);
+  border-left-color: #667eea;
+  color: #ffffff;
+}
+
+.sidebar-nav-item .nav-icon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.sidebar-nav-item .nav-label {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid #34495E;
+  background: rgba(52, 73, 94, 0.3);
+}
+
+.status-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #BDC3C7;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot.production {
+  background: #48bb78;
+}
+
+.status-dot.real {
+  background: #4299e1;
+}
+
+/* Scrollbar Styling */
+.desktop-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.desktop-sidebar::-webkit-scrollbar-track {
+  background: #2C3E50;
+}
+
+.desktop-sidebar::-webkit-scrollbar-thumb {
+  background: #34495E;
+  border-radius: 3px;
+}
+
+.desktop-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #4A5F7A;
+}

@@ -224,43 +224,40 @@
   }
 }
 
-/* Desktop Alternative: Collapsible Sidebar */
+/* Desktop Behavior: Overlay with proper positioning */
 @media (min-width: 1024px) {
-  .hamburger-nav {
-    position: relative;
-    transform: translateX(0);
-    width: 250px;
-    height: 100vh;
-    box-shadow: none;
-    border-right: 1px solid #34495E;
-  }
-  
-  .hamburger-backdrop {
-    display: none;
-  }
-  
+  /* Keep hamburger button positioned but smaller */
   .hamburger-button {
-    position: relative;
-    top: auto;
-    left: auto;
-    margin: 1rem;
-    width: 40px;
-    height: 40px;
+    top: 1.5rem;
+    left: 1.5rem;
+    width: 44px;
+    height: 44px;
   }
   
-  /* Desktop: Show both hamburger and traditional sidebar */
-  .desktop-sidebar-option .hamburger-nav {
-    position: fixed;
-    transform: translateX(-100%);
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+  /* Desktop overlay menu - better positioned and sized */
+  .hamburger-nav {
+    width: 300px;
+    max-width: 25vw;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
   }
   
-  .desktop-sidebar-option .hamburger-nav.open {
-    transform: translateX(0);
+  /* Backdrop remains the same for desktop overlay */
+  .hamburger-backdrop {
+    background: rgba(0, 0, 0, 0.4);
   }
   
-  .desktop-sidebar-option .hamburger-backdrop {
-    display: block;
+  /* Adjust menu items for desktop */
+  .hamburger-nav-item {
+    padding: 14px 24px;
+    min-height: 52px;
+  }
+  
+  .hamburger-nav-item .nav-icon {
+    font-size: 16px;
+  }
+  
+  .hamburger-nav-item .nav-label {
+    font-size: 15px;
   }
 }
 

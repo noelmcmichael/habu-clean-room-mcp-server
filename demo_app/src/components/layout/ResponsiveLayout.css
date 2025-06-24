@@ -27,6 +27,12 @@
   width: 100%;
 }
 
+/* Desktop Layout with Sidebar */
+.main-content-area.with-sidebar {
+  margin-left: 280px;
+  width: calc(100% - 280px);
+}
+
 /* Responsive Padding */
 @media (max-width: 767px) {
   .main-content-area {
@@ -62,5 +68,19 @@
 @media (min-width: 1024px) {
   .page-content {
     padding-top: 20px;
+  }
+  
+  /* Add top padding to avoid hamburger button overlap */
+  .main-content-area.desktop .page-content {
+    padding-top: 80px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  /* Desktop with sidebar - no top padding needed */
+  .main-content-area.with-sidebar .page-content {
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
