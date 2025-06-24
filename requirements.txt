@@ -14,3 +14,4 @@ openai
 flask-cors
 flask-compress
 keyring
+redis

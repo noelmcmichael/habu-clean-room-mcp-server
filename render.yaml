@@ -1,22 +1,31 @@
-# render.yaml - Phase C Enhanced Context-Aware Chat Deployment
+# render.yaml - Phase H Redis-Optimized Deployment
 databases:
   - name: habu-mcp-db
     databaseName: habu_mcp_db
     user: habu_mcp_user
     plan: free
 
+  # Redis cache for Phase H optimization
+  - name: habu-redis-cache
+    plan: free
+    databaseName: redis_cache
+
 services:
-  # MCP Server (Phase C Enhanced)
+  # MCP Server (Phase H - Redis Enhanced)
   - type: web
     name: habu-mcp-server-v2
     env: python
-    plan: free
+    plan: starter  # Upgraded to starter for better performance
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python main.py"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: habu-mcp-db
+          property: connectionString
+      - key: REDIS_URL
+        fromDatabase:
+          name: habu-redis-cache
           property: connectionString
       - key: JOKE_MCP_SERVER_API_KEY
         value: secure-habu-demo-key-2024
@@ -31,17 +40,21 @@ services:
       - key: PORT
         value: "8000"
 
-  # Enhanced Chat API (Phase C)
+  # Enhanced Chat API (Phase H - Redis Optimized)
   - type: web
     name: habu-demo-api-v2
     env: python
-    plan: free
+    plan: starter  # Upgraded to starter for better Redis performance
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python demo_api.py"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: habu-mcp-db
+          property: connectionString
+      - key: REDIS_URL
+        fromDatabase:
+          name: habu-redis-cache
           property: connectionString
       - key: JOKE_MCP_SERVER_API_KEY
         value: secure-habu-demo-key-2024

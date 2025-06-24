@@ -2,6 +2,7 @@
 """
 Flask API server to bridge React frontend with enhanced chat agent
 Production-ready version with proper error handling and logging
+Enhanced with Redis caching for Phase H optimization
 """
 import os
 import asyncio
@@ -11,6 +12,7 @@ from flask_cors import CORS
 from flask_compress import Compress
 from agents.enhanced_habu_chat_agent import enhanced_habu_agent
 from config.production import production_config
+from redis_cache import cache, initialize_cache, shutdown_cache
 
 # Import MCP tools
 from tools.habu_list_partners import habu_list_partners
@@ -37,16 +39,37 @@ CORS(app, origins=production_config.CORS_ORIGINS)
 
 # Real API mode only
 
+# Initialize Redis cache on startup
+@app.before_first_request
+def initialize_redis():
+    """Initialize Redis cache before first request"""
+    try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(initialize_cache())
+        logger.info("✅ Redis cache initialized successfully")
+    except Exception as e:
+        logger.warning(f"⚠️ Redis cache initialization failed: {e}")
+    finally:
+        loop.close()
+
+@app.teardown_appcontext
+def close_redis(error):
+    """Clean up Redis connection"""
+    # Connection cleanup is handled by Redis connection pool
+    pass
+
 @app.route('/', methods=['GET'])
 def root():
     """Root endpoint for health checks"""
     return jsonify({
         'service': 'Habu Enhanced Chat API',
-        'version': 'Phase C',
+        'version': 'Phase H - Redis Optimized',
         'status': 'operational',
         'endpoints': [
             '/api/enhanced-chat',
             '/api/health',
+            '/api/cache-stats',
             '/api/mcp/habu_list_templates',
             '/api/mcp/habu_enhanced_templates',
             '/api/mcp/habu_list_partners'
@@ -58,9 +81,30 @@ def simple_health():
     """Simple health check endpoint"""
     return jsonify({'status': 'healthy', 'service': 'habu-chat-api', 'timestamp': 'working'})
 
+@app.route('/api/cache-stats', methods=['GET'])
+def cache_stats():
+    """Redis cache statistics endpoint"""
+    try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            stats = loop.run_until_complete(cache.get_cache_stats())
+            return jsonify({
+                'cache_stats': stats,
+                'timestamp': 'working'
+            })
+        finally:
+            loop.close()
+    except Exception as e:
+        logger.error(f"Error getting cache stats: {e}")
+        return jsonify({
+            'error': 'Failed to get cache stats',
+            'detail': str(e)
+        }), 500
+
 @app.route('/api/enhanced-chat', methods=['POST'])
 def enhanced_chat():
-    """Handle enhanced chat requests from React frontend"""
+    """Handle enhanced chat requests from React frontend with Redis caching"""
     try:
         data = request.get_json()
         if not data:
@@ -68,6 +112,7 @@ def enhanced_chat():
             return jsonify({'error': 'No JSON data provided'}), 400
             
         user_input = data.get('user_input', '')
+        session_id = data.get('session_id', 'default')
         
         if not user_input:
             logger.warning("Empty user input received")
@@ -75,16 +120,44 @@ def enhanced_chat():
         
         logger.info(f"Processing chat request: {user_input[:100]}...")
         
-        # Run the async enhanced chat agent
+        # Run the async enhanced chat agent with caching
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         
         try:
+            # Check for cached response (for exact same queries)
+            cache_key = f"chat_{hash(user_input) % 10000}"
+            cached_response = loop.run_until_complete(
+                cache.get_cached_response(cache_key)
+            )
+            
+            if cached_response and cached_response.get('data'):
+                logger.info("✅ Serving cached chat response")
+                response_data = cached_response['data']
+                response_data['cached'] = True
+                response_data['cached_at'] = cached_response.get('cached_at')
+                return jsonify({'response': response_data})
+            
+            # Process new request
             response = loop.run_until_complete(
                 enhanced_habu_agent.process_request(user_input)
             )
-            logger.info("Chat request processed successfully")
-            return jsonify({'response': response})
+            
+            # Cache the response for similar queries (5 minute TTL)
+            loop.run_until_complete(
+                cache.cache_api_response(
+                    endpoint=cache_key,
+                    data=response,
+                    cache_type='chat_context',
+                    custom_ttl=300  # 5 minutes for chat responses
+                )
+            )
+            
+            logger.info("Chat request processed and cached successfully")
+            return jsonify({
+                'response': response,
+                'cached': False
+            })
         finally:
             loop.close()
             
@@ -112,41 +185,83 @@ def api_list_templates():
 
 @app.route('/api/mcp/habu_enhanced_templates', methods=['GET'])
 def api_enhanced_templates():
-    """API endpoint for listing enhanced templates with detailed metadata"""
+    """API endpoint for listing enhanced templates with detailed metadata and caching"""
     try:
-        cleanroom_id = request.args.get('cleanroom_id')
+        cleanroom_id = request.args.get('cleanroom_id', 'default')
         
-        # Use asyncio.run to handle the async function properly
-        import asyncio
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         try:
-            # Check if there's already an event loop running
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                # If loop is running, we need to use a different approach
-                import concurrent.futures
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    future = executor.submit(asyncio.run, habu_enhanced_templates(cleanroom_id))
-                    result = future.result()
-            else:
-                result = asyncio.run(habu_enhanced_templates(cleanroom_id))
-        except RuntimeError:
-            # No event loop exists, create one
-            result = asyncio.run(habu_enhanced_templates(cleanroom_id))
+            # Check cache first
+            cache_key = f"enhanced_templates_{cleanroom_id}"
+            cached_result = loop.run_until_complete(
+                cache.get_cached_response(cache_key)
+            )
             
-        return json.loads(result)
+            if cached_result and cached_result.get('data'):
+                logger.info("✅ Serving cached enhanced templates")
+                response_data = cached_result['data']
+                response_data['cached'] = True
+                response_data['cached_at'] = cached_result.get('cached_at')
+                return response_data
+            
+            # Fetch fresh data
+            result = loop.run_until_complete(habu_enhanced_templates(cleanroom_id))
+            result_data = json.loads(result)
+            
+            # Cache the result (30 minutes TTL for template data)
+            loop.run_until_complete(
+                cache.cache_api_response(
+                    endpoint=cache_key,
+                    data=result_data,
+                    cache_type='template_data',
+                    custom_ttl=1800  # 30 minutes
+                )
+            )
+            
+            result_data['cached'] = False
+            return result_data
+        finally:
+            loop.close()
     except Exception as e:
         logger.error(f"Error in enhanced_templates: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/mcp/habu_list_partners', methods=['GET'])
 def api_list_partners():
-    """API endpoint for listing partners"""
+    """API endpoint for listing partners with Redis caching"""
     try:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:
+            # Check cache first
+            cached_result = loop.run_until_complete(
+                cache.get_cached_response('partners_list')
+            )
+            
+            if cached_result and cached_result.get('data'):
+                logger.info("✅ Serving cached partners list")
+                response_data = cached_result['data']
+                response_data['cached'] = True
+                response_data['cached_at'] = cached_result.get('cached_at')
+                return response_data
+            
+            # Fetch fresh data
             result = loop.run_until_complete(habu_list_partners())
-            return json.loads(result)
+            result_data = json.loads(result)
+            
+            # Cache the result (15 minutes TTL for partner data)
+            loop.run_until_complete(
+                cache.cache_api_response(
+                    endpoint='partners_list',
+                    data=result_data,
+                    cache_type='partner_data',
+                    custom_ttl=900  # 15 minutes
+                )
+            )
+            
+            result_data['cached'] = False
+            return result_data
         finally:
             loop.close()
     except Exception as e:
