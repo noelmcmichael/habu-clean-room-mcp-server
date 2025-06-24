@@ -261,6 +261,56 @@
   overflow-y: auto;
 }
 
+/* MCP Tools Status */
+.mcp-tools-status {
+  background: #232838;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.mcp-tools-status h3 {
+  margin: 0 0 1.5rem 0;
+  color: #ffffff;
+  font-size: 1.3rem;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.tool-item {
+  background: #1a1d21;
+  border: 1px solid #4a5568;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tool-name {
+  color: #4299e1;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.tool-status {
+  color: #48bb78;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.tool-description {
+  color: #a0aec0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
 /* Loading */
 .loading {
   display: flex;
@@ -313,6 +363,10 @@
   }
   
   .config-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tools-grid {
     grid-template-columns: 1fr;
   }
 }

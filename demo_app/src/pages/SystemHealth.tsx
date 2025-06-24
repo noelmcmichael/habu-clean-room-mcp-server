@@ -17,6 +17,10 @@ interface SystemHealthData {
   environment: string;
   mockMode: boolean;
   openaiConfigured: boolean;
+  realApiMode?: boolean;
+  demoReady?: boolean;
+  mcpServerOnline?: boolean;
+  demoMode?: string;
 }
 
 const SystemHealth: React.FC = () => {
@@ -79,7 +83,21 @@ const SystemHealth: React.FC = () => {
   const performHealthCheck = useCallback(async () => {
     setLoading(true);
     
-    const services = [
+    // Detect if we're running locally
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    const services = isLocal ? [
+      {
+        name: 'Demo API (Local)',
+        url: 'http://localhost:5001',
+        healthPath: '/api/health'
+      },
+      {
+        name: 'React Frontend (Local)',
+        url: 'http://localhost:3000',
+        healthPath: '/'
+      }
+    ] : [
       {
         name: 'Demo API',
         url: 'https://habu-demo-api-v2.onrender.com',
@@ -114,18 +132,25 @@ const SystemHealth: React.FC = () => {
       overallHealth = 'critical';
     }
 
-    // Extract configuration details
+    // Extract configuration details from the actual health endpoint response
     const apiService = serviceStatuses.find(s => s.name === 'Demo API');
-    const mockMode = apiService?.details?.mock_mode || false;
-    const openaiConfigured = apiService?.details?.openai_configured || false;
+    const realApiMode = apiService?.details?.real_api_mode || false;
+    const openaiConfigured = apiService?.details?.openai_available || false;
+    const demoReady = apiService?.details?.demo_ready || false;
+    const mcpServerOnline = apiService?.details?.mcp_server === 'online';
+    const demoMode = apiService?.details?.demo_mode || 'unknown';
 
     setHealthData({
       services: serviceStatuses,
       overallHealth,
       lastUpdated: new Date(),
-      environment: 'Production (Render.com)',
-      mockMode,
-      openaiConfigured
+      environment: isLocal ? 'Local Development' : 'Production (Render.com)',
+      mockMode: !realApiMode, // Invert the logic for display
+      openaiConfigured,
+      realApiMode,
+      demoReady,
+      mcpServerOnline,
+      demoMode
     });
 
     setLoading(false);
@@ -210,19 +235,63 @@ const SystemHealth: React.FC = () => {
 
           {/* Configuration Status */}
           <div className="config-status">
-            <h3>Configuration Status</h3>
+            <h3>🔧 Integration Status</h3>
             <div className="config-grid">
-              <div className={`config-item ${healthData.mockMode ? 'enabled' : 'disabled'}`}>
-                <span className="config-label">Mock Data Mode:</span>
+              <div className={`config-item ${healthData.realApiMode ? 'enabled' : 'disabled'}`}>
+                <span className="config-label">Real API Mode:</span>
                 <span className="config-value">
-                  {healthData.mockMode ? '✅ Enabled' : '❌ Disabled'}
+                  {healthData.realApiMode ? '✅ Connected to Habu API' : '⚠️ Mock Data Mode'}
                 </span>
               </div>
               <div className={`config-item ${healthData.openaiConfigured ? 'enabled' : 'disabled'}`}>
-                <span className="config-label">OpenAI Integration:</span>
+                <span className="config-label">OpenAI GPT-4:</span>
                 <span className="config-value">
-                  {healthData.openaiConfigured ? '✅ Configured' : '❌ Not Configured'}
+                  {healthData.openaiConfigured ? '✅ AI Intelligence Active' : '❌ Not Configured'}
                 </span>
+              </div>
+              <div className={`config-item ${healthData.mcpServerOnline ? 'enabled' : 'disabled'}`}>
+                <span className="config-label">MCP Protocol:</span>
+                <span className="config-value">
+                  {healthData.mcpServerOnline ? '✅ Model Context Protocol Online' : '❌ MCP Offline'}
+                </span>
+              </div>
+              <div className={`config-item ${healthData.demoReady ? 'enabled' : 'disabled'}`}>
+                <span className="config-label">Demo Readiness:</span>
+                <span className="config-value">
+                  {healthData.demoReady ? '🚀 All Systems Ready' : '⚠️ Issues Detected'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* MCP Tools Status */}
+          <div className="mcp-tools-status">
+            <h3>🤖 Available MCP Tools</h3>
+            <div className="tools-grid">
+              <div className="tool-item">
+                <span className="tool-name">habu_list_partners</span>
+                <span className="tool-status">✅ Ready</span>
+                <span className="tool-description">List data partnership partners</span>
+              </div>
+              <div className="tool-item">
+                <span className="tool-name">habu_list_templates</span>
+                <span className="tool-status">✅ Ready</span>
+                <span className="tool-description">Get available analytics templates</span>
+              </div>
+              <div className="tool-item">
+                <span className="tool-name">habu_submit_query</span>
+                <span className="tool-status">✅ Ready</span>
+                <span className="tool-description">Submit analytics queries</span>
+              </div>
+              <div className="tool-item">
+                <span className="tool-name">habu_check_status</span>
+                <span className="tool-status">✅ Ready</span>
+                <span className="tool-description">Monitor query progress</span>
+              </div>
+              <div className="tool-item">
+                <span className="tool-name">habu_get_results</span>
+                <span className="tool-status">✅ Ready</span>
+                <span className="tool-description">Retrieve query results</span>
               </div>
             </div>
           </div>

@@ -806,6 +806,176 @@ class HabuMockData:
                 "insights_generated": random.randint(8, 15)
             }
         }
+    
+    def list_mock_exports(self, status_filter: str = None) -> Dict[str, Any]:
+        """Generate mock exports list for Phase C integration"""
+        # Create realistic exports based on previously run queries
+        exports = []
+        
+        # Some ready exports
+        ready_exports = [
+            {
+                "id": f"export-{uuid.uuid4().hex[:8]}",
+                "name": "Audience Overlap Analysis - Meta x Amazon",
+                "query_id": "query-2024-001",
+                "status": "READY",
+                "created_at": "2024-06-20T14:30:00Z",
+                "file_size": 2547832,  # ~2.5MB
+                "download_url": "https://exports.habu.com/download/export-abc123",
+                "format": "CSV",
+                "record_count": 125000
+            },
+            {
+                "id": f"export-{uuid.uuid4().hex[:8]}",
+                "name": "Customer Lifetime Value Predictions",
+                "query_id": "query-2024-002", 
+                "status": "READY",
+                "created_at": "2024-06-21T09:15:00Z",
+                "file_size": 4182647,  # ~4.2MB
+                "download_url": "https://exports.habu.com/download/export-def456",
+                "format": "CSV", 
+                "record_count": 287000
+            },
+            {
+                "id": f"export-{uuid.uuid4().hex[:8]}",
+                "name": "Sentiment Analysis - Global Events Q2",
+                "query_id": "query-2024-003",
+                "status": "READY",
+                "created_at": "2024-06-22T16:45:00Z",
+                "file_size": 1895432,  # ~1.9MB
+                "download_url": "https://exports.habu.com/download/export-ghi789",
+                "format": "CSV",
+                "record_count": 89000
+            }
+        ]
+        
+        # Some processing exports
+        processing_exports = [
+            {
+                "id": f"export-{uuid.uuid4().hex[:8]}",
+                "name": "Lookalike Model Results - Premium Segment",
+                "query_id": "query-2024-004",
+                "status": "PROCESSING",
+                "created_at": "2024-06-23T11:20:00Z",
+                "estimated_completion": "2024-06-23T11:45:00Z",
+                "progress_percent": 73
+            },
+            {
+                "id": f"export-{uuid.uuid4().hex[:8]}",
+                "name": "Cross-Platform Attribution Analysis",
+                "query_id": "query-2024-005", 
+                "status": "BUILDING",
+                "created_at": "2024-06-23T13:05:00Z",
+                "estimated_completion": "2024-06-23T13:30:00Z",
+                "progress_percent": 34
+            }
+        ]
+        
+        # Combine all exports
+        all_exports = ready_exports + processing_exports
+        
+        # Apply status filter if provided
+        if status_filter:
+            all_exports = [e for e in all_exports if e["status"] == status_filter.upper()]
+        
+        # Separate by status for response
+        ready = [e for e in all_exports if e["status"] == "READY"]
+        processing = [e for e in all_exports if e["status"] in ["PROCESSING", "BUILDING"]]
+        failed = []  # No failed exports in mock for simplicity
+        
+        return {
+            "status": "success",
+            "total_exports": len(all_exports),
+            "ready_exports": ready,
+            "processing_exports": processing,
+            "failed_exports": failed,
+            "summary": f"{len(ready)} ready, {len(processing)} processing",
+            "business_summary": f"You have {len(ready)} completed analyses ready for download ({sum(e.get('file_size', 0) for e in ready) / (1024*1024):.1f} MB total) and {len(processing)} analyses currently processing. Recent completions include audience overlap, lifetime value predictions, and sentiment analysis with comprehensive data coverage."
+        }
+    
+    def download_mock_export(self, export_id: str) -> Dict[str, Any]:
+        """Simulate export download for Phase C integration"""
+        # Find the export (simulate lookup)
+        mock_exports = self.list_mock_exports()
+        
+        all_exports = mock_exports["ready_exports"] + mock_exports["processing_exports"]
+        export = next((e for e in all_exports if e["id"] == export_id), None)
+        
+        if not export:
+            return {
+                "status": "error",
+                "error": f"Export {export_id} not found",
+                "available_exports": [e["id"] for e in all_exports]
+            }
+        
+        if export["status"] != "READY":
+            return {
+                "status": "error", 
+                "error": f"Export {export_id} is not ready for download (status: {export['status']})",
+                "current_status": export["status"],
+                "estimated_completion": export.get("estimated_completion")
+            }
+        
+        # Simulate successful download
+        file_content_preview = self._generate_export_preview(export["name"])
+        
+        return {
+            "status": "success",
+            "export_id": export_id,
+            "file_name": f"{export['name'].replace(' ', '_').lower()}.csv",
+            "file_size": export["file_size"],
+            "download_url": export["download_url"],
+            "format": export["format"],
+            "record_count": export["record_count"],
+            "preview": file_content_preview,
+            "summary": f"Export {export_id} downloaded successfully ({export['file_size']:,} bytes, {export['record_count']:,} records)"
+        }
+    
+    def _generate_export_preview(self, export_name: str) -> Dict[str, Any]:
+        """Generate a preview of export file contents"""
+        if "Audience Overlap" in export_name:
+            return {
+                "columns": ["customer_id", "platform_1", "platform_2", "overlap_score", "ltv_tier", "engagement_level"],
+                "sample_rows": [
+                    ["cust_001", "Meta", "Amazon", "0.94", "High", "Premium"],
+                    ["cust_002", "Meta", "Amazon", "0.87", "Medium", "Active"],
+                    ["cust_003", "Meta", "Amazon", "0.91", "High", "Premium"]
+                ],
+                "total_columns": 12,
+                "data_types": {"overlap_score": "float", "ltv_tier": "categorical", "engagement_level": "categorical"}
+            }
+        elif "Lifetime Value" in export_name:
+            return {
+                "columns": ["customer_id", "predicted_clv", "confidence_score", "value_tier", "churn_risk"],
+                "sample_rows": [
+                    ["cust_001", "1247.83", "0.92", "High", "Low"],
+                    ["cust_002", "534.21", "0.85", "Medium", "Medium"],
+                    ["cust_003", "892.45", "0.89", "High", "Low"]
+                ],
+                "total_columns": 8,
+                "data_types": {"predicted_clv": "currency", "confidence_score": "float", "value_tier": "categorical"}
+            }
+        elif "Sentiment" in export_name:
+            return {
+                "columns": ["event_id", "sentiment_score", "emotion_category", "confidence", "topic_cluster"],
+                "sample_rows": [
+                    ["evt_001", "0.73", "Positive", "0.91", "Product_Quality"],
+                    ["evt_002", "-0.24", "Negative", "0.87", "Customer_Service"],
+                    ["evt_003", "0.45", "Neutral", "0.82", "Pricing"]
+                ],
+                "total_columns": 10,
+                "data_types": {"sentiment_score": "float", "confidence": "float", "emotion_category": "categorical"}
+            }
+        else:
+            return {
+                "columns": ["id", "value", "category", "score"],
+                "sample_rows": [
+                    ["001", "example_value", "category_a", "0.85"],
+                    ["002", "example_value_2", "category_b", "0.73"]
+                ],
+                "total_columns": 6,
+                "data_types": {"score": "float", "category": "categorical"}
+            }
 
 # Global mock data instance
 mock_data = HabuMockData()

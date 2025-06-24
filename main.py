@@ -32,6 +32,7 @@ from tools.habu_list_templates import habu_list_templates
 from tools.habu_submit_query import habu_submit_query
 from tools.habu_check_status import habu_check_status
 from tools.habu_get_results import habu_get_results
+from tools.habu_list_exports import habu_list_exports, habu_download_export
 from agents.habu_chat_agent import habu_agent
 from agents.enhanced_habu_chat_agent import enhanced_habu_agent
 
@@ -208,6 +209,22 @@ async def habu_check_status_tool(query_id: str) -> str:
 async def habu_get_results_tool(query_id: str, format_type: str = "json") -> str:
     """Gets results for a completed query."""
     return await habu_get_results(query_id, format_type)
+
+@mcp_server.tool(
+    name="habu_list_exports",
+    description="Lists available exports from completed analyses. Use this to find completed query results ready for download."
+)
+async def habu_list_exports_tool(status_filter: str = None) -> str:
+    """Lists available exports with optional status filter (READY, PROCESSING, FAILED)."""
+    return await habu_list_exports(status_filter)
+
+@mcp_server.tool(
+    name="habu_download_export",
+    description="Downloads a specific export file containing complete analysis results and data."
+)
+async def habu_download_export_tool(export_id: str, save_path: str = None) -> str:
+    """Downloads an export file by ID with optional save path."""
+    return await habu_download_export(export_id, save_path)
 
 @mcp_server.tool(
     name="habu_chat",

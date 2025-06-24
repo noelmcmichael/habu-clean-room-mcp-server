@@ -17,6 +17,7 @@ from tools.habu_list_templates import habu_list_templates
 from tools.habu_submit_query import habu_submit_query
 from tools.habu_check_status import habu_check_status
 from tools.habu_get_results import habu_get_results
+from tools.habu_list_exports import habu_list_exports, habu_download_export
 import json
 
 # Configure logging
@@ -157,6 +158,44 @@ def api_get_results():
             loop.close()
     except Exception as e:
         logger.error(f"Error in get_results: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/mcp/habu_list_exports', methods=['GET'])
+def api_list_exports():
+    """API endpoint for listing exports"""
+    try:
+        status_filter = request.args.get('status')
+        
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            result = loop.run_until_complete(habu_list_exports(status_filter))
+            return json.loads(result)
+        finally:
+            loop.close()
+    except Exception as e:
+        logger.error(f"Error in list_exports: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/mcp/habu_download_export', methods=['POST'])
+def api_download_export():
+    """API endpoint for downloading exports"""
+    try:
+        data = request.json
+        export_id = data.get('export_id')
+        
+        if not export_id:
+            return jsonify({'error': 'export_id is required'}), 400
+            
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            result = loop.run_until_complete(habu_download_export(export_id))
+            return json.loads(result)
+        finally:
+            loop.close()
+    except Exception as e:
+        logger.error(f"Error in download_export: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/health', methods=['GET'])

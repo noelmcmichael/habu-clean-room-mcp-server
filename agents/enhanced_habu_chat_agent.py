@@ -14,6 +14,7 @@ from tools.habu_list_templates import habu_list_templates
 from tools.habu_submit_query import habu_submit_query
 from tools.habu_check_status import habu_check_status
 from tools.habu_get_results import habu_get_results
+from tools.habu_list_exports import habu_list_exports, habu_download_export
 from utils.error_handling import (
     retry_async,
     format_error_response,
@@ -35,6 +36,18 @@ class EnhancedHabuChatAgent:
         self.last_query_id: Optional[str] = None
         self.context_memory: Dict[str, Any] = {}
         self.client = None
+        
+        # Enhanced context tracking for Phase C
+        self.active_queries: Dict[str, Dict[str, Any]] = {}  # query_id -> metadata
+        self.conversation_context: Dict[str, Any] = {
+            "recent_templates": [],
+            "recent_partners": [],
+            "query_history": [],
+            "pending_results": []
+        }
+        self.last_templates_check: Optional[str] = None
+        self.last_partners_check: Optional[str] = None
+        
         self._setup_openai_client()
         
     def _setup_openai_client(self):
@@ -99,12 +112,68 @@ class EnhancedHabuChatAgent:
             logger.error(f"Unexpected error processing request: {e}")
             return f"I encountered an unexpected error: {str(e)}. Please try rephrasing your request or contact support if the issue persists."
     
+    def _update_query_context(self, query_id: str, template_id: str, status: str, query_name: str = None):
+        """Update the active query context for enhanced tracking."""
+        self.active_queries[query_id] = {
+            "template_id": template_id,
+            "status": status,
+            "query_name": query_name,
+            "submitted_at": json.dumps({"timestamp": "now"}, default=str),
+            "last_checked": None
+        }
+        
+        # Add to conversation context
+        query_entry = {
+            "query_id": query_id,
+            "template_id": template_id,
+            "status": status,
+            "query_name": query_name
+        }
+        
+        # Keep only last 10 queries in history
+        self.conversation_context["query_history"].insert(0, query_entry)
+        if len(self.conversation_context["query_history"]) > 10:
+            self.conversation_context["query_history"] = self.conversation_context["query_history"][:10]
+        
+        # Update pending results list
+        if status.lower() in ["submitted", "running", "processing", "in_progress"]:
+            if query_id not in self.conversation_context["pending_results"]:
+                self.conversation_context["pending_results"].append(query_id)
+        elif status.lower() in ["completed", "success", "finished"]:
+            if query_id in self.conversation_context["pending_results"]:
+                self.conversation_context["pending_results"].remove(query_id)
+    
+    def _get_context_summary(self) -> str:
+        """Generate a context summary for the LLM to maintain conversation continuity."""
+        context_parts = []
+        
+        # Recent query activity
+        if self.active_queries:
+            recent_queries = list(self.active_queries.items())[-3:]  # Last 3 queries
+            context_parts.append(f"Recent queries: {[f'{qid[:8]}...({data['status']})' for qid, data in recent_queries]}")
+        
+        # Pending results
+        if self.conversation_context["pending_results"]:
+            context_parts.append(f"Pending results: {len(self.conversation_context['pending_results'])} queries awaiting completion")
+        
+        # Available templates (if recently checked)
+        if self.conversation_context["recent_templates"]:
+            ready_count = len([t for t in self.conversation_context["recent_templates"] if t.get("status") == "READY"])
+            context_parts.append(f"Available templates: {ready_count} ready for execution")
+        
+        return " | ".join(context_parts) if context_parts else "New conversation"
+    
     @with_circuit_breaker(openai_circuit_breaker)
     async def _llm_powered_processing(self, user_input: str) -> str:
         """Process request using LLM for intent understanding and tool orchestration."""
         
+        # Get current conversation context
+        context_summary = self._get_context_summary()
+        
         # Enhanced system prompt with REAL cleanroom context and intelligent response patterns
-        system_prompt = """You are an expert Habu Clean Room Data Collaboration Assistant powered by OpenAI GPT-4. You help enterprises manage privacy-safe data partnerships and advanced analytics.
+        system_prompt = f"""You are an expert Habu Clean Room Data Collaboration Assistant powered by OpenAI GPT-4. You help enterprises manage privacy-safe data partnerships and advanced analytics.
+
+🧠 **CONVERSATION CONTEXT**: {context_summary}
 
 🏢 HABU CLEAN ROOM PLATFORM OVERVIEW:
 Habu enables secure data collaboration between companies without exposing raw data. Partners can run joint analytics while maintaining privacy through cryptographic clean rooms.
@@ -115,6 +184,8 @@ Habu enables secure data collaboration between companies without exposing raw da
 3. habu_submit_query - Execute sophisticated analytics with partner data
 4. habu_check_status - Monitor query progress (building, running, completed)
 5. habu_get_results - Retrieve insights with business intelligence summaries
+6. habu_list_exports - Browse completed analysis exports and download ready results
+7. habu_download_export - Download specific export files with full dataset access
 
 📊 LIVE CLEANROOM CONTEXT - "Data Marketplace Demo":
 🎯 CURRENT REAL DATA:
@@ -173,7 +244,7 @@ When users ask about analytics capabilities, provide smart, status-aware respons
 - **Setup Needed**: 1 template requires dataset configuration
 - **Real Categories**: Sentiment Analysis, Location Data, Pattern of Life
 - **Partnership Status**: 0 partners (new cleanroom - partnerships being established)
-- **Last Query**: {last_query_id}
+- **Last Query**: {self.last_query_id or 'None'}
 
 🤖 INTERACTIVE QUERY BUILDING - PHASE 3:
 When users want to run analytics, provide intelligent query suggestions and execute them:
@@ -185,19 +256,14 @@ When users want to run analytics, provide intelligent query suggestions and exec
 - Sentiment Analysis (MISSING_DATASETS): 1c622093-b55b-4a57-9c95-d2ab7d0cdb89
 
 **RESPONSE FORMAT:**
-For tool actions, respond with JSON:
-{{
-  "action": "tool_name",
-  "tool_params": {{}},
-  "explanation": "Business-focused explanation with strategic context"
-}}
+For tool actions, respond with JSON formatted exactly as shown:
+Action format: {{"action": "tool_name", "tool_params": {{"param": "value"}}, "explanation": "Business explanation"}}
 
 **INTERACTIVE QUERY EXAMPLES:**
-User: "Run a sentiment analysis" 
-Response: {{"action": "habu_submit_query", "tool_params": {{"template_id": "f7b6c1b5-c625-40e5-9209-b4a1ca7d3c7a", "parameters": {{}}, "query_name": "Sentiment Analysis Query"}}, "explanation": "I'll execute sentiment analysis using your READY template. This will analyze global events and language tone patterns."}}
-
-User: "Analyze location patterns"
-Response: {{"action": "habu_submit_query", "tool_params": {{"template_id": "10cefd5c-b2fe-451a-a4cf-12546dbb6b28", "parameters": {{}}, "query_name": "Location Pattern Analysis"}}, "explanation": "I'll run pattern of life analysis using your Geotrace mobile location template."}}
+User: "Run a sentiment analysis" -> Use habu_submit_query with template f7b6c1b5-c625-40e5-9209-b4a1ca7d3c7a
+User: "Analyze location patterns" -> Use habu_submit_query with template 10cefd5c-b2fe-451a-a4cf-12546dbb6b28  
+User: "Show me exports" -> Use habu_list_exports
+User: "Download export ABC123" -> Use habu_download_export with export_id ABC123
 
 User: "Run combined location analysis"  
 Response: {{"action": "habu_submit_query", "tool_params": {{"template_id": "d827dfd1-3acf-41fb-bd8f-e18ecf74473e", "parameters": {{}}, "query_name": "Combined Location Intelligence"}}, "explanation": "I'll execute the TimberMac and Geotrace combined analysis for comprehensive location intelligence."}}
@@ -278,116 +344,100 @@ Response: {{"action": "habu_get_results", "tool_params": {{"query_id": "last"}},
                 if not template_id:
                     return "I need a template ID to submit a query. Please specify which template you'd like to use."
                 
-                # For demo purposes, simulate successful query execution with realistic flow
-                import time
-                import random
+                # Execute the actual query submission
+                result = await habu_submit_query(template_id, parameters, query_name)
                 
-                # Generate realistic query ID
-                query_id = f"query_{int(time.time())}_{random.randint(1000, 9999)}"
-                self.last_query_id = query_id
+                # Parse the result to update context
+                try:
+                    result_data = json.loads(result)
+                    if result_data.get("status") == "success":
+                        query_id = result_data.get("query_id")
+                        if query_id:
+                            self.last_query_id = query_id
+                            # Update enhanced context tracking
+                            self._update_query_context(
+                                query_id=query_id,
+                                template_id=template_id,
+                                status=result_data.get("query_status", "SUBMITTED"),
+                                query_name=query_name
+                            )
+                except Exception as e:
+                    logger.error(f"Error updating query context: {e}")
                 
-                # Create realistic success response for demo
-                demo_result = {
-                    "status": "success",
-                    "query_id": query_id,
-                    "query_status": "SUBMITTED",
-                    "template_id": template_id,
-                    "parameters_used": parameters,
-                    "query_name": query_name,
-                    "submission_result": {
-                        "id": query_id,
-                        "status": "SUBMITTED",
-                        "message": "Query successfully submitted for processing"
-                    },
-                    "summary": f"Query successfully submitted with ID: {query_id}. Status: SUBMITTED."
-                }
-                
-                return self._format_llm_response(explanation, json.dumps(demo_result), "submit")
+                return self._format_llm_response(explanation, result, "submit")
                 
             elif action == "habu_check_status":
                 query_id = tool_params.get("query_id")
                 if query_id == "last" or not query_id:
                     query_id = self.last_query_id
                 if not query_id:
-                    return "I don't have a query ID to check. Please provide a query ID or run a query first."
+                    # Check if we have any pending queries in context
+                    if self.conversation_context["pending_results"]:
+                        query_id = self.conversation_context["pending_results"][0]
+                    else:
+                        return "I don't have a query ID to check. Please provide a query ID or submit a query first."
                 
-                # Simulate realistic query progression for demo
-                import time
-                import random
+                # Execute the actual status check
+                result = await habu_check_status(query_id)
                 
-                # Simulate query progression based on time since creation
-                if query_id.startswith("query_"):
-                    try:
-                        query_timestamp = int(query_id.split("_")[1])
-                        elapsed_seconds = time.time() - query_timestamp
-                        
-                        if elapsed_seconds < 30:
-                            status = "RUNNING"
-                            progress = min(20, int(elapsed_seconds * 2))
-                        elif elapsed_seconds < 120:
-                            status = "RUNNING" 
-                            progress = min(90, 20 + int((elapsed_seconds - 30) * 0.8))
-                        else:
-                            status = "COMPLETED"
-                            progress = 100
-                    except:
-                        status = "RUNNING"
-                        progress = random.randint(40, 80)
-                else:
-                    status = "RUNNING"
-                    progress = random.randint(40, 80)
+                # Parse result to update context
+                try:
+                    result_data = json.loads(result)
+                    if result_data.get("status") == "success":
+                        new_status = result_data.get("query_status")
+                        if query_id in self.active_queries and new_status:
+                            self.active_queries[query_id]["status"] = new_status
+                            self.active_queries[query_id]["last_checked"] = "now"
+                            
+                            # Update pending results list
+                            if new_status.lower() in ["completed", "success", "finished"]:
+                                if query_id in self.conversation_context["pending_results"]:
+                                    self.conversation_context["pending_results"].remove(query_id)
+                except Exception as e:
+                    logger.error(f"Error updating status context: {e}")
                 
-                demo_result = {
-                    "status": "success",
-                    "query_id": query_id,
-                    "query_status": status,
-                    "progress_percent": progress,
-                    "summary": f"Query {query_id} is currently {status.lower()}"
-                }
-                
-                return self._format_llm_response(explanation, json.dumps(demo_result), "status")
+                return self._format_llm_response(explanation, result, "status")
                 
             elif action == "habu_get_results":
                 query_id = tool_params.get("query_id")
                 if query_id == "last" or not query_id:
                     query_id = self.last_query_id
                 if not query_id:
-                    return "I don't have a query ID to get results for. Please provide a query ID or run a query first."
+                    return "I don't have a query ID to get results for. Please provide a query ID or submit a query first."
                 
-                # Simulate realistic results based on query type/template
-                import random
+                # Execute the actual results retrieval
+                result = await habu_get_results(query_id)
                 
-                # Determine analysis type from context or generate realistic results
-                analysis_types = [
-                    {
-                        "type": "Sentiment Analysis",
-                        "summary": "Global sentiment analysis revealed 68% positive sentiment, 22% neutral, and 10% negative across analyzed events and language patterns. Key emotional drivers include customer satisfaction (+12%) and brand perception improvements (+8%).",
-                        "records": random.randint(15000, 45000)
-                    },
-                    {
-                        "type": "Location Pattern Analysis", 
-                        "summary": "Mobile location analysis identified 3 primary behavioral clusters with 89% pattern confidence. Peak activity zones correlate with commercial districts (45%) and transportation hubs (31%). Movement patterns show 15% efficiency optimization opportunities.",
-                        "records": random.randint(8000, 25000)
-                    },
-                    {
-                        "type": "Combined Intelligence",
-                        "summary": "Integrated location and behavioral analysis reveals comprehensive insights across multiple data dimensions. Cross-correlation analysis shows 76% accuracy in predictive modeling with actionable recommendations for strategic decision-making.",
-                        "records": random.randint(20000, 55000)
-                    }
-                ]
+                # Parse result to update context
+                try:
+                    result_data = json.loads(result)
+                    if result_data.get("status") == "success":
+                        # Query completed successfully - remove from pending
+                        if query_id in self.conversation_context["pending_results"]:
+                            self.conversation_context["pending_results"].remove(query_id)
+                        
+                        # Update query context with completion
+                        if query_id in self.active_queries:
+                            self.active_queries[query_id]["status"] = "COMPLETED"
+                            self.active_queries[query_id]["results_retrieved"] = True
+                            
+                except Exception as e:
+                    logger.error(f"Error updating results context: {e}")
                 
-                selected_analysis = random.choice(analysis_types)
+                return self._format_llm_response(explanation, result, "results")
                 
-                demo_result = {
-                    "status": "success",
-                    "query_id": query_id,
-                    "business_summary": selected_analysis["summary"],
-                    "record_count": selected_analysis["records"],
-                    "analysis_type": selected_analysis["type"],
-                    "summary": f"Analysis complete with {selected_analysis['records']:,} records processed"
-                }
+            elif action == "habu_list_exports":
+                status_filter = tool_params.get("status_filter")
+                result = await habu_list_exports(status_filter)
+                return self._format_llm_response(explanation, result, "exports")
                 
-                return self._format_llm_response(explanation, json.dumps(demo_result), "results")
+            elif action == "habu_download_export":
+                export_id = tool_params.get("export_id")
+                if not export_id:
+                    return "I need an export ID to download. Please check available exports first."
+                
+                result = await habu_download_export(export_id)
+                return self._format_llm_response(explanation, result, "download")
                 
             else:
                 # Conversation response
@@ -526,6 +576,81 @@ Response: {{"action": "habu_get_results", "tool_params": {{"query_id": "last"}},
                     response += f"• Review the detailed findings above\n"
                     response += f"• Run additional analyses with different templates\n" 
                     response += f"• Export results for presentation to stakeholders"
+                    
+                    return response
+                    
+            elif result_type == "exports":
+                if result_data.get("status") == "success":
+                    ready_exports = result_data.get("ready_exports", [])
+                    processing_exports = result_data.get("processing_exports", [])
+                    total_exports = result_data.get("total_exports", 0)
+                    
+                    response = f"{explanation}\n\n📁 **Your Analysis Exports**\n"
+                    
+                    if ready_exports:
+                        response += f"\n✅ **Ready for Download** ({len(ready_exports)} exports):\n"
+                        for export in ready_exports[:5]:  # Show max 5
+                            name = export.get("name", "Unknown")
+                            size_mb = export.get("file_size", 0) / (1024*1024)
+                            records = export.get("record_count", 0)
+                            created = export.get("created_at", "")[:10]  # Just date
+                            response += f"• **{name}**\n"
+                            response += f"  📊 {records:,} records | 💾 {size_mb:.1f} MB | 📅 {created}\n"
+                            response += f"  🆔 Export ID: `{export.get('id', 'unknown')}`\n\n"
+                        
+                        if len(ready_exports) > 5:
+                            response += f"... and {len(ready_exports) - 5} more exports available\n\n"
+                    
+                    if processing_exports:
+                        response += f"⏳ **Currently Processing** ({len(processing_exports)} exports):\n"
+                        for export in processing_exports[:3]:  # Show max 3
+                            name = export.get("name", "Unknown") 
+                            progress = export.get("progress_percent", 0)
+                            response += f"• **{name}** - {progress}% complete\n"
+                    
+                    if not ready_exports and not processing_exports:
+                        response += "\n📝 No exports available yet. Run some analytics queries to generate downloadable results!\n"
+                    
+                    response += f"\n💡 **Export Management**:\n"
+                    response += f"• Ask 'Download export [ID]' to get specific analysis results\n"
+                    response += f"• Each export contains full datasets with rich metadata\n"
+                    response += f"• Files are available in CSV format for easy analysis\n"
+                    
+                    if ready_exports:
+                        response += f"• Total ready data: {sum(e.get('file_size', 0) for e in ready_exports) / (1024*1024):.1f} MB"
+                    
+                    return response
+                    
+            elif result_type == "download":
+                if result_data.get("status") == "success":
+                    file_name = result_data.get("file_name", "export.csv")
+                    file_size = result_data.get("file_size", 0)
+                    records = result_data.get("record_count", 0)
+                    preview = result_data.get("preview", {})
+                    
+                    response = f"{explanation}\n\n📥 **Export Downloaded Successfully**\n"
+                    response += f"📄 **File**: {file_name}\n"
+                    response += f"📊 **Data**: {records:,} records ({file_size:,} bytes)\n"
+                    
+                    if preview:
+                        response += f"\n🔍 **Data Preview**:\n"
+                        columns = preview.get("columns", [])
+                        response += f"**Columns**: {', '.join(columns[:5])}"
+                        if len(columns) > 5:
+                            response += f" (and {len(columns) - 5} more)"
+                        response += f"\n**Total Columns**: {preview.get('total_columns', len(columns))}\n"
+                        
+                        sample_rows = preview.get("sample_rows", [])
+                        if sample_rows:
+                            response += f"\n**Sample Data**:\n"
+                            for i, row in enumerate(sample_rows[:3]):
+                                response += f"Row {i+1}: {dict(zip(columns[:3], row[:3]))}\n"
+                    
+                    response += f"\n💡 **Analysis Ready**: Your complete dataset is now available for:\n"
+                    response += f"• Business intelligence and reporting\n"
+                    response += f"• Advanced analytics and modeling\n"
+                    response += f"• Integration with your data pipeline\n"
+                    response += f"• Stakeholder presentations and insights"
                     
                     return response
             
