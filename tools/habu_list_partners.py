@@ -8,7 +8,6 @@ import os
 import logging
 from typing import List, Dict, Any
 from config.habu_config import habu_config
-from tools.mock_data import mock_data
 from utils.error_handling import (
     retry_async, 
     format_error_response, 
@@ -30,18 +29,6 @@ async def habu_list_partners() -> str:
         str: JSON string containing partner information
     """
     # Check if mock mode is enabled
-    use_mock = os.getenv("HABU_USE_MOCK_DATA", "false").lower() == "true"
-    
-    if use_mock:
-        logger.info("Using mock data for partners")
-        partners = mock_data.get_mock_partners()
-        return json.dumps({
-            "status": "success",
-            "count": len(partners),
-            "partners": partners,
-            "summary": f"Found {len(partners)} clean room partners across {len(mock_data.mock_cleanrooms)} cleanrooms (MOCK MODE)",
-            "mock_mode": True
-        }, indent=2)
     
     try:
         logger.info("Fetching partners from Habu API")

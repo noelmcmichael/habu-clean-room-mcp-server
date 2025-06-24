@@ -7,7 +7,6 @@ import json
 import os
 from typing import List, Dict, Any
 from config.habu_config import habu_config
-from tools.mock_data import mock_data
 
 async def habu_list_templates() -> str:
     """
@@ -17,17 +16,6 @@ async def habu_list_templates() -> str:
         str: JSON string containing template information
     """
     # Check if mock mode is enabled
-    use_mock = os.getenv("HABU_USE_MOCK_DATA", "false").lower() == "true"
-    
-    if use_mock:
-        templates = mock_data.get_mock_templates()
-        return json.dumps({
-            "status": "success",
-            "count": len(templates),
-            "templates": templates,
-            "summary": f"Found {len(templates)} query templates available for analysis (MOCK MODE)",
-            "mock_mode": True
-        }, indent=2)
     
     try:
         headers = await habu_config.get_auth_headers()

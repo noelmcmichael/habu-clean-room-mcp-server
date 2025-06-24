@@ -43,8 +43,8 @@ const Architecture: React.FC = () => {
       name: 'Enhanced Chat Agent',
       type: 'api',
       status: 'healthy',
-      description: 'OpenAI GPT-4 powered conversational agent with business intelligence and tool orchestration.',
-      technologies: ['OpenAI GPT-4', 'Python', 'AsyncIO', 'Circuit Breaker'],
+      description: 'OpenAI GPT-4 powered conversational agent with business intelligence, enhanced template processing, and real API integration.',
+      technologies: ['OpenAI GPT-4', 'Python', 'AsyncIO', 'Circuit Breaker', 'Context Awareness', 'JSON Actions'],
       connections: ['flask-api', 'mcp-tools', 'openai-api'],
     },
     {
@@ -59,11 +59,11 @@ const Architecture: React.FC = () => {
     },
     {
       id: 'mcp-tools',
-      name: 'MCP Tools (8 Tools)',
+      name: 'MCP Tools (8 Enhanced Tools)',
       type: 'mcp',
       status: 'healthy',
-      description: 'Eight specialized tools for Habu Clean Room operations: partners, templates, queries, status, results, chat agents.',
-      technologies: ['Python', 'Async/Await', 'Mock Data', 'Error Handling'],
+      description: 'Eight specialized tools for LiveRamp Clean Room operations: partners, enhanced templates with AI metadata, queries, status, results, chat agents.',
+      technologies: ['Python', 'Async/Await', 'Real API Integration', 'AI Enhancement', 'Business Intelligence'],
       connections: ['mcp-server', 'habu-api'],
     },
     {
@@ -88,19 +88,13 @@ const Architecture: React.FC = () => {
     },
     {
       id: 'habu-api',
-      name: 'Habu Clean Room API',
+      name: 'LiveRamp Clean Room API',
       type: 'external',
-      status: 'issue',
-      description: 'Official Habu API for clean room data collaboration. Authentication working, but cleanroom visibility issue.',
-      technologies: ['REST API', 'OAuth2', 'JWT', 'HTTPS'],
+      status: 'healthy',
+      description: 'Official LiveRamp API for clean room data collaboration. Real API integration with intelligent enhancement of sparse data.',
+      technologies: ['REST API', 'OAuth2', 'JWT', 'HTTPS', 'AI Enhancement'],
       connections: ['mcp-tools'],
       url: 'https://app.habu.com',
-      issues: [
-        'Cleanrooms endpoint returns empty array []',
-        'Authentication successful (25 permissions)',
-        'Other endpoints working (/users, /data-connections)',
-        'Needs engineering consultation for cleanroom visibility'
-      ]
     },
     {
       id: 'openai-api',
@@ -183,14 +177,14 @@ const Architecture: React.FC = () => {
     {
       step: 5,
       component: 'Tool Execution',
-      description: 'Agent executes MCP tools (partners, templates, queries, etc.)',
-      tech: 'Python Tool Functions + Mock Data'
+      description: 'Agent executes MCP tools (partners, enhanced templates, queries, etc.) with real API integration',
+      tech: 'Python Tool Functions + Real API + AI Enhancement'
     },
     {
       step: 6,
       component: 'Business Intelligence',
-      description: 'GPT-4 analyzes results, adds business context and recommendations',
-      tech: 'GPT-4 Response Generation'
+      description: 'GPT-4 analyzes enhanced results with rich metadata, adds business context and actionable recommendations',
+      tech: 'GPT-4 Response Generation + Enhanced Template Processing'
     },
     {
       step: 7,
@@ -398,14 +392,14 @@ const Architecture: React.FC = () => {
                                                             │
                                                             ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────────┐
-│   PostgreSQL DB │────│   MCP Server     │────│     MCP Tools       │
-│   (Async ORM)   │    │   (FastMCP 2.0) │    │   (8 Habu Tools)   │
+│   PostgreSQL DB │────│   MCP Server     │────│ Enhanced MCP Tools  │
+│   (Async ORM)   │    │   (FastMCP 2.0) │    │ (8 AI-Enhanced)    │
 └─────────────────┘    └──────────────────┘    └─────────────────────┘
                                                             │
                                                             ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────────┐
-│   Admin App     │    │   Render.com     │    │  Habu API (Issues) │
-│   (Flask)       │    │   (Platform)     │    │   (OAuth2/JWT)     │
+│   Admin App     │    │   Render.com     │    │  LiveRamp Clean API │
+│   (Flask)       │    │   (Platform)     │    │ (Real API + AI)    │
 └─────────────────┘    └──────────────────┘    └─────────────────────┘
                   `}</pre>
                 </div>

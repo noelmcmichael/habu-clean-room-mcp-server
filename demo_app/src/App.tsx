@@ -12,11 +12,11 @@ const Navigation: React.FC = () => {
   const location = useLocation();
   
   const navItems = [
-    { path: '/', icon: '🤖', label: 'AI Assistant' },
-    { path: '/cleanrooms', icon: '🏢', label: 'Cleanrooms' },
-    { path: '/health', icon: '📊', label: 'System Health' },
-    { path: '/api-explorer', icon: '🔧', label: 'API Explorer' },
-    { path: '/architecture', icon: '🏗️', label: 'Architecture' },
+    { path: '/', icon: '💬', label: 'AI Assistant' },
+    { path: '/cleanrooms', icon: '🏛️', label: 'Cleanrooms' },
+    { path: '/health', icon: '📈', label: 'System Health' },
+    { path: '/api-explorer', icon: '⚙️', label: 'API Explorer' },
+    { path: '/architecture', icon: '📐', label: 'Architecture' },
   ];
 
   return (
@@ -24,8 +24,8 @@ const Navigation: React.FC = () => {
       <div className="sidebar-header">
         <Link to="/" className="logo-link">
           <div className="logo">
-            <span className="logo-icon">🧹</span>
-            <span className="logo-text">Habu AI</span>
+            <span className="logo-icon">🏠</span>
+            <span className="logo-text">ICDC</span>
           </div>
         </Link>
       </div>

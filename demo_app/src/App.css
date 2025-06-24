@@ -20,8 +20,8 @@ body {
 /* Sidebar Styles */
 .sidebar {
   width: 250px;
-  background: #232738;
-  border-right: 1px solid #2d3748;
+  background: #2C3E50;
+  border-right: 1px solid #34495E;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -34,8 +34,8 @@ body {
 }
 
 .sidebar-header {
-  padding: 20px;
-  border-bottom: 1px solid #2d3748;
+  padding: 24px 20px;
+  border-bottom: 1px solid #34495E;
 }
 
 .logo-link {
@@ -50,17 +50,19 @@ body {
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .logo-icon {
-  font-size: 24px;
+  font-size: 20px;
+  color: #ffffff;
 }
 
 .logo-text {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
   color: #ffffff;
+  letter-spacing: 0.5px;
 }
 
 .sidebar-nav {
@@ -70,43 +72,45 @@ body {
 
 .nav-item {
   width: 100%;
-  padding: 12px 20px;
+  padding: 16px 20px;
   border: none;
   background: transparent;
-  color: #a0aec0;
+  color: #ffffff;
   text-align: left;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 14px;
+  font-weight: 400;
 }
 
 .nav-item:hover {
-  background: #2d3748;
+  background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
 }
 
 .nav-item.active {
-  background: #4c51bf;
+  background: rgba(255, 255, 255, 0.15);
   color: #ffffff;
-  border-right: 3px solid #667eea;
+  border-right: 3px solid #3498DB;
 }
 
 .nav-icon {
   font-size: 16px;
   width: 20px;
   text-align: center;
+  opacity: 0.9;
 }
 
 .nav-label {
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .sidebar-footer {
   padding: 20px;
-  border-top: 1px solid #2d3748;
+  border-top: 1px solid #34495E;
   margin-top: auto;
 }
 
@@ -121,7 +125,7 @@ body {
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #a0aec0;
+  color: #BDC3C7;
 }
 
 .status-dot {

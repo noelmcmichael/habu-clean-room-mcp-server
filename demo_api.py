@@ -30,8 +30,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app, origins=production_config.CORS_ORIGINS)
 
-# Enable real API mode for production
-os.environ["HABU_USE_MOCK_DATA"] = "false"
+# Real API mode only
 
 @app.route('/', methods=['GET'])
 def root():
@@ -257,8 +256,8 @@ def health_check():
         # Check OpenAI configuration
         openai_available = enhanced_habu_agent.client is not None
         
-        # Check real API mode
-        real_api_mode = os.environ.get("HABU_USE_MOCK_DATA", "false") == "false"
+        # Real API mode only
+        real_api_mode = True
         
         # Basic API connectivity test
         api_connected = True  # If we can respond, API is connected
@@ -313,12 +312,12 @@ if __name__ == "__main__":
     
     print("🚀 Starting Habu Enhanced Chat API Server (Phase C)")
     print("🤖 OpenAI GPT-4 Enhanced Chat Agent Ready")
-    print("🎯 Mock Mode: Enabled for reliable demo experience")
+    print("🎯 Real API Mode: Production-ready Habu integration")
     print(f"📱 React Frontend can connect to http://{host}:{port}")
     print("=" * 60)
     
     logger.info(f"Starting Habu Demo API on {host}:{port}")
-    logger.info(f"Mock mode: {os.environ.get('HABU_USE_MOCK_DATA', 'false')}")
+    logger.info("Real API mode: Production Habu integration active")
     
     app.run(
         host=host,

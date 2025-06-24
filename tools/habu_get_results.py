@@ -7,7 +7,6 @@ import json
 import os
 from typing import Dict, Any, Optional
 from config.habu_config import habu_config
-from tools.mock_data import mock_data
 
 async def habu_get_results(query_id: str, format_type: Optional[str] = "json") -> str:
     """
@@ -21,11 +20,6 @@ async def habu_get_results(query_id: str, format_type: Optional[str] = "json") -
         str: JSON string containing query results and analysis
     """
     # Check if mock mode is enabled
-    use_mock = os.getenv("HABU_USE_MOCK_DATA", "false").lower() == "true"
-    
-    if use_mock:
-        result = mock_data.get_mock_query_results(query_id)
-        return json.dumps(result, indent=2)
     
     try:
         headers = await habu_config.get_auth_headers()

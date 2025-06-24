@@ -261,6 +261,9 @@ For tool actions, respond with JSON formatted exactly as shown:
 Action format: {"action": "tool_name", "tool_params": {"param": "value"}, "explanation": "Business explanation"}
 
 **INTERACTIVE QUERY EXAMPLES:**
+User: "What templates are available?" or "Show me templates" or "What can I run?" or "Available analytics?" or "What analytics can I do?" or "Show analytics options" -> Use habu_list_templates
+Response: {"action": "habu_list_templates", "tool_params": {}, "explanation": "I'll show you all available analytics templates with enhanced details including categories, parameters, and status."}
+
 User: "Run a sentiment analysis" -> Use habu_submit_query with template f7b6c1b5-c625-40e5-9209-b4a1ca7d3c7a
 User: "Analyze location patterns" -> Use habu_submit_query with template 10cefd5c-b2fe-451a-a4cf-12546dbb6b28  
 User: "Show me exports" -> Use habu_list_exports
@@ -282,11 +285,19 @@ Response: {"action": "habu_get_results", "tool_params": {"query_id": "last"}, "e
 - For status questions → Check query progress
 - For results questions → Retrieve analysis results
 
+**QUERY PATTERN RECOGNITION:**
+Always use JSON actions for these query patterns:
+- Template queries: "what can I run", "available analytics", "show templates", "what templates", "analytics options", "what analytics can I do"
+- Status queries: "check status", "how is my query", "query progress", "analysis status"
+- Results queries: "show results", "get results", "analysis results", "what were the findings"
+- Execution queries: "run analysis", "execute query", "start analytics", "analyze data"
+
 **IMPORTANT EXECUTION RULES:**
-- Only suggest READY templates (not MISSING_DATASETS)
+- Only suggest READY templates (not MISSING_DATASETS) 
 - Always include descriptive query names
 - Provide business context for each analysis type
 - Guide users through the complete workflow from execution to results
+- Use JSON actions for ALL tool operations to ensure enhanced responses
 """
 
         try:
@@ -320,8 +331,10 @@ Response: {"action": "habu_get_results", "tool_params": {"query_id": "last"}, "e
                 clean_response = clean_response.strip()
                 
                 action_plan = json.loads(clean_response)
-            except json.JSONDecodeError:
+                logger.info(f"Parsed JSON action: {action_plan.get('action')}")
+            except json.JSONDecodeError as e:
                 # If not JSON, treat as conversation response
+                logger.info(f"Non-JSON response (treating as conversation): {gpt_response[:100]}...")
                 return gpt_response
             
             # Execute the planned action
@@ -334,6 +347,10 @@ Response: {"action": "habu_get_results", "tool_params": {"query_id": "last"}, "e
                 return self._format_llm_response(explanation, result, "partners")
                 
             elif action == "habu_list_templates":
+                result = await habu_enhanced_templates()
+                return self._format_llm_response(explanation, result, "enhanced_templates")
+                
+            elif action == "habu_enhanced_templates":
                 result = await habu_enhanced_templates()
                 return self._format_llm_response(explanation, result, "enhanced_templates")
                 
@@ -518,16 +535,28 @@ Response: {"action": "habu_get_results", "tool_params": {"query_id": "last"}, "e
                             else:
                                 ready_templates.append(f"• **{name}**\n   Category: {category}{enhanced_suffix} | Status: {status}")
                         
-                        # Add enhanced metadata summary
+                        # Enhanced metadata summary with business intelligence
                         total_count = result_data.get("count", len(templates))
                         categories = result_data.get("categories", [])
                         question_types = result_data.get("question_types", [])
+                        ready_count = result_data.get("ready_templates", len(ready_templates))
+                        missing_count = result_data.get("missing_datasets_templates", len(missing_data_templates))
+                        enhancement_features = result_data.get("enhancement_features", {})
                         
-                        response = f"{explanation}\n\n🔥 **Your Analytics Templates** ({total_count} total)"
+                        response = f"{explanation}\n\n🔥 **Your Enhanced Analytics Templates** ({total_count} total)"
                         if categories:
                             response += f"\n📊 **Categories**: {', '.join(categories)}"
                         if question_types:
                             response += f"\n🎯 **Types**: {', '.join(question_types)}"
+                        
+                        # Enhanced status summary
+                        if ready_count is not None and missing_count is not None:
+                            response += f"\n⚡ **Status**: {ready_count} ready, {missing_count} need setup"
+                        
+                        # Enhancement features indicator
+                        if enhancement_features.get("business_intelligence"):
+                            response += f"\n✨ **Enhanced Features**: Parameter metadata, data types, status tracking"
+                            
                         response += "\n\n"
                         
                         if ready_templates:

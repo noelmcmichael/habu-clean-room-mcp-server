@@ -8,7 +8,6 @@ import json
 import os
 from typing import Dict, Any, List, Optional
 from config.habu_config import habu_config
-from tools.mock_data import mock_data
 
 async def habu_list_exports(status_filter: Optional[str] = None) -> str:
     """
@@ -22,11 +21,6 @@ async def habu_list_exports(status_filter: Optional[str] = None) -> str:
         str: JSON string containing available exports and their metadata
     """
     # Check if mock mode is enabled
-    use_mock = os.getenv("HABU_USE_MOCK_DATA", "false").lower() == "true"
-    
-    if use_mock:
-        result = mock_data.list_mock_exports(status_filter)
-        return json.dumps(result, indent=2)
     
     try:
         headers = await habu_config.get_auth_headers()
@@ -145,11 +139,6 @@ async def habu_download_export(export_id: str, save_path: Optional[str] = None) 
         str: JSON string containing download result and file information
     """
     # Check if mock mode is enabled
-    use_mock = os.getenv("HABU_USE_MOCK_DATA", "false").lower() == "true"
-    
-    if use_mock:
-        result = mock_data.download_mock_export(export_id)
-        return json.dumps(result, indent=2)
     
     try:
         headers = await habu_config.get_auth_headers()

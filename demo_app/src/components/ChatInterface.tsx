@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import DemoStatusIndicators from './DemoStatusIndicators';
 import DemoErrorHandler from './DemoErrorHandler';
 
 interface ChatMessage {
@@ -20,7 +19,7 @@ const ChatInterface: React.FC = () => {
     {
       id: '1',
       type: 'assistant',
-      content: '🚀 **Welcome to Habu Clean Room Demo** - Your AI-Powered Data Collaboration Assistant!\n\nI\'m running in **Full Production Mode** with:\n• 🤖 **GPT-4 AI Intelligence** for natural conversation\n• 🔧 **Interactive Query Execution** on real cleanroom data\n• 📊 **Live Analytics** from your "Data Marketplace Demo" cleanroom\n• 🎯 **3 Ready Templates** for immediate execution\n\nTry: "Run a sentiment analysis" or "What analytics can I run on my cleanroom?"',
+      content: '🚀 **Welcome to LiveRamp Clean Room Demo** - Your AI-Powered Data Collaboration Assistant!\n\nI\'m running in **Full Production Mode** with:\n• 🤖 **GPT-4 AI Intelligence** for natural conversation\n• 🔧 **Interactive Query Execution** on real cleanroom data\n• 📊 **Enhanced Analytics** with AI-powered metadata\n• 🎯 **Ready Templates** with business intelligence\n\nTry: "Run a sentiment analysis" or "What analytics can I run on my cleanroom?"',
       timestamp: new Date(),
       metadata: {
         isAiPowered: true,
@@ -31,7 +30,6 @@ const ChatInterface: React.FC = () => {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showStatusPanel, setShowStatusPanel] = useState(false);
   const [retryAttempts, setRetryAttempts] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -172,14 +170,6 @@ const ChatInterface: React.FC = () => {
   return (
     <DemoErrorHandler onError={handleError} onRetry={handleRetry}>
       <div className="chat-interface">
-        {/* Clean demo controls */}
-        <div className="demo-controls">
-          <DemoStatusIndicators 
-            isCollapsed={!showStatusPanel}
-            onToggle={() => setShowStatusPanel(!showStatusPanel)}
-          />
-        </div>
-
         <div className="chat-messages">
           {messages.map((message) => (
             <div key={message.id} className={`message ${message.type}`}>
