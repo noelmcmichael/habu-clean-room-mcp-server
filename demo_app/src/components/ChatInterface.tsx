@@ -49,7 +49,7 @@ const ChatInterface: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: inputValue }),
+        body: JSON.stringify({ user_input: inputValue }),
       });
 
       if (!response.ok) {
