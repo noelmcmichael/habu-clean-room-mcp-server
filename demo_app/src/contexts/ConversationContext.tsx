@@ -35,22 +35,53 @@ interface ConversationContextState {
   messageHistory: Array<{ type: 'user' | 'assistant'; content: string; timestamp: Date }>;
 }
 
-// Initial state
-const initialState: ConversationContextState = {
-  conversationState: {
-    hasViewedTemplates: false,
-    hasSubmittedQuery: false,
-    hasActiveQuery: false,
-    hasCompletedQuery: false,
-    hasViewedResults: false,
-    availableTemplates: 0,
-    readyTemplates: 0,
+// Load state from localStorage with fallback
+const loadPersistedState = (): ConversationContextState => {
+  try {
+    const persistedState = localStorage.getItem('habu-conversation-state');
+    if (persistedState) {
+      const parsed = JSON.parse(persistedState);
+      console.log('📱 Loaded conversation state from storage');
+      return parsed;
+    }
+  } catch (error) {
+    console.warn('⚠️ Failed to load persisted state:', error);
+  }
+  
+  // Return initial state if no persisted state or error
+  return {
+    conversationState: {
+      hasViewedTemplates: false,
+      hasSubmittedQuery: false,
+      hasActiveQuery: false,
+      hasCompletedQuery: false,
+      hasViewedResults: false,
+      availableTemplates: 0,
+      readyTemplates: 0,
+      currentPage: 'home',
+      conversationLength: 0,
+      recentTemplateCategories: []
+    },
     currentPage: 'home',
-    conversationLength: 0,
-    recentTemplateCategories: []
-  },
-  currentPage: 'home',
-  messageHistory: []
+    messageHistory: []
+  };
+};
+
+// Initial state with persistence
+const initialState: ConversationContextState = loadPersistedState();
+
+// Persist state to localStorage
+const persistState = (state: ConversationContextState) => {
+  try {
+    // Only persist essential data, not the full message history
+    const stateToPersist = {
+      ...state,
+      messageHistory: state.messageHistory.slice(-10) // Keep only last 10 messages
+    };
+    localStorage.setItem('habu-conversation-state', JSON.stringify(stateToPersist));
+  } catch (error) {
+    console.warn('⚠️ Failed to persist state:', error);
+  }
 };
 
 // Reducer for state management
@@ -161,6 +192,15 @@ const ConversationContext = createContext<ConversationContextType | undefined>(u
 // Provider component
 export const ConversationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(conversationReducer, initialState);
+  
+  // Persist state on changes (debounced)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      persistState(state);
+    }, 1000); // Debounce for 1 second
+    
+    return () => clearTimeout(timeoutId);
+  }, [state]);
   
   // Actions
   const updateConversationState = useCallback((updates: Partial<ConversationState>) => {

@@ -8,6 +8,7 @@ import asyncio
 import logging
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_compress import Compress
 from agents.enhanced_habu_chat_agent import enhanced_habu_agent
 from config.production import production_config
 
@@ -28,6 +29,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+
+# Enable compression for all responses (70-80% size reduction)
+Compress(app)
+
 CORS(app, origins=production_config.CORS_ORIGINS)
 
 # Real API mode only
