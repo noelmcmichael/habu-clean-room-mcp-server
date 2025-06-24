@@ -51,7 +51,7 @@ def root():
 @app.route('/health', methods=['GET'])
 def health_check():
     """Simple health check endpoint"""
-    return jsonify({'status': 'healthy', 'service': 'habu-chat-api'})
+    return jsonify({'status': 'healthy', 'service': 'habu-chat-api', 'timestamp': 'working'})
 
 @app.route('/api/enhanced-chat', methods=['POST'])
 def enhanced_chat():
@@ -282,6 +282,12 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 5001))
     host = "0.0.0.0"
     
+    print("🚀 Starting Habu Enhanced Chat API Server (Phase C)")
+    print("🤖 OpenAI GPT-4 Enhanced Chat Agent Ready")
+    print("🎯 Mock Mode: Enabled for reliable demo experience")
+    print(f"📱 React Frontend can connect to http://{host}:{port}")
+    print("=" * 60)
+    
     logger.info(f"Starting Habu Demo API on {host}:{port}")
     logger.info(f"Mock mode: {os.environ.get('HABU_USE_MOCK_DATA', 'false')}")
     
@@ -290,12 +296,3 @@ if __name__ == "__main__":
         port=port,
         debug=production_config.DEBUG
     )
-
-if __name__ == '__main__':
-    print("🚀 Starting Habu Clean Room Demo API Server")
-    print("🤖 OpenAI Enhanced Chat Agent Ready")
-    print("🎯 Mock Mode: Enabled")
-    print("📱 React Frontend can connect to http://localhost:5001")
-    print("=" * 60)
-    
-    app.run(host='0.0.0.0', port=5001, debug=True)
