@@ -48,9 +48,34 @@ interface PartnersData {
   mock_mode: boolean;
 }
 
+interface BasicTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  cleanroom_id: string;
+  status: string;
+  displayId: string;
+  complexity_level: string;
+  estimated_runtime: string;
+  dataTypes: Record<string, string>;
+  parameter_count: number;
+  ready_to_execute: boolean;
+}
+
+interface BasicTemplatesData {
+  templates: BasicTemplate[];
+  count: number;
+  active_templates: number;
+  categories: string[];
+  status: string;
+  total_parameters: number;
+}
+
 const Cleanrooms: React.FC = () => {
   const { updateTemplateContext } = useConversation();
   const [enhancedTemplates, setEnhancedTemplates] = useState<EnhancedCleanroomData | null>(null);
+  const [basicTemplates, setBasicTemplates] = useState<BasicTemplatesData | null>(null);
   const [partners, setPartners] = useState<PartnersData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,25 +87,28 @@ const Cleanrooms: React.FC = () => {
       try {
         setLoading(true);
         
-        // Fetch enhanced templates and partners
-        const [enhancedTemplatesResponse, partnersResponse] = await Promise.all([
+        // Fetch enhanced templates, basic templates, and partners
+        const [enhancedTemplatesResponse, basicTemplatesResponse, partnersResponse] = await Promise.all([
           fetch(`${API_BASE_URL}/api/mcp/habu_enhanced_templates`),
+          fetch(`${API_BASE_URL}/api/mcp/habu_list_templates`),
           fetch(`${API_BASE_URL}/api/mcp/habu_list_partners`)
         ]);
 
-        if (!enhancedTemplatesResponse.ok || !partnersResponse.ok) {
+        if (!enhancedTemplatesResponse.ok || !basicTemplatesResponse.ok || !partnersResponse.ok) {
           throw new Error('Failed to fetch cleanroom data');
         }
 
         const enhancedTemplatesData = await enhancedTemplatesResponse.json();
+        const basicTemplatesData = await basicTemplatesResponse.json();
         const partnersData = await partnersResponse.json();
 
         console.log('🔍 Debug - enhancedTemplatesData:', enhancedTemplatesData);
+        console.log('🔍 Debug - basicTemplatesData:', basicTemplatesData);
         console.log('🔍 Debug - partnersData:', partnersData);
 
         // Handle API error responses properly
         if (enhancedTemplatesData.status === 'error') {
-          console.warn('⚠️ Templates API returned error:', enhancedTemplatesData.error);
+          console.warn('⚠️ Enhanced Templates API returned error:', enhancedTemplatesData.error);
           setEnhancedTemplates({ 
             templates: [], 
             total_templates: 0, 
@@ -97,6 +125,13 @@ const Cleanrooms: React.FC = () => {
         } else {
           setEnhancedTemplates(enhancedTemplatesData);
         }
+
+        if (basicTemplatesData.status === 'error') {
+          console.warn('⚠️ Basic Templates API returned error:', basicTemplatesData.error);
+          setBasicTemplates({ templates: [], count: 0, active_templates: 0, categories: [], status: 'error', total_parameters: 0 });
+        } else {
+          setBasicTemplates(basicTemplatesData);
+        }
         
         if (partnersData.status === 'error') {
           console.warn('⚠️ Partners API returned error:', partnersData.error);
@@ -105,15 +140,17 @@ const Cleanrooms: React.FC = () => {
           setPartners(partnersData);
         }
         
-        // Update conversation context with template data
-        if (enhancedTemplatesData && enhancedTemplatesData.templates) {
+        // Update conversation context with template data (use basic templates since they have data)
+        const templateSource = basicTemplatesData?.templates && basicTemplatesData.templates.length > 0 ? basicTemplatesData : enhancedTemplatesData;
+        
+        if (templateSource && templateSource.templates) {
           const categories = new Set<string>();
           let hasLocationData = false;
           let hasSentimentAnalysis = false;
           let hasPatternOfLife = false;
           let hasCombinedAnalysis = false;
           
-          enhancedTemplatesData.templates.forEach((template: EnhancedTemplate) => {
+          templateSource.templates.forEach((template: any) => {
             categories.add(template.category);
             
             // Detect specific template types
@@ -135,9 +172,9 @@ const Cleanrooms: React.FC = () => {
           });
           
           updateTemplateContext({
-            totalTemplates: enhancedTemplatesData?.total_templates || enhancedTemplatesData?.templates?.length || 0,
-            readyTemplates: enhancedTemplatesData.ready_templates || 0,
-            missingDatasetTemplates: enhancedTemplatesData.missing_datasets_templates || 0,
+            totalTemplates: basicTemplatesData?.count || templateSource?.templates?.length || 0,
+            readyTemplates: basicTemplatesData?.active_templates || 0,
+            missingDatasetTemplates: 0,
             categories: Array.from(categories),
             hasLocationData,
             hasSentimentAnalysis,
@@ -237,17 +274,17 @@ const Cleanrooms: React.FC = () => {
             </div>
             <div className="overview-item">
               <span className="label">Total Templates:</span>
-              <span className="value">{enhancedTemplates?.total_templates || 0}</span>
+              <span className="value">{basicTemplates?.count || 0}</span>
             </div>
             <div className="overview-item">
-              <span className="label">Ready Templates:</span>
+              <span className="label">Active Templates:</span>
               <span className="value" style={{ color: getStatusColor('ready') }}>
-                {enhancedTemplates?.ready_templates || 0}
+                {basicTemplates?.active_templates || 0}
               </span>
             </div>
             <div className="overview-item">
               <span className="label">Categories:</span>
-              <span className="value">{enhancedTemplates?.categories?.length || 0}</span>
+              <span className="value">{basicTemplates?.categories?.length || 0}</span>
             </div>
           </div>
         </div>
@@ -280,12 +317,83 @@ const Cleanrooms: React.FC = () => {
 
       {/* Analytics Templates */}
       <div className="section">
-        <h2>📋 Enhanced Analytics Templates</h2>
+        <h2>📋 Analytics Templates</h2>
         <p className="section-description">
-          Ready-to-use analytics templates with AI-powered metadata and business intelligence
+          Ready-to-use analytics templates with detailed metadata and business intelligence
         </p>
         
+        {/* Basic Templates (Working) */}
+        {basicTemplates && basicTemplates.templates && basicTemplates.templates.length > 0 ? (
+          <div className="templates-section">
+            <h3 className="templates-subsection-title">🚀 Available Templates ({basicTemplates.count})</h3>
+            <div className="templates-grid">
+              {basicTemplates.templates.map((template) => (
+                <div key={template.id} className="template-card modern">
+                  <div className="template-header">
+                    <div className="template-title-row">
+                      <h4>{template.name}</h4>
+                      <span className={`status-badge ${template.status.toLowerCase()}`}>
+                        {template.status}
+                      </span>
+                    </div>
+                    <div className="template-metadata">
+                      <span className="display-id">{template.displayId}</span>
+                      <span className="complexity">{template.complexity_level} Complexity</span>
+                    </div>
+                  </div>
+                  
+                  <div className="template-body">
+                    <p className="template-description">{template.description}</p>
+                    
+                    <div className="template-details">
+                      <div className="detail-row">
+                        <span className="detail-label">Category:</span>
+                        <span className="category-tag">{template.category}</span>
+                      </div>
+                      
+                      <div className="detail-row">
+                        <span className="detail-label">Runtime:</span>
+                        <span className="runtime">{template.estimated_runtime}</span>
+                      </div>
+                      
+                      <div className="detail-row">
+                        <span className="detail-label">Data Types:</span>
+                        <div className="data-types">
+                          {Object.keys(template.dataTypes).slice(0, 3).map((type) => (
+                            <span key={type} className="data-type-tag">{type}</span>
+                          ))}
+                          {Object.keys(template.dataTypes).length > 3 && (
+                            <span className="more-types">+{Object.keys(template.dataTypes).length - 3} more</span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="detail-row">
+                        <span className="detail-label">Parameters:</span>
+                        <span className="parameter-count">{template.parameter_count} parameters</span>
+                      </div>
+                    </div>
+                    
+                    <div className="template-footer">
+                      <div className="execution-status">
+                        {template.ready_to_execute ? (
+                          <span className="ready-indicator">✅ Ready to Execute</span>
+                        ) : (
+                          <span className="not-ready-indicator">⚠️ Setup Required</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+        
+        {/* Enhanced Templates (if working) */}
         {enhancedTemplates && enhancedTemplates.templates && enhancedTemplates.templates.length > 0 ? (
+          <div className="templates-section">
+            <h3 className="templates-subsection-title">✨ Enhanced Templates</h3>
           <div className="templates-grid">
             {enhancedTemplates.templates?.map((template) => (
               <div key={template.id} className="enhanced-template-card">
@@ -376,7 +484,13 @@ const Cleanrooms: React.FC = () => {
               </div>
             ))}
           </div>
-        ) : (
+            </div>
+          </div>
+        ) : null}
+        
+        {/* Empty State */}
+        {(!basicTemplates || basicTemplates.templates.length === 0) && 
+         (!enhancedTemplates || enhancedTemplates.templates.length === 0) && (
           <div className="empty-state">
             <p>No analytics templates available</p>
           </div>
