@@ -266,32 +266,93 @@ const SystemHealth: React.FC = () => {
 
           {/* MCP Tools Status */}
           <div className="mcp-tools-status">
-            <h3>🤖 Available MCP Tools</h3>
+            <h3>🤖 Available MCP Tools (9 total)</h3>
             <div className="tools-grid">
-              <div className="tool-item">
-                <span className="tool-name">habu_list_partners</span>
-                <span className="tool-status">✅ Ready</span>
-                <span className="tool-description">List data partnership partners</span>
+              <div className="tool-category">
+                <h4>🔧 Data Management</h4>
+                <div className="tool-item">
+                  <span className="tool-name">habu_list_partners</span>
+                  <span className="tool-status">✅ Ready</span>
+                  <span className="tool-description">List data partnership partners</span>
+                </div>
               </div>
-              <div className="tool-item">
-                <span className="tool-name">habu_list_templates</span>
-                <span className="tool-status">✅ Ready</span>
-                <span className="tool-description">Get available analytics templates</span>
+              
+              <div className="tool-category">
+                <h4>📋 Template Management</h4>
+                <div className="tool-item">
+                  <span className="tool-name">habu_list_templates</span>
+                  <span className="tool-status">✅ Ready</span>
+                  <span className="tool-description">Get available analytics templates (basic)</span>
+                </div>
+                <div className="tool-item enhanced">
+                  <span className="tool-name">habu_enhanced_templates</span>
+                  <span className="tool-status">🆕 Enhanced</span>
+                  <span className="tool-description">Rich template metadata with categories, parameters, data types</span>
+                </div>
               </div>
-              <div className="tool-item">
-                <span className="tool-name">habu_submit_query</span>
-                <span className="tool-status">✅ Ready</span>
-                <span className="tool-description">Submit analytics queries</span>
+              
+              <div className="tool-category">
+                <h4>⚡ Query Management</h4>
+                <div className="tool-item">
+                  <span className="tool-name">habu_submit_query</span>
+                  <span className="tool-status">✅ Ready</span>
+                  <span className="tool-description">Submit analytics queries</span>
+                </div>
+                <div className="tool-item">
+                  <span className="tool-name">habu_check_status</span>
+                  <span className="tool-status">✅ Ready</span>
+                  <span className="tool-description">Monitor query progress</span>
+                </div>
+                <div className="tool-item">
+                  <span className="tool-name">habu_get_results</span>
+                  <span className="tool-status">✅ Ready</span>
+                  <span className="tool-description">Retrieve query results</span>
+                </div>
               </div>
-              <div className="tool-item">
-                <span className="tool-name">habu_check_status</span>
-                <span className="tool-status">✅ Ready</span>
-                <span className="tool-description">Monitor query progress</span>
+              
+              <div className="tool-category">
+                <h4>📊 Export Management</h4>
+                <div className="tool-item">
+                  <span className="tool-name">habu_list_exports</span>
+                  <span className="tool-status">✅ Ready</span>
+                  <span className="tool-description">List available exports</span>
+                </div>
+                <div className="tool-item">
+                  <span className="tool-name">habu_download_export</span>
+                  <span className="tool-status">✅ Ready</span>
+                  <span className="tool-description">Download export files</span>
+                </div>
               </div>
-              <div className="tool-item">
-                <span className="tool-name">habu_get_results</span>
-                <span className="tool-status">✅ Ready</span>
-                <span className="tool-description">Retrieve query results</span>
+              
+              <div className="tool-category">
+                <h4>🤖 AI Interface</h4>
+                <div className="tool-item enhanced">
+                  <span className="tool-name">habu_enhanced_chat</span>
+                  <span className="tool-status">🧠 AI-Powered</span>
+                  <span className="tool-description">GPT-4 conversational interface with context awareness</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Phase D Enhancements */}
+          <div className="phase-d-status">
+            <h3>🚀 Phase D Enhancements</h3>
+            <div className="enhancement-grid">
+              <div className="enhancement-item completed">
+                <span className="enhancement-name">Enhanced Template Management</span>
+                <span className="enhancement-status">✅ Active</span>
+                <span className="enhancement-description">50% richer template metadata with categories, parameters, data types</span>
+              </div>
+              <div className="enhancement-item ready">
+                <span className="enhancement-name">User Management Discovery</span>
+                <span className="enhancement-status">🔍 Discovered</span>
+                <span className="enhancement-description">User roles and permissions endpoint available for integration</span>
+              </div>
+              <div className="enhancement-item future">
+                <span className="enhancement-name">Advanced Query Intelligence</span>
+                <span className="enhancement-status">🔮 Planned</span>
+                <span className="enhancement-description">Smart parameter validation and query builder</span>
               </div>
             </div>
           </div>

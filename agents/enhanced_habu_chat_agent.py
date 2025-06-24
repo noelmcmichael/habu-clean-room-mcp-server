@@ -10,7 +10,7 @@ import openai
 from openai import AsyncOpenAI
 import keyring
 from tools.habu_list_partners import habu_list_partners
-from tools.habu_list_templates import habu_list_templates
+from tools.habu_enhanced_templates import habu_enhanced_templates, habu_list_templates
 from tools.habu_submit_query import habu_submit_query
 from tools.habu_check_status import habu_check_status
 from tools.habu_get_results import habu_get_results
@@ -181,7 +181,7 @@ Habu enables secure data collaboration between companies without exposing raw da
 
 🔧 AVAILABLE API TOOLS:
 1. habu_list_partners - View your data collaboration partners
-2. habu_list_templates - Browse advanced analytics templates (ML/AI models, audience analysis, attribution)  
+2. habu_enhanced_templates - Browse advanced analytics templates with rich metadata (categories, parameters, data types, status)  
 3. habu_submit_query - Execute sophisticated analytics with partner data
 4. habu_check_status - Monitor query progress (building, running, completed)
 5. habu_get_results - Retrieve insights with business intelligence summaries
@@ -334,8 +334,8 @@ Response: {"action": "habu_get_results", "tool_params": {"query_id": "last"}, "e
                 return self._format_llm_response(explanation, result, "partners")
                 
             elif action == "habu_list_templates":
-                result = await habu_list_templates()
-                return self._format_llm_response(explanation, result, "templates")
+                result = await habu_enhanced_templates()
+                return self._format_llm_response(explanation, result, "enhanced_templates")
                 
             elif action == "habu_submit_query":
                 template_id = tool_params.get("template_id")
@@ -461,7 +461,7 @@ Response: {"action": "habu_get_results", "tool_params": {"query_id": "last"}, "e
                     else:
                         return f"{explanation}\n\n🏢 **Partnership Status**: Your 'Data Marketplace Demo' cleanroom is newly established with 0 active partners. This is normal for new cleanrooms.\n\n**Next Steps**: Contact your administrator to establish data partnerships with brands like retailers, media companies, or data providers. Once partnerships are established, you'll be able to run collaborative analytics while maintaining data privacy."
                         
-            elif result_type == "templates":
+            elif result_type == "templates" or result_type == "enhanced_templates":
                 if result_data.get("status") == "success":
                     templates = result_data.get("templates", [])
                     if templates:
@@ -473,15 +473,42 @@ Response: {"action": "habu_get_results", "tool_params": {"query_id": "last"}, "e
                             name = t.get("name", "Unknown")
                             category = t.get("category", "Unknown")
                             status = t.get("status", "Unknown")
+                            question_type = t.get("questionType", "")
+                            data_types = t.get("dataTypes", {})
+                            parameters = t.get("parameters", {})
+                            
+                            # Enhanced template information
+                            enhanced_info = []
+                            if question_type:
+                                enhanced_info.append(f"Type: {question_type}")
+                            if data_types and isinstance(data_types, dict):
+                                data_type_names = list(data_types.keys())[:2]  # Show first 2 data types
+                                if data_type_names:
+                                    enhanced_info.append(f"Data: {', '.join(data_type_names)}")
+                            if parameters and isinstance(parameters, dict) and len(parameters) > 0:
+                                param_count = len(parameters)
+                                enhanced_info.append(f"Parameters: {param_count} fields")
+                            
+                            enhanced_suffix = f" | {' | '.join(enhanced_info)}" if enhanced_info else ""
                             
                             if status == "READY":
-                                ready_templates.append(f"✅ **{name}**\n   Category: {category} | Status: Ready for execution")
+                                ready_templates.append(f"✅ **{name}**\n   Category: {category}{enhanced_suffix} | Status: Ready for execution")
                             elif status == "MISSING_DATASETS":
-                                missing_data_templates.append(f"⚠️ **{name}**\n   Category: {category} | Status: Needs dataset configuration")
+                                missing_data_templates.append(f"⚠️ **{name}**\n   Category: {category}{enhanced_suffix} | Status: Needs dataset configuration")
                             else:
-                                ready_templates.append(f"• **{name}**\n   Category: {category} | Status: {status}")
+                                ready_templates.append(f"• **{name}**\n   Category: {category}{enhanced_suffix} | Status: {status}")
                         
-                        response = f"{explanation}\n\n🔥 **Your Analytics Templates:**\n\n"
+                        # Add enhanced metadata summary
+                        total_count = result_data.get("count", len(templates))
+                        categories = result_data.get("categories", [])
+                        question_types = result_data.get("question_types", [])
+                        
+                        response = f"{explanation}\n\n🔥 **Your Analytics Templates** ({total_count} total)"
+                        if categories:
+                            response += f"\n📊 **Categories**: {', '.join(categories)}"
+                        if question_types:
+                            response += f"\n🎯 **Types**: {', '.join(question_types)}"
+                        response += "\n\n"
                         
                         if ready_templates:
                             response += "**🚀 Ready for Execution:**\n" + "\n\n".join(ready_templates)
@@ -676,11 +703,20 @@ Response: {"action": "habu_get_results", "tool_params": {"query_id": "last"}, "e
                 return "No clean room partners are currently available."
                 
         elif any(phrase in user_lower for phrase in ["templates", "queries", "what can"]):
-            result = await habu_list_templates()
+            result = await habu_enhanced_templates()
             result_data = json.loads(result)
             if result_data["status"] == "success" and result_data["templates"]:
-                templates = [f"• {t.get('name', 'Unknown')}" for t in result_data["templates"]]
-                return f"Available query templates:\n" + "\n".join(templates)
+                templates = []
+                for t in result_data["templates"]:
+                    name = t.get('name', 'Unknown')
+                    category = t.get('category', 'General')
+                    status = t.get('status', 'Unknown')
+                    templates.append(f"• {name} ({category}) - {status}")
+                
+                categories = result_data.get("categories", [])
+                cat_info = f"\n\nCategories: {', '.join(categories)}" if categories else ""
+                
+                return f"Available enhanced query templates:\n" + "\n".join(templates) + cat_info
             else:
                 return "No query templates are currently available."
                 

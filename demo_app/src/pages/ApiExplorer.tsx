@@ -6,8 +6,9 @@ interface ApiEndpoint {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   path: string;
   description: string;
-  category: 'MCP Tools' | 'Habu API' | 'System';
+  category: 'MCP Tools' | 'Enhanced Features' | 'Habu API' | 'System';
   requiresAuth: boolean;
+  enhanced?: boolean;
   parameters?: Array<{
     name: string;
     type: string;
@@ -64,9 +65,27 @@ const ApiExplorer: React.FC = () => {
       name: 'List Templates',
       method: 'GET',
       path: '/api/mcp/habu_list_templates',
-      description: 'Direct endpoint to get available analytics templates',
+      description: 'Direct endpoint to get available analytics templates (basic version)',
       category: 'MCP Tools',
       requiresAuth: false
+    },
+    {
+      name: 'Enhanced Templates',
+      method: 'GET',
+      path: '/api/mcp/habu_enhanced_templates',
+      description: 'Rich template metadata with categories, parameters, data types, and status',
+      category: 'Enhanced Features',
+      requiresAuth: false,
+      enhanced: true,
+      parameters: [
+        {
+          name: 'cleanroom_id',
+          type: 'string',
+          required: false,
+          description: 'Optional specific cleanroom ID to get templates for',
+          defaultValue: ''
+        }
+      ]
     },
     {
       name: 'Submit Query',
@@ -177,6 +196,43 @@ const ApiExplorer: React.FC = () => {
           defaultValue: 'Which analytics templates are ready to run right now?'
         }
       ]
+    },
+    // Enhanced Features Testing
+    {
+      name: 'Test Enhanced vs Basic Templates',
+      method: 'POST',
+      path: '/api/enhanced-chat',
+      description: 'Compare enhanced template features vs basic templates',
+      category: 'Enhanced Features',
+      requiresAuth: false,
+      enhanced: true,
+      parameters: [
+        {
+          name: 'user_input',
+          type: 'string',
+          required: true,
+          description: 'Request to demonstrate enhanced template capabilities',
+          defaultValue: 'Show me the templates with their categories, parameters, and data types - demonstrate the enhanced features'
+        }
+      ]
+    },
+    {
+      name: 'Template Enhancement Demo',
+      method: 'POST',
+      path: '/api/enhanced-chat',
+      description: 'Demonstrate the 50% richer template metadata in AI responses',
+      category: 'Enhanced Features',
+      requiresAuth: false,
+      enhanced: true,
+      parameters: [
+        {
+          name: 'user_input',
+          type: 'string',
+          required: true,
+          description: 'Request to showcase enhanced template intelligence',
+          defaultValue: 'Help me understand what data types and parameters each template works with for better query building'
+        }
+      ]
     }
   ];
 
@@ -284,6 +340,7 @@ const ApiExplorer: React.FC = () => {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'MCP Tools': return '#4c51bf';
+      case 'Enhanced Features': return '#4299e1';
       case 'Habu API': return '#38b2ac';
       case 'System': return '#48bb78';
       default: return '#a0aec0';
@@ -309,7 +366,7 @@ const ApiExplorer: React.FC = () => {
         <div className="endpoints-panel">
           <h3>Available Endpoints</h3>
           <div className="endpoints-list">
-            {['MCP Tools', 'System', 'Habu API'].map(category => (
+            {['MCP Tools', 'Enhanced Features', 'System', 'Habu API'].map(category => (
               <div key={category} className="endpoint-category">
                 <h4 className="category-header" style={{ color: getCategoryColor(category) }}>
                   {category}
@@ -319,12 +376,15 @@ const ApiExplorer: React.FC = () => {
                   .map((endpoint, index) => (
                     <div
                       key={index}
-                      className={`endpoint-item ${selectedEndpoint === endpoint ? 'selected' : ''}`}
+                      className={`endpoint-item ${selectedEndpoint === endpoint ? 'selected' : ''} ${endpoint.enhanced ? 'enhanced' : ''}`}
                       onClick={() => handleEndpointSelect(endpoint)}
                     >
                       <div className="endpoint-method">{endpoint.method}</div>
                       <div className="endpoint-info">
-                        <div className="endpoint-name">{endpoint.name}</div>
+                        <div className="endpoint-name">
+                          {endpoint.name}
+                          {endpoint.enhanced && <span className="enhanced-badge">🆕</span>}
+                        </div>
                         <div className="endpoint-path">{endpoint.path}</div>
                         <div className="endpoint-description">{endpoint.description}</div>
                       </div>

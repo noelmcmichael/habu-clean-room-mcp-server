@@ -384,3 +384,43 @@
     font-size: 1.5rem;
   }
 }
+
+/* Enhanced Features Styling */
+.endpoint-item.enhanced {
+  border-left: 3px solid #4299e1;
+  background: linear-gradient(135deg, #1a1d21 0%, #1e2a3a 100%);
+}
+
+.endpoint-item.enhanced:hover {
+  background: linear-gradient(135deg, #1e2a3a 0%, #2d3748 100%);
+}
+
+.enhanced-badge {
+  font-size: 0.7rem;
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.4rem;
+  background: #4299e1;
+  color: white;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.category-header {
+  position: relative;
+}
+
+.category-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.3;
+}
+
+.endpoint-item.enhanced .endpoint-name {
+  color: #4299e1;
+  font-weight: 600;
+}

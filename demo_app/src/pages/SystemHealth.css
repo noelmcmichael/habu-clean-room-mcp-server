@@ -370,3 +370,99 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Enhanced Phase D Styling */
+.tool-category {
+  margin-bottom: 1.5rem;
+}
+
+.tool-category h4 {
+  color: #e2e8f0;
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #4a5568;
+}
+
+.tool-item.enhanced {
+  border-color: #4299e1;
+  background: linear-gradient(135deg, #1a1d21 0%, #1e2a3a 100%);
+}
+
+.tool-item.enhanced .tool-status {
+  color: #4299e1;
+}
+
+.phase-d-status {
+  background: #2a2f3a;
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.phase-d-status h3 {
+  margin: 0 0 1.5rem 0;
+  color: #ffffff;
+  font-size: 1.3rem;
+}
+
+.enhancement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.enhancement-item {
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-left: 4px solid;
+}
+
+.enhancement-item.completed {
+  background: #1a2e1a;
+  border-left-color: #48bb78;
+}
+
+.enhancement-item.ready {
+  background: #1a1e2e;
+  border-left-color: #4299e1;
+}
+
+.enhancement-item.future {
+  background: #2e1a2e;
+  border-left-color: #9f7aea;
+}
+
+.enhancement-name {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.enhancement-status {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.enhancement-item.completed .enhancement-status {
+  color: #48bb78;
+}
+
+.enhancement-item.ready .enhancement-status {
+  color: #4299e1;
+}
+
+.enhancement-item.future .enhancement-status {
+  color: #9f7aea;
+}
+
+.enhancement-description {
+  color: #a0aec0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
