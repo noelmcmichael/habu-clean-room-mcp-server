@@ -6,6 +6,7 @@ import SystemHealth from './pages/SystemHealth';
 import ApiExplorer from './pages/ApiExplorer';
 import Architecture from './pages/Architecture';
 import './App.css';
+import './components/DemoPhase4.css';
 
 const Navigation: React.FC = () => {
   const location = useLocation();
@@ -23,8 +24,8 @@ const Navigation: React.FC = () => {
       <div className="sidebar-header">
         <Link to="/" className="logo-link">
           <div className="logo">
-            <span className="logo-icon">🤖</span>
-            <span className="logo-text">Habu MCP</span>
+            <span className="logo-icon">🧹</span>
+            <span className="logo-text">Habu AI</span>
           </div>
         </Link>
       </div>
@@ -88,19 +89,6 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <header className="app-header">
-          <div className="header-content">
-            <div className="logo-section">
-              <h1>ICDC</h1>
-              <span className="tagline">🧹 AI Assistant</span>
-            </div>
-            <div className="status-indicators">
-              <span className="status-badge production">Production</span>
-              <span className="status-badge real-api">Real API</span>
-            </div>
-          </div>
-        </header>
-
         <div className="app-layout">
           <aside className="sidebar">
             <Navigation />

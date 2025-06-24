@@ -33,12 +33,12 @@ const ApiExplorer: React.FC = () => {
   const [authStatus, setAuthStatus] = useState<'unknown' | 'valid' | 'invalid'>('unknown');
 
   const endpoints: ApiEndpoint[] = [
-    // MCP Tools via Chat Interface
+    // Enhanced Chat Interface
     {
-      name: 'List Data Partners',
+      name: 'Enhanced Chat',
       method: 'POST',
       path: '/api/enhanced-chat',
-      description: 'Get list of available data partnership partners',
+      description: 'AI-powered chat with MCP tool integration and GPT-4 intelligence',
       category: 'MCP Tools',
       requiresAuth: false,
       parameters: [
@@ -46,42 +46,83 @@ const ApiExplorer: React.FC = () => {
           name: 'user_input',
           type: 'string',
           required: true,
-          description: 'Natural language request for partners',
+          description: 'Natural language request for data analytics',
           defaultValue: 'Show me my data partners'
         }
       ]
     },
+    // Direct MCP Tool Endpoints
     {
-      name: 'List Analytics Templates',
-      method: 'POST',
-      path: '/api/enhanced-chat',
-      description: 'Get available analytics templates and capabilities',
+      name: 'List Partners',
+      method: 'GET',
+      path: '/api/mcp/habu_list_partners',
+      description: 'Direct endpoint to list available data partnership partners',
       category: 'MCP Tools',
-      requiresAuth: false,
-      parameters: [
-        {
-          name: 'user_input',
-          type: 'string',
-          required: true,
-          description: 'Request for analytics capabilities',
-          defaultValue: 'What analyses can I run?'
-        }
-      ]
+      requiresAuth: false
+    },
+    {
+      name: 'List Templates',
+      method: 'GET',
+      path: '/api/mcp/habu_list_templates',
+      description: 'Direct endpoint to get available analytics templates',
+      category: 'MCP Tools',
+      requiresAuth: false
     },
     {
       name: 'Submit Query',
       method: 'POST',
-      path: '/api/enhanced-chat',
-      description: 'Submit an analytics query for processing',
+      path: '/api/mcp/habu_submit_query',
+      description: 'Direct endpoint to submit analytics query',
       category: 'MCP Tools',
       requiresAuth: false,
       parameters: [
         {
-          name: 'user_input',
+          name: 'template_id',
           type: 'string',
           required: true,
-          description: 'Analytics query request',
-          defaultValue: 'Run an audience overlap analysis with Meta'
+          description: 'Template ID for the analytics query',
+          defaultValue: 'audience-overlap'
+        },
+        {
+          name: 'parameters',
+          type: 'object',
+          required: false,
+          description: 'Query parameters as JSON object',
+          defaultValue: '{}'
+        }
+      ]
+    },
+    {
+      name: 'Check Status',
+      method: 'GET',
+      path: '/api/mcp/habu_check_status',
+      description: 'Check the status of a submitted query',
+      category: 'MCP Tools',
+      requiresAuth: false,
+      parameters: [
+        {
+          name: 'query_id',
+          type: 'string',
+          required: true,
+          description: 'Query ID to check status for',
+          defaultValue: 'query_123'
+        }
+      ]
+    },
+    {
+      name: 'Get Results',
+      method: 'GET',
+      path: '/api/mcp/habu_get_results',
+      description: 'Get results from a completed query',
+      category: 'MCP Tools',
+      requiresAuth: false,
+      parameters: [
+        {
+          name: 'query_id',
+          type: 'string',
+          required: true,
+          description: 'Query ID to get results for',
+          defaultValue: 'query_123'
         }
       ]
     },
@@ -102,12 +143,12 @@ const ApiExplorer: React.FC = () => {
       category: 'System',
       requiresAuth: false
     },
-    // Habu API Direct (for debugging real API)
+    // Habu API Integration Testing
     {
-      name: 'Debug: List Cleanrooms',
+      name: 'Test Real API Connection',
       method: 'POST',
       path: '/api/enhanced-chat',
-      description: 'Debug Habu API cleanrooms endpoint - currently returns empty array',
+      description: 'Test connection to Habu API and validate authentication',
       category: 'Habu API',
       requiresAuth: false,
       parameters: [
@@ -115,16 +156,16 @@ const ApiExplorer: React.FC = () => {
           name: 'user_input',
           type: 'string',
           required: true,
-          description: 'Debug request for cleanrooms',
-          defaultValue: 'Debug: Call the real Habu API /cleanrooms endpoint and show me the raw response'
+          description: 'Request to test API connectivity',
+          defaultValue: 'Test my connection to the Habu API and show me what cleanrooms I have access to'
         }
       ]
     },
     {
-      name: 'Debug: User Info',
+      name: 'Query Template Status',
       method: 'POST',
       path: '/api/enhanced-chat',
-      description: 'Debug Habu API user endpoint - test authentication',
+      description: 'Check which analytics templates are ready to use',
       category: 'Habu API',
       requiresAuth: false,
       parameters: [
@@ -132,25 +173,8 @@ const ApiExplorer: React.FC = () => {
           name: 'user_input',
           type: 'string',
           required: true,
-          description: 'Debug request for user info',
-          defaultValue: 'Debug: Call the real Habu API /users/me endpoint and show me the authentication status'
-        }
-      ]
-    },
-    {
-      name: 'Debug: Data Connections',
-      method: 'POST',
-      path: '/api/enhanced-chat',
-      description: 'Debug Habu API data connections - test working endpoint',
-      category: 'Habu API',
-      requiresAuth: false,
-      parameters: [
-        {
-          name: 'user_input',
-          type: 'string',
-          required: true,
-          description: 'Debug request for data connections',
-          defaultValue: 'Debug: Call the real Habu API /data-connections endpoint and compare with cleanrooms'
+          description: 'Request to check template availability',
+          defaultValue: 'Which analytics templates are ready to run right now?'
         }
       ]
     }

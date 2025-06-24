@@ -94,11 +94,6 @@ const SystemHealth: React.FC = () => {
         name: 'React Frontend',
         url: 'https://habu-demo-frontend-v2.onrender.com',
         healthPath: '/'
-      },
-      {
-        name: 'Admin App',
-        url: 'https://habu-admin-app-v2.onrender.com',
-        healthPath: '/'
       }
     ];
 
@@ -177,7 +172,8 @@ const SystemHealth: React.FC = () => {
   return (
     <div className="system-health">
       <div className="health-header">
-        <h1>System Health Dashboard</h1>
+        <h1>🔧 System Health Dashboard</h1>
+        <p>Real-time monitoring of production services and API integrations</p>
         <div className="health-controls">
           <button 
             onClick={performHealthCheck} 
