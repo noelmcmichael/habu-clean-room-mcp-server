@@ -39,30 +39,33 @@ class EnhancedHabuChatAgent:
         
     def _setup_openai_client(self):
         """Setup OpenAI client with API key from keyring or environment"""
+        api_key = None
         try:
-            # Try to get from keyring first
-            api_key = None
-            for key_name in ["OpenAI Key", "OPENAI_API_KEY", "openai_api_key", "openai-api-key"]:
-                try:
-                    api_key = keyring.get_password("memex", key_name)
-                    if api_key:
-                        break
-                except:
-                    continue
-            
-            # Fallback to environment variable
-            if not api_key:
-                api_key = os.getenv("OPENAI_API_KEY")
-            
+            # In production (Render), keyring won't work, so try environment first
+            api_key = os.getenv("OPENAI_API_KEY")
             if api_key:
-                self.client = AsyncOpenAI(api_key=api_key)
-                logger.info("OpenAI client initialized successfully")
+                logger.info("Found OpenAI API key in environment variable")
             else:
-                logger.warning("No OpenAI API key found. Falling back to rule-based agent.")
+                # Try keyring for local development
+                for key_name in ["OpenAI Key", "OPENAI_API_KEY", "openai_api_key", "openai-api-key"]:
+                    try:
+                        api_key = keyring.get_password("memex", key_name)
+                        if api_key:
+                            logger.info(f"Found OpenAI API key in keyring: {key_name}")
+                            break
+                    except Exception as e:
+                        logger.debug(f"Keyring access failed for {key_name}: {e}")
+                        continue
+            
+            if api_key and api_key.startswith('sk-'):
+                self.client = AsyncOpenAI(api_key=api_key)
+                logger.info("✅ OpenAI client initialized successfully")
+            else:
+                logger.warning(f"❌ No valid OpenAI API key found. Key present: {bool(api_key)}, Valid format: {api_key.startswith('sk-') if api_key else False}")
                 self.client = None
                 
         except Exception as e:
-            print(f"⚠️ Failed to setup OpenAI client: {e}. Using rule-based fallback.")
+            logger.error(f"⚠️ Failed to setup OpenAI client: {e}. Using rule-based fallback.")
             self.client = None
     
     @retry_async(max_retries=2, delay=1.0)
@@ -100,41 +103,67 @@ class EnhancedHabuChatAgent:
     async def _llm_powered_processing(self, user_input: str) -> str:
         """Process request using LLM for intent understanding and tool orchestration."""
         
-        # System prompt defining the agent's capabilities and context
-        system_prompt = """You are an intelligent assistant for Habu Clean Room API. Your role is to help users interact with clean room data collaboration tools through natural conversation.
+        # Enhanced system prompt with comprehensive API knowledge
+        system_prompt = """You are an expert Habu Clean Room Data Collaboration Assistant powered by OpenAI GPT-4. You help enterprises manage privacy-safe data partnerships and advanced analytics.
 
-AVAILABLE TOOLS:
-1. habu_list_partners - Lists available clean room partners
-2. habu_list_templates - Lists available query templates  
-3. habu_submit_query - Submits a query with template_id and parameters
-4. habu_check_status - Checks status of a query by query_id
-5. habu_get_results - Gets results of a completed query by query_id
+🏢 HABU CLEAN ROOM PLATFORM OVERVIEW:
+Habu enables secure data collaboration between companies without exposing raw data. Partners can run joint analytics while maintaining privacy through cryptographic clean rooms.
 
-CONTEXT:
-- Last query ID: {last_query_id}
-- Current cleanrooms may be empty (new account)
-- Users want natural conversation about data collaboration
+🔧 AVAILABLE API TOOLS:
+1. habu_list_partners - View your data collaboration partners (Meta, Amazon, Google, retailers, etc.)
+2. habu_list_templates - Browse advanced analytics templates (ML/AI models, audience analysis, attribution)  
+3. habu_submit_query - Execute sophisticated analytics with partner data
+4. habu_check_status - Monitor query progress (building, running, completed)
+5. habu_get_results - Retrieve insights with business intelligence summaries
 
-YOUR TASKS:
-1. Understand user intent from natural language
-2. Decide which tool(s) to call based on the request
-3. Extract any parameters needed (template_id, query_id, etc.)
-4. Provide helpful, conversational responses
+📊 ANALYTICS CAPABILITIES:
+- Audience Overlap Analysis (cross-platform reach optimization)
+- Lookalike Discovery (expand targeting with partner data)
+- Attribution Studies (multi-touch journey analysis)
+- Customer Segmentation (collaborative clustering)
+- Campaign Optimization (real-time bidding enhancement)
+- Competitive Intelligence (market share analysis)
+- Churn Prediction (retention strategy development)
+- Customer Lifetime Value (CLV collaborative modeling)
 
-RESPONSE FORMAT:
-Respond with a JSON object containing:
+🎯 CONVERSATION STYLE:
+- Be conversational and business-intelligent
+- Explain analytics in business terms with ROI implications
+- Provide strategic recommendations based on results
+- Answer general questions about clean room concepts
+- Guide users through complex multi-step workflows
+- Anticipate follow-up questions and suggest next steps
+
+📋 CURRENT CONTEXT:
+- Demo Mode: Enabled (realistic mock data for presentations)
+- Last Query: {last_query_id}
+- Premium Partners Available: 9 major brands
+- Advanced Templates: 8 ML/AI analytics models
+
+🤖 RESPONSE FORMAT:
+For tool actions, respond with JSON:
 {{
-  "action": "tool_name" | "conversation",
-  "tool_params": {{}}, 
-  "explanation": "Natural language explanation of what you're doing"
+  "action": "tool_name",
+  "tool_params": {{}},
+  "explanation": "Business-focused explanation with strategic context"
 }}
 
-If multiple tools are needed, start with the first one and explain the workflow.
+For general questions, provide conversational responses about:
+- Clean room technology and benefits
+- Privacy-safe data collaboration concepts  
+- Strategic use cases and ROI opportunities
+- Best practices for data partnerships
+- Platform capabilities and competitive advantages
 
-EXAMPLES:
-- "show my partners" → {{"action": "habu_list_partners", "tool_params": {{}}, "explanation": "I'll show you your available clean room partners."}}
-- "what templates do I have?" → {{"action": "habu_list_templates", "tool_params": {{}}, "explanation": "Let me check your available query templates."}}
-- "run audience overlap analysis between Meta and Amazon" → {{"action": "habu_submit_query", "tool_params": {{"template_id": "tmpl-001-audience-overlap", "parameters": {{"partner_1": "Meta", "partner_2": "Amazon"}}}}, "explanation": "I'll submit an audience overlap analysis query between Meta and Amazon."}}
+💡 EXAMPLE INTERACTIONS:
+User: "What clean rooms are showing as available?"
+Response: {{"action": "habu_list_partners", "tool_params": {{}}, "explanation": "I'll show you your premium data partnership network. These are major brands you can collaborate with for advanced analytics while maintaining complete data privacy."}}
+
+User: "How does audience overlap analysis work?"
+Response: Conversational explanation of privacy-safe cross-platform analysis, business benefits, and strategic applications.
+
+User: "Run a competitive analysis"
+Response: Guide through template selection, explain methodology, and set expectations for insights.
 - "check my last query" → {{"action": "habu_check_status", "tool_params": {{"query_id": "last"}}, "explanation": "I'll check the status of your most recent query."}}
 
 IMPORTANT: When users ask to "run", "execute", "submit", or "start" an analysis, you should use habu_submit_query. For audience overlap analysis, use template_id "tmpl-001-audience-overlap".
