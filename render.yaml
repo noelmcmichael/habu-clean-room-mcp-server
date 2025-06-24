@@ -1,4 +1,4 @@
-# render.yaml - Complete Configuration with Database
+# render.yaml - Phase C Enhanced Context-Aware Chat Deployment
 databases:
   - name: habu-mcp-db
     databaseName: habu_mcp_db
@@ -6,9 +6,9 @@ databases:
     plan: free
 
 services:
-  # MCP Server
+  # MCP Server (Phase C Enhanced)
   - type: web
-    name: habu-mcp-server-v2
+    name: habu-mcp-server-enhanced
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
@@ -31,9 +31,9 @@ services:
       - key: PORT
         value: "8000"
 
-  # Demo API
+  # Enhanced Chat API (Phase C)
   - type: web
-    name: habu-demo-api-v2
+    name: habu-chat-api-enhanced
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
@@ -56,16 +56,16 @@ services:
       - key: PORT
         value: "5001"
 
-  # React Frontend
+  # React Frontend (Phase C Enhanced)
   - type: web
-    name: habu-demo-frontend-v2
+    name: habu-frontend-enhanced
     env: node
     plan: free
     buildCommand: "cd demo_app && npm install && npm run build"
     startCommand: "cd demo_app && npx serve -s build -l $PORT"
     envVars:
       - key: REACT_APP_API_URL
-        value: "https://habu-demo-api-v2.onrender.com"
+        value: "https://habu-chat-api-enhanced.onrender.com"
 
   # Admin App
   - type: web

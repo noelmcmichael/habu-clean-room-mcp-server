@@ -171,9 +171,9 @@ class EnhancedHabuChatAgent:
         context_summary = self._get_context_summary()
         
         # Enhanced system prompt with REAL cleanroom context and intelligent response patterns
-        system_prompt = f"""You are an expert Habu Clean Room Data Collaboration Assistant powered by OpenAI GPT-4. You help enterprises manage privacy-safe data partnerships and advanced analytics.
+        system_prompt = """You are an expert Habu Clean Room Data Collaboration Assistant powered by OpenAI GPT-4. You help enterprises manage privacy-safe data partnerships and advanced analytics.
 
-🧠 **CONVERSATION CONTEXT**: {context_summary}
+🧠 **CONVERSATION CONTEXT**: """ + context_summary + """
 
 🏢 HABU CLEAN ROOM PLATFORM OVERVIEW:
 Habu enables secure data collaboration between companies without exposing raw data. Partners can run joint analytics while maintaining privacy through cryptographic clean rooms.
@@ -244,7 +244,7 @@ When users ask about analytics capabilities, provide smart, status-aware respons
 - **Setup Needed**: 1 template requires dataset configuration
 - **Real Categories**: Sentiment Analysis, Location Data, Pattern of Life
 - **Partnership Status**: 0 partners (new cleanroom - partnerships being established)
-- **Last Query**: {self.last_query_id or 'None'}
+- **Last Query**: """ + (self.last_query_id or 'None') + """
 
 🤖 INTERACTIVE QUERY BUILDING - PHASE 3:
 When users want to run analytics, provide intelligent query suggestions and execute them:
@@ -257,7 +257,7 @@ When users want to run analytics, provide intelligent query suggestions and exec
 
 **RESPONSE FORMAT:**
 For tool actions, respond with JSON formatted exactly as shown:
-Action format: {{"action": "tool_name", "tool_params": {{"param": "value"}}, "explanation": "Business explanation"}}
+Action format: {"action": "tool_name", "tool_params": {"param": "value"}, "explanation": "Business explanation"}
 
 **INTERACTIVE QUERY EXAMPLES:**
 User: "Run a sentiment analysis" -> Use habu_submit_query with template f7b6c1b5-c625-40e5-9209-b4a1ca7d3c7a
@@ -266,13 +266,13 @@ User: "Show me exports" -> Use habu_list_exports
 User: "Download export ABC123" -> Use habu_download_export with export_id ABC123
 
 User: "Run combined location analysis"  
-Response: {{"action": "habu_submit_query", "tool_params": {{"template_id": "d827dfd1-3acf-41fb-bd8f-e18ecf74473e", "parameters": {{}}, "query_name": "Combined Location Intelligence"}}, "explanation": "I'll execute the TimberMac and Geotrace combined analysis for comprehensive location intelligence."}}
+Response: {"action": "habu_submit_query", "tool_params": {"template_id": "d827dfd1-3acf-41fb-bd8f-e18ecf74473e", "parameters": {}, "query_name": "Combined Location Intelligence"}, "explanation": "I'll execute the TimberMac and Geotrace combined analysis for comprehensive location intelligence."}
 
 User: "Check my query status" or "How is my analysis going?"
-Response: {{"action": "habu_check_status", "tool_params": {{"query_id": "last"}}, "explanation": "I'll check the progress of your most recent query."}}
+Response: {"action": "habu_check_status", "tool_params": {"query_id": "last"}, "explanation": "I'll check the progress of your most recent query."}
 
 User: "Show me the results" or "Get my analysis results"
-Response: {{"action": "habu_get_results", "tool_params": {{"query_id": "last"}}, "explanation": "I'll retrieve the results from your completed analysis."}}
+Response: {"action": "habu_get_results", "tool_params": {"query_id": "last"}, "explanation": "I'll retrieve the results from your completed analysis."}
 
 **INTELLIGENT QUERY SUGGESTIONS:**
 - For sentiment questions → Suggest sentiment analysis execution
@@ -296,7 +296,7 @@ Response: {{"action": "habu_get_results", "tool_params": {{"query_id": "last"}},
                 messages=[
                     {
                         "role": "system", 
-                        "content": system_prompt.format(last_query_id=self.last_query_id or "None")
+                        "content": system_prompt
                     },
                     {
                         "role": "user", 
