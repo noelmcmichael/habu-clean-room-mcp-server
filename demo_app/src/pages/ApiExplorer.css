@@ -1,0 +1,386 @@
+.api-explorer {
+  padding: 2rem;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #1a1d29;
+}
+
+.explorer-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #2d3748;
+  padding-bottom: 1rem;
+}
+
+.explorer-header h1 {
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+}
+
+.explorer-header p {
+  color: #a0aec0;
+  margin-bottom: 1rem;
+}
+
+.auth-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #a0aec0;
+}
+
+.status-indicator {
+  font-size: 1rem;
+}
+
+.explorer-content {
+  display: flex;
+  gap: 2rem;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Endpoints Panel */
+.endpoints-panel {
+  width: 350px;
+  background: #232738;
+  border-radius: 8px;
+  padding: 1.5rem;
+  overflow-y: auto;
+  border: 1px solid #2d3748;
+}
+
+.endpoints-panel h3 {
+  color: #ffffff;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.endpoint-category {
+  margin-bottom: 1.5rem;
+}
+
+.category-header {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.endpoint-item {
+  background: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.endpoint-item:hover {
+  background: #374151;
+  border-color: #6b7280;
+}
+
+.endpoint-item.selected {
+  background: #4c51bf;
+  border-color: #667eea;
+}
+
+.endpoint-method {
+  display: inline-block;
+  background: #4a5568;
+  color: #ffffff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.endpoint-item.selected .endpoint-method {
+  background: #667eea;
+}
+
+.endpoint-name {
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.endpoint-path {
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-bottom: 0.25rem;
+}
+
+.endpoint-description {
+  font-size: 0.8rem;
+  color: #a0aec0;
+  line-height: 1.4;
+}
+
+.auth-required {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.8rem;
+}
+
+/* Request Panel */
+.request-panel {
+  flex: 1;
+  background: #232738;
+  border-radius: 8px;
+  padding: 1.5rem;
+  overflow-y: auto;
+  border: 1px solid #2d3748;
+}
+
+.request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #2d3748;
+}
+
+.request-header h3 {
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.3rem;
+}
+
+.method-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.execute-btn {
+  background: #48bb78;
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.execute-btn:hover:not(:disabled) {
+  background: #38a169;
+  transform: translateY(-1px);
+}
+
+.execute-btn:disabled {
+  background: #4a5568;
+  cursor: not-allowed;
+}
+
+/* Parameters Section */
+.parameters-section {
+  margin-bottom: 2rem;
+}
+
+.parameters-section h4 {
+  color: #ffffff;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.parameter-input {
+  margin-bottom: 1rem;
+}
+
+.parameter-input label {
+  display: block;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.required {
+  color: #f56565;
+  margin-left: 0.25rem;
+}
+
+.param-type {
+  color: #a0aec0;
+  font-size: 0.8rem;
+  font-weight: 400;
+  margin-left: 0.5rem;
+}
+
+.parameter-input textarea {
+  width: 100%;
+  background: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 6px;
+  padding: 0.75rem;
+  color: #ffffff;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.parameter-input textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.param-description {
+  font-size: 0.8rem;
+  color: #a0aec0;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+/* Response Section */
+.response-section {
+  margin-top: 2rem;
+  border-top: 1px solid #2d3748;
+  padding-top: 1.5rem;
+}
+
+.response-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.response-header h4 {
+  color: #ffffff;
+  font-size: 1.1rem;
+}
+
+.response-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.status-code {
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.response-time {
+  color: #a0aec0;
+}
+
+.timestamp {
+  color: #9ca3af;
+  font-size: 0.8rem;
+}
+
+.response-content {
+  background: #1a1d29;
+  border: 1px solid #2d3748;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.response-content pre {
+  color: #ffffff;
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.response-headers {
+  background: #2d3748;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.response-headers summary {
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.response-headers pre {
+  color: #a0aec0;
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+/* No Selection State */
+.no-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: #a0aec0;
+}
+
+.no-selection h3 {
+  color: #ffffff;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.no-selection p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .explorer-content {
+    flex-direction: column;
+  }
+  
+  .endpoints-panel {
+    width: 100%;
+    max-height: 300px;
+  }
+  
+  .api-explorer {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .request-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .response-meta {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .explorer-header h1 {
+    font-size: 1.5rem;
+  }
+}

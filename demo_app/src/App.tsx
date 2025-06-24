@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import ChatInterface from './components/ChatInterface';
 import SystemHealth from './pages/SystemHealth';
+import ApiExplorer from './pages/ApiExplorer';
 import './App.css';
 
 const Navigation: React.FC = () => {
@@ -58,7 +59,7 @@ const MainContent: React.FC = () => {
       <Routes>
         <Route path="/" element={<ChatPage />} />
         <Route path="/health" element={<SystemHealth />} />
-        <Route path="/api-explorer" element={<ComingSoonPage title="API Explorer" />} />
+        <Route path="/api-explorer" element={<ApiExplorer />} />
         <Route path="/architecture" element={<ComingSoonPage title="Architecture" />} />
       </Routes>
     </div>
