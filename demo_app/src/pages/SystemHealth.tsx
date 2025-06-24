@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './SystemHealth.css';
 
 interface ServiceStatus {
@@ -27,11 +27,16 @@ const SystemHealth: React.FC = () => {
   const checkServiceHealth = async (service: { name: string; url: string; healthPath: string }): Promise<ServiceStatus> => {
     const startTime = Date.now();
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
       const response = await fetch(`${service.url}${service.healthPath}`, {
         method: 'GET',
         headers: service.name.includes('mcp') ? { 'X-API-Key': 'secure-habu-demo-key-2024' } : {},
-        timeout: 10000
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
       
       const endTime = Date.now();
       const responseTime = endTime - startTime;
@@ -57,17 +62,21 @@ const SystemHealth: React.FC = () => {
         };
       }
     } catch (error) {
+      const errorMessage = error instanceof Error ? 
+        (error.name === 'AbortError' ? 'Request timeout (10s)' : error.message) : 
+        'Unknown error';
+      
       return {
         name: service.name,
         status: 'down',
         url: service.url,
         lastCheck: new Date(),
-        details: { error: error instanceof Error ? error.message : 'Unknown error' }
+        details: { error: errorMessage }
       };
     }
   };
 
-  const performHealthCheck = async () => {
+  const performHealthCheck = useCallback(async () => {
     setLoading(true);
     
     const services = [
@@ -125,7 +134,7 @@ const SystemHealth: React.FC = () => {
     });
 
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     performHealthCheck();
@@ -134,7 +143,7 @@ const SystemHealth: React.FC = () => {
       const interval = setInterval(performHealthCheck, 30000); // 30 seconds
       return () => clearInterval(interval);
     }
-  }, [autoRefresh]);
+  }, [autoRefresh, performHealthCheck]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
