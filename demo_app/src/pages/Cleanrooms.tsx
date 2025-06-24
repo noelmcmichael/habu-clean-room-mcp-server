@@ -78,8 +78,20 @@ const Cleanrooms: React.FC = () => {
         console.log('🔍 Debug - enhancedTemplatesData:', enhancedTemplatesData);
         console.log('🔍 Debug - partnersData:', partnersData);
 
-        setEnhancedTemplates(enhancedTemplatesData);
-        setPartners(partnersData);
+        // Handle API error responses properly
+        if (enhancedTemplatesData.status === 'error') {
+          console.warn('⚠️ Templates API returned error:', enhancedTemplatesData.error);
+          setEnhancedTemplates({ templates: [], total_templates: 0, ready_templates: 0, missing_datasets_templates: 0, categories: [] });
+        } else {
+          setEnhancedTemplates(enhancedTemplatesData);
+        }
+        
+        if (partnersData.status === 'error') {
+          console.warn('⚠️ Partners API returned error:', partnersData.error);
+          setPartners([]);
+        } else {
+          setPartners(partnersData);
+        }
         
         // Update conversation context with template data
         if (enhancedTemplatesData && enhancedTemplatesData.templates) {
