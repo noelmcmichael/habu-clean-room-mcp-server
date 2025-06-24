@@ -1,0 +1,567 @@
+{
+  "discovery_timestamp": "2025-06-24T00:16:16.970766",
+  "discovery_type": "cleanroom_drilldown",
+  "cleanrooms_analyzed": 1,
+  "summary": {
+    "total_endpoints_tested": 68,
+    "total_accessible": 0,
+    "high_value_accessible": 0,
+    "success_rate": "0.0%"
+  },
+  "cleanroom_details": [
+    {
+      "id": "06d4603d-f87c-422a-8ab2-6bbd92c0df56",
+      "name": "Data Marketplace Demo",
+      "description": "Demo to show how the platform can support the ICDC"
+    }
+  ],
+  "discoveries": {
+    "06d4603d-f87c-422a-8ab2-6bbd92c0df56": {
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/partners": {
+        "status_code": 403,
+        "accessible": false,
+        "protected": false,
+        "forbidden": true,
+        "not_found": false,
+        "response_size": 245
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/templates": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 149
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/queries": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 147
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/settings": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 148
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/configuration": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 153
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/permissions": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 151
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/users": {
+        "status_code": 403,
+        "accessible": false,
+        "protected": false,
+        "forbidden": true,
+        "not_found": false,
+        "response_size": 244
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/invitations": {
+        "status_code": 403,
+        "accessible": false,
+        "protected": false,
+        "forbidden": true,
+        "not_found": false,
+        "response_size": 248
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/roles": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 145
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/datasets": {
+        "status_code": 403,
+        "accessible": false,
+        "protected": false,
+        "forbidden": true,
+        "not_found": false,
+        "response_size": 242
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/schemas": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 147
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/data-sources": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 152
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/analytics": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 149
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/insights": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 148
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/reports": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 147
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/dashboards": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 150
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/queries/history": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 155
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/queries/running": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 155
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/queries/completed": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 157
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/queries/failed": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 154
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/queries/scheduled": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 157
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/queries/templates": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 157
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/results": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 147
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/exports": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 147
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/exports/list": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 152
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/exports/history": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 155
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/exports/downloads": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 157
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/files": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 145
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/outputs": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 147
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/templates/library": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 157
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/templates/public": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 156
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/templates/private": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 157
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/templates/shared": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 156
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/templates/categories": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 160
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/sharing": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 147
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/collaboration": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 153
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/activity": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 148
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/notifications": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 153
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/audit": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 145
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/logs": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 144
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/workflows": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 149
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/pipelines": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 149
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/schedules": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 149
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/automations": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 151
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/triggers": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 148
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/jobs": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 144
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/ml-models": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 149
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/predictions": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 151
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/recommendations": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 155
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/forecasts": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 149
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/segments": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 148
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/cohorts": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 147
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/partners/connections": {
+        "status_code": 403,
+        "accessible": false,
+        "protected": false,
+        "forbidden": true,
+        "not_found": false,
+        "response_size": 257
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/partners/integrations": {
+        "status_code": 403,
+        "accessible": false,
+        "protected": false,
+        "forbidden": true,
+        "not_found": false,
+        "response_size": 258
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/partners/data-sharing": {
+        "status_code": 403,
+        "accessible": false,
+        "protected": false,
+        "forbidden": true,
+        "not_found": false,
+        "response_size": 258
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/partners/permissions": {
+        "status_code": 403,
+        "accessible": false,
+        "protected": false,
+        "forbidden": true,
+        "not_found": false,
+        "response_size": 257
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/health": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 146
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/status": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 146
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/metrics": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 147
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/usage": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 145
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/limits": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 146
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/quotas": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 146
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/marketplace": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 151
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/catalog": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 147
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/solutions": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 149
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/packages": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 148
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/extensions": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 150
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/integrations": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 152
+      }
+    }
+  },
+  "new_capabilities": []
+}

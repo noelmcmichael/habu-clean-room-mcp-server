@@ -1,0 +1,881 @@
+{
+  "discovery_timestamp": "2025-06-24T00:10:00.285947",
+  "base_url": "https://api.habu.com",
+  "authentication_successful": false,
+  "total_endpoints_tested": 100,
+  "discoveries": {
+    "base_endpoints": {
+      "/clean-rooms": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/partners": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/templates": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/queries": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/users": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/organizations": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/projects": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/workspaces": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/accounts": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/datasets": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/data-sources": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/connections": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/schemas": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/catalogs": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/analytics": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/reports": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/dashboards": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/metrics": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/insights": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/recommendations": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/exports": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/results": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/downloads": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/files": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/outputs": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/workflows": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/pipelines": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/jobs": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/tasks": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/schedules": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/automations": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/sharing": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/permissions": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/invitations": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/teams": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/roles": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/health": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/status": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/monitoring": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/logs": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/audit": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      },
+      "/events": {
+        "status_code": 404,
+        "accessible": false,
+        "requires_auth": false,
+        "exists": false,
+        "response_size": 0,
+        "content_type": "text/plain; charset=utf-8"
+      }
+    },
+    "api_versions": {},
+    "resource_patterns": {
+      "partners": {
+        "GET /partners": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "GET /partners/search": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "GET /partners/filter": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "GET /partners/list": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "OPTIONS /partners": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "allowed_methods": [
+          ""
+        ],
+        "HEAD /partners": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        }
+      },
+      "templates": {
+        "GET /templates": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "GET /templates/search": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "GET /templates/filter": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "GET /templates/list": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "OPTIONS /templates": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "allowed_methods": [
+          ""
+        ],
+        "HEAD /templates": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        }
+      },
+      "queries": {
+        "GET /queries": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "GET /queries/search": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "GET /queries/filter": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "GET /queries/list": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "OPTIONS /queries": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "allowed_methods": [
+          ""
+        ],
+        "HEAD /queries": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        }
+      },
+      "clean-rooms": {
+        "GET /clean-rooms": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "GET /clean-rooms/search": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "GET /clean-rooms/filter": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "GET /clean-rooms/list": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "OPTIONS /clean-rooms": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        },
+        "allowed_methods": [
+          ""
+        ],
+        "HEAD /clean-rooms": {
+          "status_code": 404,
+          "supported": false,
+          "headers": null
+        }
+      }
+    },
+    "advanced_endpoints": {
+      "/advanced-analytics": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/machine-learning": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/ml-models": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/predictions": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/forecasting": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/anomaly-detection": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/clustering": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/segmentation": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/notebooks": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/experiments": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/model-registry": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/feature-store": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/data-lineage": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/data-quality": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/governance": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/compliance": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/data-privacy": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/encryption": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/key-management": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/access-control": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/integrations": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/connectors": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/apis": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/webhooks": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/streaming": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/real-time": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/marketplace": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/catalog": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/packages": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/modules": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/templates-library": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/solutions": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      }
+    },
+    "admin_endpoints": {
+      "/admin": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/users": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/organizations": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/settings": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/billing": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/usage": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/quotas": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/limits": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/maintenance": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/system": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/logs": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/monitoring": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/alerts": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/admin/backups": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      }
+    },
+    "webhook_endpoints": {
+      "/webhooks": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/events": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/notifications": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/subscriptions": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/callbacks": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/triggers": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/hooks": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      },
+      "/listeners": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "exists": false
+      }
+    }
+  },
+  "summary": {
+    "categories_explored": 6,
+    "accessible_endpoints": 0,
+    "protected_endpoints": 0,
+    "not_found_endpoints": 96,
+    "error_endpoints": 0,
+    "new_capabilities": []
+  }
+}

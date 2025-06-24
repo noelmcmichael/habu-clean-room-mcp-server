@@ -1,0 +1,608 @@
+{
+  "discovery_timestamp": "2025-06-24T00:13:00.919891",
+  "api_base_url": "https://api.habu.com/v1",
+  "summary": {
+    "total_working_endpoints": 1,
+    "new_capabilities_found": 0,
+    "protected_endpoints": 0,
+    "high_priority_integrations": 0
+  },
+  "working_endpoints": [
+    "/cleanrooms"
+  ],
+  "new_capabilities": [],
+  "protected_endpoints": [],
+  "detailed_analysis": {
+    "/cleanrooms": {
+      "endpoint": "/cleanrooms",
+      "data_analysis": {
+        "data_type": "list",
+        "size_chars": 539,
+        "potential_capabilities": [
+          "Status Monitoring"
+        ],
+        "record_count": 1,
+        "sample_keys": [
+          "id",
+          "displayId",
+          "name",
+          "description",
+          "ownerOrganization",
+          "partners",
+          "startAt",
+          "endAt",
+          "questionsCount",
+          "status",
+          "cleanRoomParameters",
+          "timeAudit",
+          "cleanRoomTypeId"
+        ]
+      },
+      "related_operations": {
+        "GET": "tested_separately",
+        "POST": {
+          "status": 400,
+          "supported": true
+        },
+        "PUT": {
+          "status": 405,
+          "supported": false
+        },
+        "DELETE": {
+          "status": 405,
+          "supported": false
+        },
+        "allowed_methods": [
+          "POST,GET,HEAD,OPTIONS"
+        ],
+        "PATCH": {
+          "status": 405,
+          "supported": false
+        }
+      },
+      "business_value": "UNKNOWN - Needs investigation",
+      "integration_priority": 1
+    }
+  },
+  "endpoint_discoveries": {
+    "/organizations": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 105,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/cleanrooms": {
+      "status_code": 200,
+      "accessible": true,
+      "protected": false,
+      "forbidden": false,
+      "not_found": false,
+      "response_size": 508,
+      "content_type": "application/json",
+      "rate_limited": false,
+      "data_preview": "[{'id': '06d4603d-f87c-422a-8ab2-6bbd92c0df56', 'displayId': 'CR-045144', 'name': 'Data Marketplace Demo', 'description': 'Demo to show how the platform can support the ICDC', 'ownerOrganization': 'ICDC - Demo', 'partners': ['GDELT', 'Geotrace', 'TimberMac'], 'startAt': '2025-06-02', 'endAt': '', 'q...",
+      "data_structure": {
+        "type": "list",
+        "size": 539,
+        "length": 1,
+        "item_keys": [
+          "id",
+          "displayId",
+          "name",
+          "description",
+          "ownerOrganization",
+          "partners",
+          "startAt",
+          "endAt",
+          "questionsCount",
+          "status"
+        ]
+      },
+      "record_count": 1
+    },
+    "/cleanrooms/search": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 149,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/cleanrooms/templates": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 152,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/cleanrooms/shared": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 149,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/cleanrooms/archived": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 151,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/queries": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 99,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/queries/history": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 107,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/queries/templates": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 109,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/queries/results": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 107,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/queries/exports": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 107,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/queries/schedules": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 109,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/results": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 99,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/exports": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 99,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/exports/list": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 104,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/exports/download": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 108,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/exports/formats": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 107,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/exports/schedules": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 109,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/templates": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 101,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/templates/library": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 109,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/templates/public": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 108,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/templates/shared": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 108,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/templates/categories": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 112,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/partners": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 100,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/partners/catalog": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 108,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/partners/available": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 110,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/partners/connections": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 112,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/partners/integrations": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 113,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/analytics": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 101,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/analytics/insights": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 110,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/analytics/recommendations": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 117,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/analytics/models": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 108,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/analytics/predictions": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 113,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/datasets": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 100,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/datasets/catalog": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 108,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/datasets/schemas": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 108,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/datasets/lineage": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 108,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/datasets/quality": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 108,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/sharing": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 99,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/permissions": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 103,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/invitations": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 103,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/notifications": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 105,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/activity": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 100,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/health": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 98,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/status": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 98,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/version": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 99,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/limits": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 98,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/quotas": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 98,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/marketplace": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 103,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/catalog": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 99,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/solutions": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 101,
+      "content_type": "application/json",
+      "rate_limited": false
+    },
+    "/packages": {
+      "status_code": 404,
+      "accessible": false,
+      "protected": false,
+      "forbidden": false,
+      "not_found": true,
+      "response_size": 100,
+      "content_type": "application/json",
+      "rate_limited": false
+    }
+  }
+}

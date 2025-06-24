@@ -1,0 +1,774 @@
+{
+  "discovery_timestamp": "2025-06-24T00:20:12.651427",
+  "summary": {
+    "total_endpoints_tested": 88,
+    "high_value_findings": 2,
+    "very_high_value_count": 0,
+    "categories_found": [
+      "Organization Management",
+      "Template Management"
+    ]
+  },
+  "discoveries": {
+    "template_variations": {
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/cleanroom-questions": {
+        "status_code": 200,
+        "accessible": true,
+        "protected": false,
+        "forbidden": false,
+        "not_found": false,
+        "response_size": 10424,
+        "data_preview": "[{'id': '1c622093-b55b-4a57-9c95-d2ab7d0cdb89', 'name': 'Database of Events, Language, and Tone - Sentiment Analysis - Global ', 'displayId': 'CRQ-136017', 'questionType': 'ANALYTICAL', 'category': 'S...",
+        "data_analysis": {
+          "type": "list",
+          "size": 10789,
+          "capabilities": [],
+          "record_count": 4,
+          "sample_keys": [
+            "id",
+            "name",
+            "displayId",
+            "questionType",
+            "category",
+            "createdOn",
+            "status",
+            "dataTypes",
+            "parameters",
+            "dimension"
+          ]
+        },
+        "business_potential": "\u2753 UNKNOWN - Needs investigation"
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/templates": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 149
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/question-templates": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 158
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/query-templates": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 155
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/analytics-templates": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 159
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/template-library": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 156
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/shared-templates": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 156
+      },
+      "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/public-templates": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 156
+      },
+      "/template-library": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 108
+      },
+      "/public-templates": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 108
+      },
+      "/template-categories": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 111
+      },
+      "/template-marketplace": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 112
+      }
+    },
+    "query_variations": {
+      "/queries": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 99
+      },
+      "/queries/search": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 106
+      },
+      "/queries/history": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 107
+      },
+      "/queries/scheduled": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 109
+      },
+      "/queries/running": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 107
+      },
+      "/queries/completed": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 109
+      },
+      "/queries/failed": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 106
+      },
+      "/queries/templates": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 109
+      },
+      "/queries/library": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 107
+      },
+      "/query-builder": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 105
+      },
+      "/query-scheduler": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 107
+      },
+      "/query-monitor": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 105
+      },
+      "/query-analytics": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 107
+      },
+      "/scheduled-queries": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 109
+      },
+      "/query-history": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 105
+      },
+      "/query-results": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 105
+      },
+      "/bulk-queries": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 104
+      },
+      "/query-batches": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 105
+      }
+    },
+    "export_variations": {
+      "/exports": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 99
+      },
+      "/exports/search": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 106
+      },
+      "/exports/history": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 107
+      },
+      "/exports/scheduled": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 109
+      },
+      "/exports/formats": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 107
+      },
+      "/exports/templates": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 109
+      },
+      "/exports/bulk": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 104
+      },
+      "/export-jobs": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 103
+      },
+      "/download-center": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 107
+      },
+      "/file-manager": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 104
+      },
+      "/data-exports": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 104
+      },
+      "/result-exports": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 106
+      },
+      "/scheduled-exports": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 109
+      },
+      "/export-analytics": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 108
+      },
+      "/export-monitor": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 106
+      }
+    },
+    "organizational": {
+      "/organizations": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 105
+      },
+      "/organizations/current": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 113
+      },
+      "/organization/settings": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 113
+      },
+      "/organization/users": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 110
+      },
+      "/organization/billing": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 112
+      },
+      "/organization/usage": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 110
+      },
+      "/organization/limits": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 111
+      },
+      "/organization/audit-logs": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 115
+      },
+      "/organization/integrations": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 117
+      },
+      "/users": {
+        "status_code": 200,
+        "accessible": true,
+        "protected": false,
+        "forbidden": false,
+        "not_found": false,
+        "response_size": 346,
+        "data_preview": "[{'roleName': 'Organization Admin', 'user': {'id': '8d254631-87cf-459b-a5a5-e3f2a52f5e44', 'name': 'Admin Demo Role', 'email': 'user001odni@liveramp.com'}}, {'roleName': 'API Administrator', 'user': {...",
+        "data_analysis": {
+          "type": "list",
+          "size": 363,
+          "capabilities": [
+            "User Management"
+          ],
+          "record_count": 2,
+          "sample_keys": [
+            "roleName",
+            "user"
+          ]
+        },
+        "business_potential": "\ud83d\udc65 MEDIUM - User management"
+      },
+      "/users/current": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 105
+      },
+      "/user/preferences": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 108
+      },
+      "/user/profile": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 104
+      },
+      "/teams": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 97
+      },
+      "/roles": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 97
+      },
+      "/permissions": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 103
+      },
+      "/billing": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 99
+      },
+      "/usage": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 97
+      },
+      "/limits": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 98
+      },
+      "/audit": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 97
+      },
+      "/activity-logs": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 105
+      }
+    },
+    "analytics": {
+      "/analytics": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 101
+      },
+      "/analytics/insights": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 110
+      },
+      "/analytics/recommendations": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 117
+      },
+      "/analytics/models": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 108
+      },
+      "/analytics/predictions": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 113
+      },
+      "/analytics/forecasts": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 111
+      },
+      "/insights": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 100
+      },
+      "/recommendations": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 107
+      },
+      "/ml-models": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 101
+      },
+      "/machine-learning": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 108
+      },
+      "/predictions": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 103
+      },
+      "/forecasting": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 103
+      },
+      "/data-science": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 104
+      },
+      "/advanced-analytics": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 110
+      },
+      "/ai-insights": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 103
+      },
+      "/intelligent-recommendations": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 119
+      },
+      "/pattern-analysis": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 108
+      },
+      "/trend-analysis": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 106
+      },
+      "/anomaly-detection": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 109
+      },
+      "/clustering": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 102
+      },
+      "/segmentation": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 104
+      },
+      "/cohort-analysis": {
+        "status_code": 404,
+        "accessible": false,
+        "protected": false,
+        "forbidden": false,
+        "not_found": true,
+        "response_size": 107
+      }
+    }
+  },
+  "high_value_findings": [
+    {
+      "endpoint": "/cleanrooms/06d4603d-f87c-422a-8ab2-6bbd92c0df56/cleanroom-questions",
+      "category": "Template Management",
+      "value": "HIGH - Extends current template capabilities"
+    },
+    {
+      "endpoint": "/users",
+      "category": "Organization Management",
+      "value": "MEDIUM - Admin and user management"
+    }
+  ]
+}
