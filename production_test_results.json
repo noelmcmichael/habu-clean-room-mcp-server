@@ -1,0 +1,97 @@
+{
+  "timestamp": "2025-06-24T09:27:05.622441",
+  "tests": [
+    {
+      "test": "Service Health Check",
+      "status": "FAIL",
+      "timestamp": "2025-06-24T09:27:16.207155",
+      "details": {
+        "Demo API": "Healthy (124ms)",
+        "React Frontend": "Error: HTTPSConnectionPool(host='habu-demo-frontend-v2.onrender.com', port=443): Read timed out. (read timeout=10)",
+        "MCP Server": "Healthy (241ms)",
+        "Admin App": "Unhealthy (404)"
+      }
+    },
+    {
+      "test": "Redis Cache Statistics",
+      "status": "WARN",
+      "timestamp": "2025-06-24T09:27:16.340805",
+      "details": {
+        "Connected": false,
+        "Redis Version": "N/A",
+        "Used Memory": "N/A",
+        "Connected Clients": "N/A",
+        "Hit Rate": "0%"
+      }
+    },
+    {
+      "test": "Chat Response Caching",
+      "status": "PASS",
+      "timestamp": "2025-06-24T09:27:43.151486",
+      "details": {
+        "Test 1": {
+          "query": "What is the current system status?",
+          "first_request_ms": "3088ms",
+          "second_request_ms": "2083ms",
+          "first_cached": false,
+          "second_cached": false,
+          "improvement": "32.5%"
+        },
+        "Test 2": {
+          "query": "List all available partners",
+          "first_request_ms": "6341ms",
+          "second_request_ms": "2840ms",
+          "first_cached": false,
+          "second_cached": false,
+          "improvement": "55.2%"
+        },
+        "Test 3": {
+          "query": "Show me the enhanced templates",
+          "first_request_ms": "6147ms",
+          "second_request_ms": "3297ms",
+          "first_cached": false,
+          "second_cached": false,
+          "improvement": "46.4%"
+        }
+      }
+    },
+    {
+      "test": "API Endpoint Caching",
+      "status": "PASS",
+      "timestamp": "2025-06-24T09:27:48.369056",
+      "details": {
+        "Partners List": {
+          "first_request": "2637ms (cached: False)",
+          "second_request": "1254ms (cached: False)",
+          "improvement": "52.4%",
+          "status": "PASS"
+        },
+        "Enhanced Templates": {
+          "first_request": "693ms (cached: False)",
+          "second_request": "633ms (cached: False)",
+          "improvement": "8.6%",
+          "status": "PASS"
+        }
+      }
+    },
+    {
+      "test": "Frontend Integration",
+      "status": "PASS",
+      "timestamp": "2025-06-24T09:27:48.522034",
+      "details": {
+        "Load Time": "152ms",
+        "Status Code": 200,
+        "React App": true,
+        "Content Length": "724 bytes"
+      }
+    }
+  ],
+  "overall_status": "FAIL",
+  "performance_metrics": {
+    "chat_caching": {
+      "average_improvement": "44.7%",
+      "tests_run": 3
+    }
+  },
+  "redis_status": "disconnected"
+}

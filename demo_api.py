@@ -2,17 +2,18 @@
 """
 Flask API server to bridge React frontend with enhanced chat agent
 Production-ready version with proper error handling and logging
-Enhanced with Redis caching for Phase H optimization
+Enhanced with Redis caching and CDN optimization for Phase H
 """
 import os
 import asyncio
 import logging
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from flask_compress import Compress
 from agents.enhanced_habu_chat_agent import enhanced_habu_agent
 from config.production import production_config
 from redis_cache import cache, initialize_cache, shutdown_cache
+from cdn_optimization import apply_cdn_optimization, cdn_analytics, asset_optimizer
 
 # Import MCP tools
 from tools.habu_list_partners import habu_list_partners
@@ -62,24 +63,27 @@ def close_redis(error):
 @app.route('/', methods=['GET'])
 def root():
     """Root endpoint for health checks"""
-    return jsonify({
+    response = make_response(jsonify({
         'service': 'Habu Enhanced Chat API',
-        'version': 'Phase H - Redis Optimized',
+        'version': 'Phase H - CDN & Redis Optimized',
         'status': 'operational',
         'endpoints': [
             '/api/enhanced-chat',
             '/api/health',
             '/api/cache-stats',
+            '/api/cdn-stats',
             '/api/mcp/habu_list_templates',
             '/api/mcp/habu_enhanced_templates',
             '/api/mcp/habu_list_partners'
         ]
-    })
+    }))
+    return apply_cdn_optimization(response, 'api')
 
 @app.route('/health', methods=['GET'])
 def simple_health():
     """Simple health check endpoint"""
-    return jsonify({'status': 'healthy', 'service': 'habu-chat-api', 'timestamp': 'working'})
+    response = make_response(jsonify({'status': 'healthy', 'service': 'habu-chat-api', 'timestamp': 'working'}))
+    return apply_cdn_optimization(response, 'api')
 
 @app.route('/api/cache-stats', methods=['GET'])
 def cache_stats():
@@ -89,18 +93,38 @@ def cache_stats():
         asyncio.set_event_loop(loop)
         try:
             stats = loop.run_until_complete(cache.get_cache_stats())
-            return jsonify({
+            response = make_response(jsonify({
                 'cache_stats': stats,
                 'timestamp': 'working'
-            })
+            }))
+            return apply_cdn_optimization(response, 'api')
         finally:
             loop.close()
     except Exception as e:
         logger.error(f"Error getting cache stats: {e}")
-        return jsonify({
+        response = make_response(jsonify({
             'error': 'Failed to get cache stats',
             'detail': str(e)
-        }), 500
+        }), 500)
+        return apply_cdn_optimization(response, 'no-cache')
+
+@app.route('/api/cdn-stats', methods=['GET'])
+def cdn_stats():
+    """CDN performance statistics endpoint"""
+    try:
+        stats = cdn_analytics.get_performance_summary()
+        response = make_response(jsonify({
+            'cdn_stats': stats,
+            'timestamp': 'working'
+        }))
+        return apply_cdn_optimization(response, 'api')
+    except Exception as e:
+        logger.error(f"Error getting CDN stats: {e}")
+        response = make_response(jsonify({
+            'error': 'Failed to get CDN stats',
+            'detail': str(e)
+        }), 500)
+        return apply_cdn_optimization(response, 'no-cache')
 
 @app.route('/api/enhanced-chat', methods=['POST'])
 def enhanced_chat():
@@ -136,7 +160,8 @@ def enhanced_chat():
                 response_data = cached_response['data']
                 response_data['cached'] = True
                 response_data['cached_at'] = cached_response.get('cached_at')
-                return jsonify({'response': response_data})
+                response_obj = make_response(jsonify({'response': response_data}))
+                return apply_cdn_optimization(response_obj, 'api')
             
             # Process new request
             response = loop.run_until_complete(
@@ -154,19 +179,21 @@ def enhanced_chat():
             )
             
             logger.info("Chat request processed and cached successfully")
-            return jsonify({
+            response_obj = make_response(jsonify({
                 'response': response,
                 'cached': False
-            })
+            }))
+            return apply_cdn_optimization(response_obj, 'api')
         finally:
             loop.close()
             
     except Exception as e:
         logger.error(f"Error in enhanced_chat: {e}")
-        return jsonify({
+        response_obj = make_response(jsonify({
             'error': 'Internal server error',
             'detail': str(e) if production_config.DEBUG else 'An error occurred processing your request'
-        }), 500
+        }), 500)
+        return apply_cdn_optimization(response_obj, 'no-cache')
 
 @app.route('/api/mcp/habu_list_templates', methods=['GET'])
 def api_list_templates():
@@ -176,12 +203,14 @@ def api_list_templates():
         asyncio.set_event_loop(loop)
         try:
             result = loop.run_until_complete(habu_list_templates())
-            return json.loads(result)
+            response_obj = make_response(json.loads(result))
+            return apply_cdn_optimization(response_obj, 'api')
         finally:
             loop.close()
     except Exception as e:
         logger.error(f"Error in list_templates: {e}")
-        return jsonify({'error': str(e)}), 500
+        response_obj = make_response(jsonify({'error': str(e)}), 500)
+        return apply_cdn_optimization(response_obj, 'no-cache')
 
 @app.route('/api/mcp/habu_enhanced_templates', methods=['GET'])
 def api_enhanced_templates():
@@ -203,7 +232,8 @@ def api_enhanced_templates():
                 response_data = cached_result['data']
                 response_data['cached'] = True
                 response_data['cached_at'] = cached_result.get('cached_at')
-                return response_data
+                response_obj = make_response(response_data)
+                return apply_cdn_optimization(response_obj, 'api')
             
             # Fetch fresh data
             result = loop.run_until_complete(habu_enhanced_templates(cleanroom_id))
@@ -220,12 +250,14 @@ def api_enhanced_templates():
             )
             
             result_data['cached'] = False
-            return result_data
+            response_obj = make_response(result_data)
+            return apply_cdn_optimization(response_obj, 'api')
         finally:
             loop.close()
     except Exception as e:
         logger.error(f"Error in enhanced_templates: {e}")
-        return jsonify({'error': str(e)}), 500
+        response_obj = make_response(jsonify({'error': str(e)}), 500)
+        return apply_cdn_optimization(response_obj, 'no-cache')
 
 @app.route('/api/mcp/habu_list_partners', methods=['GET'])
 def api_list_partners():
@@ -244,7 +276,8 @@ def api_list_partners():
                 response_data = cached_result['data']
                 response_data['cached'] = True
                 response_data['cached_at'] = cached_result.get('cached_at')
-                return response_data
+                response_obj = make_response(response_data)
+                return apply_cdn_optimization(response_obj, 'api')
             
             # Fetch fresh data
             result = loop.run_until_complete(habu_list_partners())
@@ -261,12 +294,14 @@ def api_list_partners():
             )
             
             result_data['cached'] = False
-            return result_data
+            response_obj = make_response(result_data)
+            return apply_cdn_optimization(response_obj, 'api')
         finally:
             loop.close()
     except Exception as e:
         logger.error(f"Error in list_partners: {e}")
-        return jsonify({'error': str(e)}), 500
+        response_obj = make_response(jsonify({'error': str(e)}), 500)
+        return apply_cdn_optimization(response_obj, 'no-cache')
 
 @app.route('/api/mcp/habu_submit_query', methods=['POST'])
 def api_submit_query():
@@ -283,12 +318,14 @@ def api_submit_query():
         asyncio.set_event_loop(loop)
         try:
             result = loop.run_until_complete(habu_submit_query(template_id, parameters))
-            return json.loads(result)
+            response_obj = make_response(json.loads(result))
+            return apply_cdn_optimization(response_obj, 'no-cache')  # Don't cache dynamic queries
         finally:
             loop.close()
     except Exception as e:
         logger.error(f"Error in submit_query: {e}")
-        return jsonify({'error': str(e)}), 500
+        response_obj = make_response(jsonify({'error': str(e)}), 500)
+        return apply_cdn_optimization(response_obj, 'no-cache')
 
 @app.route('/api/mcp/habu_check_status', methods=['GET'])
 def api_check_status():

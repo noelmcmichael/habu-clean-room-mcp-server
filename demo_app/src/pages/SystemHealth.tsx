@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './SystemHealth.css';
+import CDNMetrics from '../components/CDNMetrics';
 
 interface ServiceStatus {
   name: string;
@@ -180,7 +181,7 @@ const SystemHealth: React.FC = () => {
       cacheStats: cacheStats ? {
         connected: cacheStats.connected,
         hitRate: cacheStats.hit_rate,
-        keyCount: Object.values(cacheStats.cache_key_counts || {}).reduce((a: number, b: number) => a + b, 0),
+        keyCount: Object.values(cacheStats.cache_key_counts || {}).reduce((a: number, b: any) => a + (Number(b) || 0), 0),
         usedMemory: cacheStats.used_memory
       } : undefined
     });
@@ -341,6 +342,9 @@ const SystemHealth: React.FC = () => {
               </div>
             </div>
           )}
+
+          {/* CDN Performance Metrics */}
+          <CDNMetrics refreshInterval={30000} />
 
           {/* MCP Tools Status */}
           <div className="mcp-tools-status">
