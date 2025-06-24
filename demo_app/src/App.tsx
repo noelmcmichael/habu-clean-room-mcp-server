@@ -5,6 +5,7 @@ import Cleanrooms from './pages/Cleanrooms';
 import SystemHealth from './pages/SystemHealth';
 import ApiExplorer from './pages/ApiExplorer';
 import Architecture from './pages/Architecture';
+import { ConversationProvider } from './contexts/ConversationContext';
 import './App.css';
 import './components/DemoPhase4.css';
 
@@ -88,14 +89,16 @@ const ChatPage: React.FC = () => {
 function App() {
   return (
     <Router>
-      <div className="app">
-        <div className="app-layout">
-          <aside className="sidebar">
-            <Navigation />
-          </aside>
-          <MainContent />
+      <ConversationProvider>
+        <div className="app">
+          <div className="app-layout">
+            <aside className="sidebar">
+              <Navigation />
+            </aside>
+            <MainContent />
+          </div>
         </div>
-      </div>
+      </ConversationProvider>
     </Router>
   );
 }

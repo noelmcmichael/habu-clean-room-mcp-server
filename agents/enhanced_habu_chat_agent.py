@@ -172,12 +172,16 @@ class EnhancedHabuChatAgent:
         context_summary = self._get_context_summary()
         
         # Enhanced system prompt with REAL cleanroom context and intelligent response patterns
-        system_prompt = """You are an expert Habu Clean Room Data Collaboration Assistant powered by OpenAI GPT-4. You help enterprises manage privacy-safe data partnerships and advanced analytics.
+        system_prompt = f"""You are an expert LiveRamp Clean Room Data Collaboration Assistant powered by OpenAI GPT-4. You help enterprises unlock the value of their data partnerships through privacy-first analytics.
 
-🧠 **CONVERSATION CONTEXT**: """ + context_summary + """
+🧠 **CONVERSATION CONTEXT**: {context_summary}
 
-🏢 HABU CLEAN ROOM PLATFORM OVERVIEW:
-Habu enables secure data collaboration between companies without exposing raw data. Partners can run joint analytics while maintaining privacy through cryptographic clean rooms.
+🏢 **LIVERAMP CLEAN ROOM PLATFORM**:
+LiveRamp Clean Rooms enable secure multi-party data collaboration without exposing raw data. Companies can run joint analytics, audience insights, and attribution studies while maintaining complete data privacy through cryptographic technologies.
+
+**Business Value**: Unlock cross-channel insights, improve targeting precision, measure incrementality, and drive better customer experiences through collaborative analytics.
+
+**Privacy First**: All computations happen in secure enclaves. No raw data is ever shared between parties. Results are aggregated and privacy-safe.
 
 🔧 AVAILABLE API TOOLS:
 1. habu_list_partners - View your data collaboration partners
@@ -188,55 +192,70 @@ Habu enables secure data collaboration between companies without exposing raw da
 6. habu_list_exports - Browse completed analysis exports and download ready results
 7. habu_download_export - Download specific export files with full dataset access
 
-📊 LIVE CLEANROOM CONTEXT - "Data Marketplace Demo":
-🎯 CURRENT REAL DATA:
-- **Cleanroom Name**: "Data Marketplace Demo" (ICDC - Demo organization)
-- **Status**: COMPLETE and fully operational
-- **Partners**: 0 active partners (new cleanroom, partnerships being established)
-- **Templates**: 4 real analytics templates available
+📊 **YOUR ACTIVE CLEANROOM**: "Data Marketplace Demo"
 
-🔥 YOUR REAL ANALYTICS TEMPLATES:
-1. **"Database of Events, Language, and Tone - Sentiment Analysis - Global"** 
-   - Category: Sentiment Analysis | Status: MISSING_DATASETS
-   - Note: "This template needs dataset configuration before execution"
-   
-2. **"Database of Events, Language, and Tone - Sentiment Analysis - Global"** 
-   - Category: Sentiment Analysis | Status: READY
-   - Action: "Ready for immediate sentiment analysis execution"
-   
-3. **"Geotrace - Mobile Location - Pattern of Life"**
-   - Category: Location Data | Status: READY  
-   - Action: "Ready for mobile location and pattern of life analysis"
-   
-4. **"TimberMac and Geotrace - Combined Analysis - Location Data"**
-   - Category: Pattern of Life | Status: READY
-   - Action: "Ready for combined location intelligence analysis"
+**🏢 Organization**: ICDC (Demo Account)
+**⚡ Status**: Fully Operational & Production Ready
+**🤝 Active Partnerships**: 0 partners (New cleanroom - establishing data partnerships)
+**📈 Available Analytics**: 4 professional templates with enterprise-grade capabilities
 
-🧠 INTELLIGENT RESPONSE PATTERNS:
-When users ask about analytics capabilities, provide smart, status-aware responses:
+🎯 **READY-TO-EXECUTE ANALYTICS** (3 Templates):
 
-**For READY templates (3 available):**
-- "I see you have 2 Sentiment Analysis templates - one is READY for queries while the other needs dataset setup"
-- "Your Location Data template from Geotrace is available for Pattern of Life analysis"
-- "The TimberMac and Geotrace combined analysis template could provide comprehensive location insights"
+**1. Sentiment Analysis Engine**
+   - **Purpose**: Global brand monitoring, customer sentiment tracking, market perception analysis
+   - **Business Use**: Reputation management, campaign effectiveness, competitive intelligence
+   - **Data Sources**: Social media, reviews, surveys, customer feedback
+   - **Insights**: Sentiment trends, emotional drivers, brand health metrics
+   - **Status**: ✅ READY - Execute immediately
 
-**For MISSING_DATASETS template (1 unavailable):**
-- "One of your Sentiment Analysis templates requires dataset configuration before it can be executed"
-- "Contact your administrator to complete the setup for the unavailable template"
+**2. Location Intelligence Platform** 
+   - **Purpose**: Mobile location patterns, consumer journey analysis, foot traffic insights
+   - **Business Use**: Store optimization, audience targeting, competitive analysis
+   - **Data Sources**: Mobile location signals, GPS data, geofenced events
+   - **Insights**: Visit patterns, dwell time, cross-location behavior
+   - **Status**: ✅ READY - Execute immediately
 
-🔥 CATEGORY-AWARE RECOMMENDATIONS:
-- **Sentiment Analysis**: "You can analyze global sentiment patterns with your READY template"
-- **Location Data**: "Mobile location analytics are available through your Geotrace template"  
-- **Pattern of Life**: "Combined behavioral analysis is ready with your TimberMac/Geotrace template"
+**3. Combined Behavioral Intelligence**
+   - **Purpose**: Multi-dimensional analysis combining location + behavioral data  
+   - **Business Use**: Customer 360 view, attribution modeling, audience segmentation
+   - **Data Sources**: TimberMac behavioral data + Geotrace location data
+   - **Insights**: Complete customer journey, cross-channel behavior, predictive modeling
+   - **Status**: ✅ READY - Execute immediately
 
-🎯 CONVERSATION STYLE:
-- Be conversational and business-intelligent
-- Reference specific templates by name when relevant
-- Provide different responses based on template status (READY vs MISSING_DATASETS)
-- Give actionable recommendations based on available capabilities
-- Guide users through realistic workflows with our specific templates
-- Be realistic about 0 partners (common for new cleanrooms)
-- Provide strategic recommendations based on actual available data
+🔧 **SETUP REQUIRED** (1 Template):
+- **Sentiment Analysis (Alternative)**: Dataset configuration needed - Contact admin
+
+🧠 **INTELLIGENT RESPONSE FRAMEWORK**:
+
+**Business-First Communication**:
+- Lead with business value and strategic outcomes
+- Explain "why" before "how" - business impact before technical details
+- Provide context about competitive advantages and market insights
+- Include concrete examples and use cases relevant to enterprise clients
+
+**Template-Specific Business Intelligence**:
+- **Sentiment Analysis**: "Monitor brand health, track campaign effectiveness, identify reputation risks"
+- **Location Intelligence**: "Optimize store locations, improve targeting, understand customer journeys"  
+- **Behavioral Intelligence**: "Create customer 360 views, improve attribution, drive personalization"
+
+**Response Structure Template**:
+1. **Business Context**: Why this matters for the business
+2. **Available Capability**: What can be done right now
+3. **Expected Insights**: What results to expect
+4. **Next Steps**: Clear action items
+5. **Strategic Value**: How this drives business outcomes
+
+**Contextual Awareness**:
+- **New Conversations**: Focus on discovery and capability overview
+- **Post-Template-View**: Suggest specific execution based on available templates
+- **During Execution**: Provide monitoring guidance and timeline expectations
+- **Post-Results**: Offer analysis insights and next workflow steps
+
+**Professional Tone**:
+- Executive-level communication with strategic context
+- Technical accuracy with business accessibility
+- Confident but not overselling capabilities
+- Honest about limitations (0 partners, setup requirements)
 
 📋 REAL PRODUCTION CONTEXT:
 - **Live API Mode**: Using real Habu API with OAuth2 authentication
@@ -474,107 +493,134 @@ Always use JSON actions for these query patterns:
                     partners = result_data.get("partners", [])
                     if partners:
                         partner_names = [p.get("name", "Unknown") for p in partners]
-                        return f"{explanation}\n\nHere are your clean room partners:\n• " + "\n• ".join(partner_names)
+                        response = f"{explanation}\n\n🤝 **Active Data Partnerships**:\n• " + "\n• ".join(partner_names)
+                        response += f"\n\n💡 **Business Value**: With {len(partners)} active partner{'s' if len(partners) != 1 else ''}, you can:"
+                        response += f"\n• Run cross-partner analytics while maintaining privacy"
+                        response += f"\n• Access complementary datasets for richer insights"
+                        response += f"\n• Execute collaborative audience analysis and attribution studies"
+                        response += f"\n• Measure incrementality and campaign effectiveness across touchpoints"
+                        return response
                     else:
-                        return f"{explanation}\n\n🏢 **Partnership Status**: Your 'Data Marketplace Demo' cleanroom is newly established with 0 active partners. This is normal for new cleanrooms.\n\n**Next Steps**: Contact your administrator to establish data partnerships with brands like retailers, media companies, or data providers. Once partnerships are established, you'll be able to run collaborative analytics while maintaining data privacy."
+                        return f"""{explanation}
+
+🏢 **Partnership Opportunity**: Your 'Data Marketplace Demo' cleanroom is ready for data partnerships.
+
+**Current Status**: 0 active partners (This is typical for new cleanrooms)
+
+**Business Impact**: Establishing partnerships unlocks:
+• **Cross-channel insights** from complementary data sources
+• **Enhanced targeting** through expanded audience understanding  
+• **Attribution modeling** across partner touchpoints
+• **Competitive intelligence** through market-wide analysis
+
+**Recommended Partners**:
+• **Retailers**: For purchase behavior and customer journey insights
+• **Media Companies**: For engagement and content effectiveness analysis
+• **Data Providers**: For demographic and behavioral enrichment
+• **Brands**: For collaborative attribution and audience studies
+
+**Next Steps**: Contact your LiveRamp account manager to establish strategic data partnerships that align with your business objectives."""
                         
             elif result_type == "templates" or result_type == "enhanced_templates":
                 if result_data.get("status") == "success":
                     templates = result_data.get("templates", [])
                     if templates:
-                        # Enhanced template display with intelligent status analysis
-                        ready_templates = []
-                        missing_data_templates = []
+                        # Business-intelligent template analysis
+                        sentiment_ready = []
+                        location_ready = []
+                        combined_ready = []
+                        setup_needed = []
                         
                         for t in templates:
                             name = t.get("name", "Unknown")
                             category = t.get("category", "Unknown")
                             status = t.get("status", "Unknown")
-                            question_type = t.get("questionType", "")
-                            data_types = t.get("dataTypes", {})
-                            parameters = t.get("parameters", {})
                             
-                            # Enhanced template information
-                            enhanced_info = []
-                            if question_type:
-                                enhanced_info.append(f"Type: {question_type}")
-                            
-                            # Handle data types (can be dict or list depending on source)
-                            if data_types:
-                                if isinstance(data_types, dict):
-                                    data_type_names = list(data_types.keys())[:2]
-                                elif isinstance(data_types, list):
-                                    data_type_names = data_types[:2]
-                                else:
-                                    data_type_names = [str(data_types)]
-                                
-                                if data_type_names:
-                                    enhanced_info.append(f"Data: {', '.join(data_type_names)}")
-                            
-                            # Handle parameters
-                            if parameters:
-                                if isinstance(parameters, dict) and len(parameters) > 0:
-                                    # Show specific parameter info
-                                    required = parameters.get('required', [])
-                                    optional = parameters.get('optional', [])
-                                    if required or optional:
-                                        param_info = f"Required: {len(required) if required else 0}"
-                                        if optional:
-                                            param_info += f", Optional: {len(optional)}"
-                                        enhanced_info.append(f"Parameters: {param_info}")
-                                    else:
-                                        # If parameters is just a dict of values
-                                        enhanced_info.append(f"Parameters: {len(parameters)} fields")
-                            
-                            enhanced_suffix = f" | {' | '.join(enhanced_info)}" if enhanced_info else ""
-                            
+                            # Business intelligence for each template type
                             if status == "READY":
-                                ready_templates.append(f"✅ **{name}**\n   Category: {category}{enhanced_suffix} | Status: Ready for execution")
-                            elif status == "MISSING_DATASETS":
-                                missing_data_templates.append(f"⚠️ **{name}**\n   Category: {category}{enhanced_suffix} | Status: Needs dataset configuration")
+                                if "sentiment" in category.lower() or "sentiment" in name.lower():
+                                    sentiment_ready.append({
+                                        "name": name,
+                                        "business_value": "Brand monitoring, customer feedback analysis, market sentiment tracking",
+                                        "use_cases": "Campaign effectiveness, reputation management, competitive intelligence",
+                                        "insights": "Sentiment trends, emotional drivers, brand health metrics"
+                                    })
+                                elif "location" in category.lower() or "location" in name.lower() or "geotrace" in name.lower():
+                                    location_ready.append({
+                                        "name": name,
+                                        "business_value": "Customer journey mapping, foot traffic analysis, location-based targeting",
+                                        "use_cases": "Store optimization, audience segmentation, competitive analysis",
+                                        "insights": "Visit patterns, dwell time, geographic behavior"
+                                    })
+                                elif "pattern" in category.lower() or "combined" in name.lower() or "timberMac" in name.lower():
+                                    combined_ready.append({
+                                        "name": name,
+                                        "business_value": "360-degree customer view, cross-channel attribution, predictive modeling",
+                                        "use_cases": "Customer lifetime value, attribution modeling, personalization",
+                                        "insights": "Complete customer journey, behavioral predictions, cross-channel impact"
+                                    })
                             else:
-                                ready_templates.append(f"• **{name}**\n   Category: {category}{enhanced_suffix} | Status: {status}")
+                                setup_needed.append({
+                                    "name": name,
+                                    "category": category,
+                                    "issue": "Dataset configuration required"
+                                })
                         
-                        # Enhanced metadata summary with business intelligence
-                        total_count = result_data.get("count", len(templates))
-                        categories = result_data.get("categories", [])
-                        question_types = result_data.get("question_types", [])
-                        ready_count = result_data.get("ready_templates", len(ready_templates))
-                        missing_count = result_data.get("missing_datasets_templates", len(missing_data_templates))
-                        enhancement_features = result_data.get("enhancement_features", {})
+                        # Business intelligence summary
+                        total_ready = len(sentiment_ready) + len(location_ready) + len(combined_ready)
+                        total_setup = len(setup_needed)
                         
-                        response = f"{explanation}\n\n🔥 **Your Enhanced Analytics Templates** ({total_count} total)"
-                        if categories:
-                            response += f"\n📊 **Categories**: {', '.join(categories)}"
-                        if question_types:
-                            response += f"\n🎯 **Types**: {', '.join(question_types)}"
+                        response = f"""{explanation}
+
+📊 **Your LiveRamp Analytics Portfolio** ({len(templates)} professional templates)
+
+**⚡ Execution Status**: {total_ready} ready for immediate execution | {total_setup} requiring setup
+**🎯 Business Capabilities**: Multi-channel insights, customer intelligence, attribution modeling"""
+
+                        if sentiment_ready:
+                            response += f"\n\n🎯 **SENTIMENT INTELLIGENCE** ({len(sentiment_ready)} available):"
+                            for template in sentiment_ready:
+                                response += f"\n\n✅ **{template['name']}**"
+                                response += f"\n   📈 **Business Value**: {template['business_value']}"
+                                response += f"\n   🎯 **Use Cases**: {template['use_cases']}"
+                                response += f"\n   💡 **Key Insights**: {template['insights']}"
+                                response += f"\n   🚀 **Action**: Ready for execution - ask 'Run sentiment analysis'"
                         
-                        # Enhanced status summary
-                        if ready_count is not None and missing_count is not None:
-                            response += f"\n⚡ **Status**: {ready_count} ready, {missing_count} need setup"
+                        if location_ready:
+                            response += f"\n\n📍 **LOCATION INTELLIGENCE** ({len(location_ready)} available):"
+                            for template in location_ready:
+                                response += f"\n\n✅ **{template['name']}**"
+                                response += f"\n   📈 **Business Value**: {template['business_value']}"
+                                response += f"\n   🎯 **Use Cases**: {template['use_cases']}"
+                                response += f"\n   💡 **Key Insights**: {template['insights']}"
+                                response += f"\n   🚀 **Action**: Ready for execution - ask 'Analyze location patterns'"
                         
-                        # Enhancement features indicator
-                        if enhancement_features.get("business_intelligence"):
-                            response += f"\n✨ **Enhanced Features**: Parameter metadata, data types, status tracking"
-                            
-                        response += "\n\n"
+                        if combined_ready:
+                            response += f"\n\n🌐 **COMBINED INTELLIGENCE** ({len(combined_ready)} available):"
+                            for template in combined_ready:
+                                response += f"\n\n✅ **{template['name']}**"
+                                response += f"\n   📈 **Business Value**: {template['business_value']}"
+                                response += f"\n   🎯 **Use Cases**: {template['use_cases']}"
+                                response += f"\n   💡 **Key Insights**: {template['insights']}"
+                                response += f"\n   🚀 **Action**: Ready for execution - ask 'Execute combined intelligence'"
                         
-                        if ready_templates:
-                            response += "**🚀 Ready for Execution:**\n" + "\n\n".join(ready_templates)
-                            if len(ready_templates) == 3:
-                                response += "\n\n💡 **Quick Start**: You have 3 templates ready! Try asking 'Run a sentiment analysis' or 'Analyze location patterns'"
+                        if setup_needed:
+                            response += f"\n\n⚙️ **SETUP REQUIRED** ({len(setup_needed)} templates):"
+                            for template in setup_needed:
+                                response += f"\n\n⚠️ **{template['name']}** ({template['category']})"
+                                response += f"\n   🔧 **Issue**: {template['issue']}"
+                            response += f"\n\n📞 **Next Steps**: Contact your LiveRamp account manager to complete dataset configuration."
                         
-                        if missing_data_templates:
-                            response += "\n\n**⚙️ Needs Setup:**\n" + "\n\n".join(missing_data_templates)
-                            response += "\n\n📞 **Action Required**: Contact your administrator to complete dataset configuration for the template above."
-                        
-                        # Add category-specific recommendations
-                        if any("Sentiment Analysis" in t.get("category", "") for t in templates):
-                            response += "\n\n🎯 **Sentiment Analysis**: Analyze customer feedback, brand mentions, and market sentiment patterns."
-                        if any("Location Data" in t.get("category", "") for t in templates):
-                            response += "\n\n📍 **Location Analytics**: Discover mobility patterns, geographic insights, and behavioral trends."
-                        if any("Pattern of Life" in t.get("category", "") for t in templates):
-                            response += "\n\n🔍 **Pattern of Life**: Combined analysis for comprehensive behavioral intelligence."
+                        # Strategic recommendations
+                        if total_ready > 0:
+                            response += f"\n\n🚀 **Ready to Execute**: You have {total_ready} templates ready for immediate business insights."
+                            response += f"\n\n💡 **Quick Start Recommendations**:"
+                            if sentiment_ready:
+                                response += f"\n• **Brand Monitoring**: Run sentiment analysis to track brand health and customer perception"
+                            if location_ready:
+                                response += f"\n• **Customer Journey**: Analyze location patterns to understand customer behavior"
+                            if combined_ready:
+                                response += f"\n• **360° Intelligence**: Execute combined analysis for comprehensive customer insights"
                         
                         return response
                     else:

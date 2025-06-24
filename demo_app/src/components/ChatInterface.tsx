@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import DemoErrorHandler from './DemoErrorHandler';
+import { useConversation } from '../contexts/ConversationContext';
+import ContextualPromptService from '../services/ContextualPromptService';
 
 interface ChatMessage {
   id: string;
@@ -15,6 +17,14 @@ interface ChatMessage {
 }
 
 const ChatInterface: React.FC = () => {
+  const { 
+    conversationState, 
+    templateContext, 
+    currentPage, 
+    addMessage, 
+    updateTemplateContext 
+  } = useConversation();
+  
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -31,7 +41,9 @@ const ChatInterface: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [retryAttempts, setRetryAttempts] = useState(0);
+  const [contextualPrompts, setContextualPrompts] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const promptService = ContextualPromptService.getInstance();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -40,6 +52,20 @@ const ChatInterface: React.FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Generate contextual prompts based on current state
+  useEffect(() => {
+    const generatePrompts = () => {
+      const prompts = promptService.generateContextualPrompts(
+        conversationState,
+        templateContext,
+        5
+      );
+      setContextualPrompts(prompts);
+    };
+
+    generatePrompts();
+  }, [conversationState, templateContext, currentPage, promptService]);
 
   const sendMessage = async (messageText?: string) => {
     const textToSend = messageText || inputValue;
@@ -56,6 +82,9 @@ const ChatInterface: React.FC = () => {
     setMessages(prev => [...prev, userMessage]);
     if (!messageText) setInputValue('');
     setIsLoading(true);
+    
+    // Track message in conversation context
+    addMessage('user', textToSend);
 
     try {
       const apiUrl = process.env.REACT_APP_API_URL || '';
@@ -95,6 +124,28 @@ const ChatInterface: React.FC = () => {
 
       setMessages(prev => [...prev, assistantMessage]);
       setRetryAttempts(0); // Reset retry count on success
+      
+      // Track assistant message in conversation context
+      addMessage('assistant', data.response || 'I processed your request successfully.');
+      
+      // Update template context if response contains template data
+      if (data.response && data.response.includes('template')) {
+        // Try to extract template information from response
+        const templateMatch = data.response.match(/(\d+)\s+(ready|available|template)/i);
+        if (templateMatch) {
+          const readyCount = parseInt(templateMatch[1]) || 0;
+          updateTemplateContext({
+            totalTemplates: readyCount + 1,
+            readyTemplates: readyCount,
+            missingDatasetTemplates: 1,
+            categories: ['Sentiment Analysis', 'Location Data', 'Pattern of Life'],
+            hasLocationData: true,
+            hasSentimentAnalysis: true,
+            hasPatternOfLife: true,
+            hasCombinedAnalysis: true
+          });
+        }
+      }
     } catch (error: any) {
       console.error('Error sending message:', error);
       
@@ -138,7 +189,29 @@ const ChatInterface: React.FC = () => {
   };
 
   const handleSuggestedQuestion = (question: string) => {
-    setInputValue(question);
+    // Strip emoji from question for input
+    const cleanQuestion = question.replace(/^[^\w\s]+\s*/, '');
+    setInputValue(cleanQuestion);
+  };
+
+  const getContextualPromptHeader = (): string => {
+    const { conversationLength, hasViewedTemplates, hasActiveQuery, hasCompletedQuery } = conversationState;
+    
+    if (conversationLength === 0) {
+      return "🚀 Get Started:";
+    } else if (currentPage === 'cleanrooms' && hasViewedTemplates) {
+      return "🎯 Ready to Execute:";
+    } else if (hasActiveQuery) {
+      return "⏱️ Monitor Progress:";
+    } else if (hasCompletedQuery) {
+      return "📊 Next Steps:";
+    } else if (currentPage === 'cleanrooms') {
+      return "🏛️ Cleanroom Actions:";
+    } else if (currentPage === 'api_explorer') {
+      return "⚙️ API Testing:";
+    } else {
+      return "💡 Suggestions:";
+    }
   };
 
 
@@ -158,8 +231,8 @@ const ChatInterface: React.FC = () => {
     console.error('Demo error:', error);
   };
 
-  // Enhanced suggested questions for Phase 4
-  const suggestedQuestions = [
+  // Use contextual prompts instead of static questions
+  const suggestedQuestions = contextualPrompts.length > 0 ? contextualPrompts : [
     "🎯 Run a sentiment analysis",
     "📍 Analyze location patterns", 
     "🔧 Execute combined intelligence",
@@ -222,7 +295,7 @@ const ChatInterface: React.FC = () => {
         </div>
 
         <div className="suggested-questions">
-          <p>🚀 Quick Actions for Demo:</p>
+          <p>{getContextualPromptHeader()}</p>
           <div className="suggested-buttons">
             {suggestedQuestions.map((question, index) => (
               <button

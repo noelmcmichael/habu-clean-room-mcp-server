@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useConversation } from '../contexts/ConversationContext';
 import './Cleanrooms.css';
 
 interface EnhancedTemplate {
@@ -48,6 +49,7 @@ interface PartnersData {
 }
 
 const Cleanrooms: React.FC = () => {
+  const { updateTemplateContext } = useConversation();
   const [enhancedTemplates, setEnhancedTemplates] = useState<EnhancedCleanroomData | null>(null);
   const [partners, setPartners] = useState<PartnersData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -75,6 +77,47 @@ const Cleanrooms: React.FC = () => {
 
         setEnhancedTemplates(enhancedTemplatesData);
         setPartners(partnersData);
+        
+        // Update conversation context with template data
+        if (enhancedTemplatesData && enhancedTemplatesData.templates) {
+          const categories = new Set<string>();
+          let hasLocationData = false;
+          let hasSentimentAnalysis = false;
+          let hasPatternOfLife = false;
+          let hasCombinedAnalysis = false;
+          
+          enhancedTemplatesData.templates.forEach((template: EnhancedTemplate) => {
+            categories.add(template.category);
+            
+            // Detect specific template types
+            const templateName = template.name.toLowerCase();
+            const templateCategory = template.category.toLowerCase();
+            
+            if (templateCategory.includes('sentiment') || templateName.includes('sentiment')) {
+              hasSentimentAnalysis = true;
+            }
+            if (templateCategory.includes('location') || templateName.includes('location') || templateName.includes('geotrace')) {
+              hasLocationData = true;
+            }
+            if (templateCategory.includes('pattern') || templateName.includes('pattern')) {
+              hasPatternOfLife = true;
+            }
+            if (templateName.includes('combined') || templateName.includes('timberMac')) {
+              hasCombinedAnalysis = true;
+            }
+          });
+          
+          updateTemplateContext({
+            totalTemplates: enhancedTemplatesData.total_templates || enhancedTemplatesData.templates.length,
+            readyTemplates: enhancedTemplatesData.ready_templates || 0,
+            missingDatasetTemplates: enhancedTemplatesData.missing_datasets_templates || 0,
+            categories: Array.from(categories),
+            hasLocationData,
+            hasSentimentAnalysis,
+            hasPatternOfLife,
+            hasCombinedAnalysis
+          });
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
@@ -83,7 +126,7 @@ const Cleanrooms: React.FC = () => {
     };
 
     fetchData();
-  }, [API_BASE_URL]);
+  }, [API_BASE_URL, updateTemplateContext]);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
