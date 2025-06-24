@@ -12,64 +12,6 @@ databases:
     databaseName: redis_cache
 
 services:
-  # MCP Server - Core Service
-  - type: web
-    name: habu-mcp-server
-    env: python
-    plan: starter
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python main.py"
-    envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: habu-mcp-db
-          property: connectionString
-      - key: REDIS_URL
-        fromDatabase:
-          name: habu-redis-cache
-          property: connectionString
-      - key: JOKE_MCP_SERVER_API_KEY
-        value: secure-habu-demo-key-2024
-      - key: HABU_CLIENT_ID
-        value: oP7KnpwzUQvf53P7jY0aCzuZeutqMnKT
-      - key: HABU_CLIENT_SECRET
-        value: HA9CiXEXi43fWBqFfZzJUkZga1zbjUngR1P9iH9JczyMgU70DdIW-h0eDrfKpk3w
-      - key: HABU_USE_MOCK_DATA
-        value: "true"
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: PORT
-        value: "8000"
-
-  # Demo API - Flask Backend
-  - type: web
-    name: habu-demo-api
-    env: python
-    plan: starter
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python demo_api.py"
-    envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: habu-mcp-db
-          property: connectionString
-      - key: REDIS_URL
-        fromDatabase:
-          name: habu-redis-cache
-          property: connectionString
-      - key: JOKE_MCP_SERVER_API_KEY
-        value: secure-habu-demo-key-2024
-      - key: HABU_CLIENT_ID
-        value: oP7KnpwzUQvf53P7jY0aCzuZeutqMnKT
-      - key: HABU_CLIENT_SECRET
-        value: HA9CiXEXi43fWBqFfZzJUkZga1zbjUngR1P9iH9JczyMgU70DdIW-h0eDrfKpk3w
-      - key: HABU_USE_MOCK_DATA
-        value: "true"
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: PORT
-        value: "5001"
-
   # React Frontend - Simple Build
   - type: web
     name: habu-demo-frontend
@@ -79,7 +21,7 @@ services:
     startCommand: "cd demo_app && npx serve -s build -l $PORT"
     envVars:
       - key: REACT_APP_API_URL
-        value: "https://habu-demo-api.onrender.com"
+        value: "https://habu-demo-api-v2.onrender.com"
 
   # Admin App - Database Management
   - type: web
