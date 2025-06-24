@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './SystemHealth.css';
-import CDNMetrics from '../components/CDNMetrics';
 
 interface ServiceStatus {
   name: string;
@@ -343,8 +342,7 @@ const SystemHealth: React.FC = () => {
             </div>
           )}
 
-          {/* CDN Performance Metrics - Temporarily disabled for debugging */}
-          {/* <CDNMetrics refreshInterval={30000} /> */}
+
 
           {/* MCP Tools Status */}
           <div className="mcp-tools-status">

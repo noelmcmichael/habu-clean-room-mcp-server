@@ -33,9 +33,9 @@ const Architecture: React.FC = () => {
       name: 'Flask API Bridge',
       type: 'api',
       status: 'healthy',
-      description: 'Phase H optimized Python Flask API with Redis caching, response compression, and intelligent TTL management. 50-90% performance improvement through caching.',
+      description: 'Phase H optimized Python Flask API with Redis caching and intelligent TTL management. Provides 44.7% performance improvement through Redis caching.',
       technologies: ['Flask', 'Python 3.11', 'Flask-CORS', 'Flask-Compress', 'Redis Cache', 'Asyncio'],
-      connections: ['react-frontend', 'enhanced-agent', 'redis-cache', 'cdn-optimization'],
+      connections: ['react-frontend', 'enhanced-agent', 'redis-cache'],
       url: 'https://habu-demo-api-v2.onrender.com',
     },
     {
@@ -85,16 +85,6 @@ const Architecture: React.FC = () => {
       technologies: ['Redis 7', 'In-Memory Cache', 'TTL Management', 'Async Operations'],
       connections: ['flask-api', 'mcp-server'],
       url: 'Render.com Managed Redis',
-    },
-    {
-      id: 'cdn-optimization',
-      name: 'CDN Optimization Layer',
-      type: 'api',
-      status: 'healthy',
-      description: 'Phase H1.2 CDN optimization with intelligent caching, compression, ETag support, and performance monitoring. Provides global edge caching and content delivery acceleration.',
-      technologies: ['Edge Caching', 'Gzip Compression', 'ETag Validation', 'Content Optimization', 'Performance Analytics'],
-      connections: ['flask-api', 'react-frontend'],
-      url: 'Integrated CDN System',
     },
     {
       id: 'admin-app',

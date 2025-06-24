@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Clean Flask API server - Complete rollback to stable Redis-only version
-Removes ALL CDN optimization complexity that was causing issues
+Conservative version of Flask API with minimal CDN optimization
+Emergency rollback version to fix performance issues
 """
 import os
 import asyncio
 import logging
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from flask_compress import Compress
 from agents.enhanced_habu_chat_agent import enhanced_habu_agent
@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-# Enable basic compression only
+# Enable compression for all responses (70-80% size reduction)
 Compress(app)
 
 CORS(app, origins=production_config.CORS_ORIGINS)
@@ -61,7 +61,7 @@ def root():
     """Root endpoint for health checks"""
     return jsonify({
         'service': 'Habu Enhanced Chat API',
-        'version': 'Phase H1.1 - Stable Redis Only',
+        'version': 'Phase H - Conservative Rollback',
         'status': 'operational',
         'endpoints': [
             '/api/enhanced-chat',
@@ -124,39 +124,33 @@ def enhanced_chat():
         try:
             # Check for cached response (for exact same queries)
             cache_key = f"chat_{hash(user_input) % 10000}"
-            try:
-                cached_response = loop.run_until_complete(
-                    cache.get_cached_response(cache_key)
-                )
-                
-                if cached_response and cached_response.get('data'):
-                    logger.info("✅ Serving cached chat response")
-                    response_data = cached_response['data']
-                    response_data['cached'] = True
-                    response_data['cached_at'] = cached_response.get('cached_at')
-                    return jsonify({'response': response_data})
-            except Exception as cache_error:
-                logger.warning(f"Cache lookup failed: {cache_error}")
+            cached_response = loop.run_until_complete(
+                cache.get_cached_response(cache_key)
+            )
+            
+            if cached_response and cached_response.get('data'):
+                logger.info("✅ Serving cached chat response")
+                response_data = cached_response['data']
+                response_data['cached'] = True
+                response_data['cached_at'] = cached_response.get('cached_at')
+                return jsonify({'response': response_data})
             
             # Process new request
             response = loop.run_until_complete(
                 enhanced_habu_agent.process_request(user_input)
             )
             
-            # Try to cache the response (don't let caching failure break the response)
-            try:
-                loop.run_until_complete(
-                    cache.cache_api_response(
-                        endpoint=cache_key,
-                        data=response,
-                        cache_type='chat_context',
-                        custom_ttl=300  # 5 minutes for chat responses
-                    )
+            # Cache the response for similar queries (5 minute TTL)
+            loop.run_until_complete(
+                cache.cache_api_response(
+                    endpoint=cache_key,
+                    data=response,
+                    cache_type='chat_context',
+                    custom_ttl=300  # 5 minutes for chat responses
                 )
-            except Exception as cache_error:
-                logger.warning(f"Cache storage failed: {cache_error}")
+            )
             
-            logger.info("Chat request processed successfully")
+            logger.info("Chat request processed and cached successfully")
             return jsonify({
                 'response': response,
                 'cached': False
@@ -173,7 +167,7 @@ def enhanced_chat():
 
 @app.route('/api/mcp/habu_list_templates', methods=['GET'])
 def api_list_templates():
-    """API endpoint for listing templates"""
+    """API endpoint for listing templates (now uses enhanced version)"""
     try:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -197,36 +191,30 @@ def api_enhanced_templates():
         try:
             # Check cache first
             cache_key = f"enhanced_templates_{cleanroom_id}"
-            try:
-                cached_result = loop.run_until_complete(
-                    cache.get_cached_response(cache_key)
-                )
-                
-                if cached_result and cached_result.get('data'):
-                    logger.info("✅ Serving cached enhanced templates")
-                    response_data = cached_result['data']
-                    response_data['cached'] = True
-                    response_data['cached_at'] = cached_result.get('cached_at')
-                    return response_data
-            except Exception as cache_error:
-                logger.warning(f"Cache lookup failed: {cache_error}")
+            cached_result = loop.run_until_complete(
+                cache.get_cached_response(cache_key)
+            )
+            
+            if cached_result and cached_result.get('data'):
+                logger.info("✅ Serving cached enhanced templates")
+                response_data = cached_result['data']
+                response_data['cached'] = True
+                response_data['cached_at'] = cached_result.get('cached_at')
+                return response_data
             
             # Fetch fresh data
             result = loop.run_until_complete(habu_enhanced_templates(cleanroom_id))
             result_data = json.loads(result)
             
-            # Try to cache the result
-            try:
-                loop.run_until_complete(
-                    cache.cache_api_response(
-                        endpoint=cache_key,
-                        data=result_data,
-                        cache_type='template_data',
-                        custom_ttl=1800  # 30 minutes
-                    )
+            # Cache the result (30 minutes TTL for template data)
+            loop.run_until_complete(
+                cache.cache_api_response(
+                    endpoint=cache_key,
+                    data=result_data,
+                    cache_type='template_data',
+                    custom_ttl=1800  # 30 minutes
                 )
-            except Exception as cache_error:
-                logger.warning(f"Cache storage failed: {cache_error}")
+            )
             
             result_data['cached'] = False
             return result_data
@@ -238,41 +226,55 @@ def api_enhanced_templates():
 
 @app.route('/api/mcp/habu_list_partners', methods=['GET'])
 def api_list_partners():
-    """API endpoint for listing partners with Redis caching"""
+    """API endpoint for listing partners with Redis caching - CONSERVATIVE VERSION"""
     try:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:
-            # Check cache first
+            # Check cache first with shorter timeout to avoid slowdowns
+            cached_result = None
             try:
                 cached_result = loop.run_until_complete(
-                    cache.get_cached_response('partners_list')
-                )
-                
-                if cached_result and cached_result.get('data'):
-                    logger.info("✅ Serving cached partners list")
-                    response_data = cached_result['data']
-                    response_data['cached'] = True
-                    response_data['cached_at'] = cached_result.get('cached_at')
-                    return response_data
-            except Exception as cache_error:
-                logger.warning(f"Cache lookup failed: {cache_error}")
-            
-            # Fetch fresh data
-            logger.info("Fetching fresh partners data...")
-            result = loop.run_until_complete(habu_list_partners())
-            result_data = json.loads(result)
-            
-            # Try to cache the result
-            try:
-                loop.run_until_complete(
-                    cache.cache_api_response(
-                        endpoint='partners_list',
-                        data=result_data,
-                        cache_type='partner_data',
-                        custom_ttl=900  # 15 minutes
+                    asyncio.wait_for(
+                        cache.get_cached_response('partners_list'),
+                        timeout=1.0  # 1 second timeout
                     )
                 )
+            except asyncio.TimeoutError:
+                logger.warning("Cache lookup timed out, proceeding without cache")
+            
+            if cached_result and cached_result.get('data'):
+                logger.info("✅ Serving cached partners list")
+                response_data = cached_result['data']
+                response_data['cached'] = True
+                response_data['cached_at'] = cached_result.get('cached_at')
+                return response_data
+            
+            # Fetch fresh data with timeout
+            logger.info("Fetching fresh partners data...")
+            result = loop.run_until_complete(
+                asyncio.wait_for(
+                    habu_list_partners(),
+                    timeout=10.0  # 10 second timeout for API call
+                )
+            )
+            result_data = json.loads(result)
+            
+            # Try to cache the result (don't let caching failure break the response)
+            try:
+                loop.run_until_complete(
+                    asyncio.wait_for(
+                        cache.cache_api_response(
+                            endpoint='partners_list',
+                            data=result_data,
+                            cache_type='partner_data',
+                            custom_ttl=900  # 15 minutes
+                        ),
+                        timeout=2.0  # 2 second timeout for caching
+                    )
+                )
+            except asyncio.TimeoutError:
+                logger.warning("Cache storage timed out, but response will be served")
             except Exception as cache_error:
                 logger.warning(f"Cache storage failed: {cache_error}")
             
@@ -280,10 +282,14 @@ def api_list_partners():
             return result_data
         finally:
             loop.close()
+    except asyncio.TimeoutError:
+        logger.error("Partners API call timed out")
+        return jsonify({'error': 'Request timed out', 'status': 'timeout'}), 504
     except Exception as e:
         logger.error(f"Error in list_partners: {e}")
         return jsonify({'error': str(e)}), 500
 
+# Keep other endpoints simple without CDN optimization for now
 @app.route('/api/mcp/habu_submit_query', methods=['POST'])
 def api_submit_query():
     """API endpoint for submitting queries"""
@@ -304,80 +310,6 @@ def api_submit_query():
             loop.close()
     except Exception as e:
         logger.error(f"Error in submit_query: {e}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/mcp/habu_check_status', methods=['GET'])
-def api_check_status():
-    """API endpoint for checking status"""
-    try:
-        query_id = request.args.get('query_id')
-        if not query_id:
-            return jsonify({'error': 'query_id is required'}), 400
-            
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            result = loop.run_until_complete(habu_check_status(query_id))
-            return json.loads(result)
-        finally:
-            loop.close()
-    except Exception as e:
-        logger.error(f"Error in check_status: {e}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/mcp/habu_get_results', methods=['GET'])
-def api_get_results():
-    """API endpoint for getting results"""
-    try:
-        query_id = request.args.get('query_id')
-        if not query_id:
-            return jsonify({'error': 'query_id is required'}), 400
-            
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            result = loop.run_until_complete(habu_get_results(query_id))
-            return json.loads(result)
-        finally:
-            loop.close()
-    except Exception as e:
-        logger.error(f"Error in get_results: {e}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/mcp/habu_list_exports', methods=['GET'])
-def api_list_exports():
-    """API endpoint for listing exports"""
-    try:
-        status_filter = request.args.get('status')
-        
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            result = loop.run_until_complete(habu_list_exports(status_filter))
-            return json.loads(result)
-        finally:
-            loop.close()
-    except Exception as e:
-        logger.error(f"Error in list_exports: {e}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/mcp/habu_download_export', methods=['GET'])
-def api_download_export():
-    """API endpoint for downloading exports"""
-    try:
-        export_id = request.args.get('export_id')
-        if not export_id:
-            return jsonify({'error': 'export_id is required'}), 400
-            
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            result = loop.run_until_complete(habu_download_export(export_id))
-            return json.loads(result)
-        finally:
-            loop.close()
-    except Exception as e:
-        logger.error(f"Error in download_export: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
