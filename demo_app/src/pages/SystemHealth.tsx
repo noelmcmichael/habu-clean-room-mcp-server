@@ -21,6 +21,12 @@ interface SystemHealthData {
   demoReady?: boolean;
   mcpServerOnline?: boolean;
   demoMode?: string;
+  cacheStats?: {
+    connected: boolean;
+    hitRate?: number;
+    keyCount?: number;
+    usedMemory?: string;
+  };
 }
 
 const SystemHealth: React.FC = () => {
@@ -80,6 +86,23 @@ const SystemHealth: React.FC = () => {
     }
   };
 
+  const checkCacheHealth = async (apiUrl: string): Promise<any> => {
+    try {
+      const response = await fetch(`${apiUrl}/api/cache-stats`, {
+        method: 'GET',
+        timeout: 5000
+      } as RequestInit);
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data.cache_stats;
+      }
+    } catch (error) {
+      console.log('Cache stats unavailable:', error);
+    }
+    return null;
+  };
+
   const performHealthCheck = useCallback(async () => {
     setLoading(true);
     
@@ -133,12 +156,15 @@ const SystemHealth: React.FC = () => {
     }
 
     // Extract configuration details from the actual health endpoint response
-    const apiService = serviceStatuses.find(s => s.name === 'Demo API');
+    const apiService = serviceStatuses.find(s => s.name === 'Demo API' || s.name === 'Demo API (Local)');
     const realApiMode = apiService?.details?.real_api_mode || false;
     const openaiConfigured = apiService?.details?.openai_available || false;
     const demoReady = apiService?.details?.demo_ready || false;
     const mcpServerOnline = apiService?.details?.mcp_server === 'online';
     const demoMode = apiService?.details?.demo_mode || 'unknown';
+
+    // Get cache statistics
+    const cacheStats = await checkCacheHealth(isLocal ? 'http://localhost:5001' : 'https://habu-demo-api-v2.onrender.com');
 
     setHealthData({
       services: serviceStatuses,
@@ -150,7 +176,13 @@ const SystemHealth: React.FC = () => {
       realApiMode,
       demoReady,
       mcpServerOnline,
-      demoMode
+      demoMode,
+      cacheStats: cacheStats ? {
+        connected: cacheStats.connected,
+        hitRate: cacheStats.hit_rate,
+        keyCount: Object.values(cacheStats.cache_key_counts || {}).reduce((a: number, b: number) => a + b, 0),
+        usedMemory: cacheStats.used_memory
+      } : undefined
     });
 
     setLoading(false);
@@ -261,8 +293,54 @@ const SystemHealth: React.FC = () => {
                   {healthData.demoReady ? '🚀 All Systems Ready' : '⚠️ Issues Detected'}
                 </span>
               </div>
+              <div className={`config-item ${healthData.cacheStats?.connected ? 'enabled' : 'disabled'}`}>
+                <span className="config-label">Redis Cache:</span>
+                <span className="config-value">
+                  {healthData.cacheStats?.connected ? 
+                    `🚀 Connected (${healthData.cacheStats.hitRate}% hit rate)` : 
+                    '⚠️ Not Connected (Fallback Mode)'
+                  }
+                </span>
+              </div>
             </div>
           </div>
+
+          {/* Cache Performance */}
+          {healthData.cacheStats && (
+            <div className="cache-performance">
+              <h3>⚡ Cache Performance (Phase H)</h3>
+              <div className="cache-stats-grid">
+                <div className="cache-stat">
+                  <span className="stat-label">Connection Status:</span>
+                  <span className={`stat-value ${healthData.cacheStats.connected ? 'connected' : 'disconnected'}`}>
+                    {healthData.cacheStats.connected ? '✅ Connected' : '❌ Disconnected'}
+                  </span>
+                </div>
+                {healthData.cacheStats.connected && (
+                  <>
+                    <div className="cache-stat">
+                      <span className="stat-label">Hit Rate:</span>
+                      <span className="stat-value">{healthData.cacheStats.hitRate}%</span>
+                    </div>
+                    <div className="cache-stat">
+                      <span className="stat-label">Cached Keys:</span>
+                      <span className="stat-value">{healthData.cacheStats.keyCount}</span>
+                    </div>
+                    <div className="cache-stat">
+                      <span className="stat-label">Memory Usage:</span>
+                      <span className="stat-value">{healthData.cacheStats.usedMemory}</span>
+                    </div>
+                  </>
+                )}
+                {!healthData.cacheStats.connected && (
+                  <div className="cache-stat">
+                    <span className="stat-label">Fallback Mode:</span>
+                    <span className="stat-value">✅ Active (Graceful Degradation)</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* MCP Tools Status */}
           <div className="mcp-tools-status">
