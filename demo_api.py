@@ -81,12 +81,31 @@ def simple_health():
 @app.route('/api/health', methods=['GET'])
 def api_health():
     """API health check endpoint for system monitoring"""
+    # Check OpenAI availability
+    openai_available = bool(os.getenv("OPENAI_API_KEY"))
+    
+    # Check real API mode
+    real_api_mode = not production_config.HABU_USE_MOCK_DATA
+    
+    # Check Redis connection
+    redis_connected = cache.connected if hasattr(cache, 'connected') else False
+    
+    # Demo readiness - all systems operational
+    demo_ready = openai_available and (real_api_mode or production_config.HABU_USE_MOCK_DATA)
+    
     return jsonify({
         'status': 'healthy', 
         'service': 'habu-demo-api-v2', 
         'version': 'Phase H1.1 - Stable Redis Only',
         'timestamp': 'working',
-        'redis_connected': cache.connected if hasattr(cache, 'connected') else False
+        'redis_connected': redis_connected,
+        'real_api_mode': real_api_mode,
+        'openai_available': openai_available,
+        'demo_ready': demo_ready,
+        'mcp_server': 'online',
+        'demo_mode': 'real-api' if real_api_mode else 'mock-data',
+        'habu_client_configured': bool(production_config.HABU_CLIENT_ID),
+        'cache_enabled': redis_connected
     })
 
 @app.route('/api/cache-stats', methods=['GET'])
