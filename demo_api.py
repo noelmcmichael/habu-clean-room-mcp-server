@@ -129,6 +129,123 @@ def cache_stats():
             'detail': str(e)
         }), 500
 
+@app.route('/api/support-context', methods=['GET'])
+def get_support_context():
+    """Get current support context for Customer Support mode"""
+    return jsonify({
+        "commonQuestions": [
+            "Can we do lookalike modeling?",
+            "What's the minimum data size?", 
+            "How long does implementation take?",
+            "What industries do you support?"
+        ],
+        "industryFocus": ["retail", "automotive", "finance"],
+        "customerTier": "enterprise",
+        "supportLevel": "standard",
+        "escalationThreshold": 3,
+        "lastUpdate": "2025-01-22T10:00:00Z"
+    })
+
+@app.route('/api/technical-context', methods=['GET'])
+def get_technical_context():
+    """Get current technical context for Technical Expert mode"""
+    return jsonify({
+        "availableTools": [
+            "habu_list_partners",
+            "habu_enhanced_templates", 
+            "habu_submit_query",
+            "habu_check_status",
+            "habu_get_results",
+            "habu_list_exports"
+        ],
+        "apiVersion": "2.0",
+        "documentationVersion": "2.0.1",
+        "limitations": [
+            "Rate limits apply to high-volume queries",
+            "Some features require partner agreements"
+        ],
+        "recentChanges": [
+            "Added enhanced privacy controls",
+            "Improved match rate algorithms"
+        ],
+        "capabilityMatrix": {
+            "lookalike_modeling": True,
+            "identity_resolution": True,
+            "segmentation": True,
+            "attribution": True,
+            "real_time_activation": True
+        },
+        "integrationPatterns": [
+            "REST API integration",
+            "Batch file processing",
+            "Real-time streaming"
+        ]
+    })
+
+@app.route('/api/customer-support/quick-assess', methods=['POST'])
+def quick_customer_assessment():
+    """Quick customer capability assessment for support mode"""
+    data = request.get_json()
+    if not data or 'query' not in data:
+        return jsonify({'error': 'Query is required'}), 400
+    
+    query = data['query']
+    industry = data.get('industry')
+    
+    try:
+        # Simple capability assessment logic
+        assessment = generate_quick_assessment(query, industry)
+        return jsonify(assessment)
+    except Exception as e:
+        logger.error(f"Error in quick assessment: {e}")
+        return jsonify({'error': 'Assessment failed'}), 500
+
+def generate_quick_assessment(query, industry=None):
+    """Generate a quick capability assessment"""
+    query_lower = query.lower()
+    
+    # Check for common use cases
+    if any(keyword in query_lower for keyword in ['lookalike', 'similar', 'audience', 'expand']):
+        return {
+            'feasibility': 'yes',
+            'confidence': 'high',
+            'summary': '✅ **Yes, lookalike modeling is fully supported!**\n\nCreate audiences similar to your best customers using our 300M+ identity graph.',
+            'timeline': '24-48 hours for model creation',
+            'businessValue': 'Increase customer acquisition efficiency by 40-60%',
+            'competitiveAdvantage': ['90%+ match rates vs industry 60-70%', 'Real-time audience activation'],
+            'nextSteps': ['Confirm data requirements', 'Set up proof of concept']
+        }
+    elif any(keyword in query_lower for keyword in ['segment', 'group', 'cohort', 'cluster']):
+        return {
+            'feasibility': 'yes',
+            'confidence': 'high',
+            'summary': '✅ **Yes, customer segmentation is fully supported!**\n\nCreate behavioral and demographic customer segments for targeted marketing.',
+            'timeline': '3-5 days for analysis',
+            'businessValue': 'Increase campaign effectiveness through personalized targeting',
+            'competitiveAdvantage': ['AI-powered segment discovery', 'Real-time segment updates'],
+            'nextSteps': ['Review data requirements', 'Schedule implementation planning']
+        }
+    elif any(keyword in query_lower for keyword in ['identity', 'resolution', 'unify', 'match']):
+        return {
+            'feasibility': 'yes',
+            'confidence': 'high',
+            'summary': '✅ **Yes, identity resolution is fully supported!**\n\nUnify customer identities across devices, channels, and data sources.',
+            'timeline': '1-3 weeks depending on complexity',
+            'businessValue': 'Create unified customer view for personalized experiences',
+            'competitiveAdvantage': ['Industry-leading match rates', 'Privacy-first approach'],
+            'nextSteps': ['Assess data sources', 'Plan integration approach']
+        }
+    else:
+        return {
+            'feasibility': 'partially',
+            'confidence': 'medium',
+            'summary': '⚠️ **Partially supported - need more details**\n\nPlease provide more specific information about your use case.',
+            'timeline': 'Depends on specific requirements',
+            'businessValue': 'Business value depends on specific use case',
+            'competitiveAdvantage': ['Privacy-first architecture', 'Comprehensive API coverage'],
+            'nextSteps': ['Clarify specific requirements', 'Schedule discovery call']
+        }
+
 @app.route('/api/enhanced-chat', methods=['POST'])
 def enhanced_chat():
     """Handle enhanced chat requests from React frontend with Redis caching"""
