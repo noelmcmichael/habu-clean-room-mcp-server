@@ -108,7 +108,7 @@ const Cleanrooms: React.FC = () => {
           });
           
           updateTemplateContext({
-            totalTemplates: enhancedTemplatesData.total_templates || enhancedTemplatesData.templates.length,
+            totalTemplates: enhancedTemplatesData?.total_templates || enhancedTemplatesData?.templates?.length || 0,
             readyTemplates: enhancedTemplatesData.ready_templates || 0,
             missingDatasetTemplates: enhancedTemplatesData.missing_datasets_templates || 0,
             categories: Array.from(categories),

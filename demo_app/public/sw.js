@@ -1,8 +1,8 @@
 // Service Worker for Performance Optimization
 // Implements intelligent caching strategy for faster loading
 
-const CACHE_NAME = 'habu-app-v1.0';
-const API_CACHE_NAME = 'habu-api-v1.0';
+const CACHE_NAME = 'habu-app-v1.1-fixed';
+const API_CACHE_NAME = 'habu-api-v1.1-fixed';
 
 // Static assets to cache immediately
 const STATIC_ASSETS = [

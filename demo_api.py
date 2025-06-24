@@ -78,6 +78,17 @@ def simple_health():
     """Simple health check endpoint"""
     return jsonify({'status': 'healthy', 'service': 'habu-chat-api', 'timestamp': 'working'})
 
+@app.route('/api/health', methods=['GET'])
+def api_health():
+    """API health check endpoint for system monitoring"""
+    return jsonify({
+        'status': 'healthy', 
+        'service': 'habu-demo-api-v2', 
+        'version': 'Phase H1.1 - Stable Redis Only',
+        'timestamp': 'working',
+        'redis_connected': cache.connected if hasattr(cache, 'connected') else False
+    })
+
 @app.route('/api/cache-stats', methods=['GET'])
 def cache_stats():
     """Redis cache statistics endpoint"""
