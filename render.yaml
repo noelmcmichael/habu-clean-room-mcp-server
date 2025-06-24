@@ -1,21 +1,22 @@
-# render.yaml - Phase H Redis-Optimized Deployment
+# render_stable.yaml - Simplified Stable Deployment
+# Phase H1.1 - Redis Only (Rollback to Working State)
+
 databases:
   - name: habu-mcp-db
     databaseName: habu_mcp_db
     user: habu_mcp_user
     plan: free
 
-  # Redis cache for Phase H optimization
   - name: habu-redis-cache
     plan: free
     databaseName: redis_cache
 
 services:
-  # MCP Server (Phase H - Redis Enhanced)
+  # MCP Server - Core Service
   - type: web
-    name: habu-mcp-server-v2
+    name: habu-mcp-server
     env: python
-    plan: starter  # Upgraded to starter for better performance
+    plan: starter
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python main.py"
     envVars:
@@ -40,11 +41,11 @@ services:
       - key: PORT
         value: "8000"
 
-  # Enhanced Chat API (Phase H - Redis Optimized)
+  # Demo API - Flask Backend
   - type: web
-    name: habu-demo-api-v2
+    name: habu-demo-api
     env: python
-    plan: starter  # Upgraded to starter for better Redis performance
+    plan: starter
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python demo_api.py"
     envVars:
@@ -69,20 +70,20 @@ services:
       - key: PORT
         value: "5001"
 
-  # React Frontend (Phase C Enhanced)
+  # React Frontend - Simple Build
   - type: web
-    name: habu-demo-frontend-v2
+    name: habu-demo-frontend
     env: node
     plan: free
     buildCommand: "cd demo_app && npm install && npm run build"
     startCommand: "cd demo_app && npx serve -s build -l $PORT"
     envVars:
       - key: REACT_APP_API_URL
-        value: "https://habu-demo-api-v2.onrender.com"
+        value: "https://habu-demo-api.onrender.com"
 
-  # Admin App
+  # Admin App - Database Management
   - type: web
-    name: habu-admin-app-v2
+    name: habu-admin-app
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
