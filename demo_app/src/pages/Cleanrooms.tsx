@@ -394,7 +394,7 @@ const Cleanrooms: React.FC = () => {
         {enhancedTemplates && enhancedTemplates.templates && enhancedTemplates.templates.length > 0 ? (
           <div className="templates-section">
             <h3 className="templates-subsection-title">✨ Enhanced Templates</h3>
-          <div className="templates-grid">
+            <div className="templates-grid">
             {enhancedTemplates.templates?.map((template) => (
               <div key={template.id} className="enhanced-template-card">
                 <div className="template-header">
@@ -484,7 +484,6 @@ const Cleanrooms: React.FC = () => {
               </div>
             ))}
           </div>
-            </div>
           </div>
         ) : null}
         
