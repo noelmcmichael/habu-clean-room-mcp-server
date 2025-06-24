@@ -15,18 +15,40 @@ const Navigation: React.FC = () => {
   ];
 
   return (
-    <nav className="sidebar-nav">
-      {navItems.map((item) => (
-        <Link 
-          key={item.path}
-          to={item.path} 
-          className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
-        >
-          <span className="nav-icon">{item.icon}</span>
-          <span className="nav-label">{item.label}</span>
+    <div className="sidebar-content">
+      <div className="sidebar-header">
+        <Link to="/" className="logo-link">
+          <div className="logo">
+            <span className="logo-icon">🤖</span>
+            <span className="logo-text">Habu MCP</span>
+          </div>
         </Link>
-      ))}
-    </nav>
+      </div>
+      <nav className="sidebar-nav">
+        {navItems.map((item) => (
+          <Link 
+            key={item.path}
+            to={item.path} 
+            className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+          >
+            <span className="nav-icon">{item.icon}</span>
+            <span className="nav-label">{item.label}</span>
+          </Link>
+        ))}
+      </nav>
+      <div className="sidebar-footer">
+        <div className="status-info">
+          <div className="status-item">
+            <span className="status-dot production"></span>
+            <span>Production</span>
+          </div>
+          <div className="status-item">
+            <span className="status-dot mock"></span>
+            <span>Mock Data</span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
