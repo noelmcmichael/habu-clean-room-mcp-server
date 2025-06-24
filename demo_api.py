@@ -13,7 +13,7 @@ from config.production import production_config
 
 # Import MCP tools
 from tools.habu_list_partners import habu_list_partners
-from tools.habu_list_templates import habu_list_templates
+from tools.habu_enhanced_templates import habu_enhanced_templates, habu_list_templates
 from tools.habu_submit_query import habu_submit_query
 from tools.habu_check_status import habu_check_status
 from tools.habu_get_results import habu_get_results
@@ -44,6 +44,7 @@ def root():
             '/api/enhanced-chat',
             '/api/health',
             '/api/mcp/habu_list_templates',
+            '/api/mcp/habu_enhanced_templates',
             '/api/mcp/habu_list_partners'
         ]
     })
@@ -92,7 +93,7 @@ def enhanced_chat():
 
 @app.route('/api/mcp/habu_list_templates', methods=['GET'])
 def api_list_templates():
-    """API endpoint for listing templates"""
+    """API endpoint for listing templates (now uses enhanced version)"""
     try:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -103,6 +104,22 @@ def api_list_templates():
             loop.close()
     except Exception as e:
         logger.error(f"Error in list_templates: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/mcp/habu_enhanced_templates', methods=['GET'])
+def api_enhanced_templates():
+    """API endpoint for listing enhanced templates with detailed metadata"""
+    try:
+        cleanroom_id = request.args.get('cleanroom_id')
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            result = loop.run_until_complete(habu_enhanced_templates(cleanroom_id))
+            return json.loads(result)
+        finally:
+            loop.close()
+    except Exception as e:
+        logger.error(f"Error in enhanced_templates: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/mcp/habu_list_partners', methods=['GET'])

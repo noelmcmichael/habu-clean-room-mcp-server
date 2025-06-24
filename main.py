@@ -28,7 +28,7 @@ from models import Base, Joke
 
 # Habu tools imports
 from tools.habu_list_partners import habu_list_partners
-from tools.habu_list_templates import habu_list_templates
+from tools.habu_enhanced_templates import habu_enhanced_templates, habu_list_templates
 from tools.habu_submit_query import habu_submit_query
 from tools.habu_check_status import habu_check_status
 from tools.habu_get_results import habu_get_results
@@ -171,11 +171,19 @@ async def habu_list_partners_tool() -> str:
 
 @mcp_server.tool(
     name="habu_list_templates", 
-    description="Lists all available clean room query templates from the Habu API."
+    description="Lists all available clean room query templates with enhanced metadata including categories, parameters, data types, and status."
 )
 async def habu_list_templates_tool() -> str:
-    """Lists all available query templates."""
+    """Lists all available query templates with enhanced metadata."""
     return await habu_list_templates()
+
+@mcp_server.tool(
+    name="habu_enhanced_templates",
+    description="Advanced template listing with detailed metadata, parameter specifications, categorization, and data type information for better query building."
+)
+async def habu_enhanced_templates_tool(cleanroom_id: str = None) -> str:
+    """Get enhanced template data with full metadata for intelligent query building."""
+    return await habu_enhanced_templates(cleanroom_id)
 
 @mcp_server.tool(
     name="habu_submit_query",
