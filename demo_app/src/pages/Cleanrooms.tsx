@@ -75,6 +75,9 @@ const Cleanrooms: React.FC = () => {
         const enhancedTemplatesData = await enhancedTemplatesResponse.json();
         const partnersData = await partnersResponse.json();
 
+        console.log('🔍 Debug - enhancedTemplatesData:', enhancedTemplatesData);
+        console.log('🔍 Debug - partnersData:', partnersData);
+
         setEnhancedTemplates(enhancedTemplatesData);
         setPartners(partnersData);
         
@@ -258,9 +261,9 @@ const Cleanrooms: React.FC = () => {
           Ready-to-use analytics templates with AI-powered metadata and business intelligence
         </p>
         
-        {enhancedTemplates && enhancedTemplates.templates.length > 0 ? (
+        {enhancedTemplates && enhancedTemplates.templates && enhancedTemplates.templates.length > 0 ? (
           <div className="templates-grid">
-            {enhancedTemplates.templates.map((template) => (
+            {enhancedTemplates.templates?.map((template) => (
               <div key={template.id} className="enhanced-template-card">
                 <div className="template-header">
                   <h3>{template.name}</h3>
@@ -303,7 +306,7 @@ const Cleanrooms: React.FC = () => {
                   {/* Enhanced metadata */}
                   {template.enhanced_data && (
                     <div className="enhanced-metadata">
-                      {template.enhanced_data.parameters && template.enhanced_data.parameters.length > 0 && (
+                      {template.enhanced_data?.parameters && template.enhanced_data.parameters.length > 0 && (
                         <div className="metadata-section">
                           <h4>🔧 Parameters</h4>
                           <div className="parameters-list">
@@ -321,7 +324,7 @@ const Cleanrooms: React.FC = () => {
                         </div>
                       )}
 
-                      {template.enhanced_data.data_types && template.enhanced_data.data_types.length > 0 && (
+                      {template.enhanced_data?.data_types && template.enhanced_data.data_types.length > 0 && (
                         <div className="metadata-section">
                           <h4>📊 Data Types</h4>
                           <div className="data-types-list">
