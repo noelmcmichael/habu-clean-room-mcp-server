@@ -10,6 +10,7 @@ from starlette.applications import Starlette
 from starlette.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
+
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -77,9 +78,30 @@ mcp_server = FastMCP(
 # 5. Create Middleware for API Key Authentication with better error handling
 class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
-        # Allow health check and root endpoint
-        if request.url.path in ["/", "/health", "/mcp"]:
-            return await call_next(request)
+        # Handle health check endpoint directly
+        if request.url.path == "/health":
+            return JSONResponse({
+                "status": "healthy",
+                "service": "Habu Clean Room MCP Server",
+                "version": "2.0",
+                "mock_mode": production_config.HABU_USE_MOCK_DATA,
+                "database_configured": bool(production_config.DATABASE_URL),
+                "api_key_configured": bool(production_config.API_KEY)
+            })
+            
+        # Handle root endpoint directly
+        if request.url.path == "/":
+            return JSONResponse({
+                "service": "Habu Clean Room MCP Server",
+                "version": "2.0",
+                "mcp_endpoint": "/mcp",
+                "health_endpoint": "/health",
+                "documentation": "Model Context Protocol Server for Habu Clean Room APIs"
+            })
+        
+        # Allow MCP endpoint to proceed to authentication
+        if request.url.path.startswith("/mcp"):
+            pass  # Continue to auth check below
         
         api_key = request.headers.get("X-API-Key")
         expected_key = production_config.API_KEY
@@ -230,11 +252,7 @@ async def habu_enable_mock_mode(enable: bool = True) -> str:
             "message": "Mock mode disabled. Tools will use real Habu API endpoints."
         }, indent=2)
 
-# 6. Add health check endpoint to FastMCP server
-# Note: FastMCP doesn't support direct route decorators, 
-# health check will be handled at the transport level
-
-# 7. Run the server
+# 6. Run the server with FastMCP
 if __name__ == "__main__":
     logger.info(f"Starting Habu Clean Room MCP Server")
     logger.info(f"Host: {production_config.HOST}")
