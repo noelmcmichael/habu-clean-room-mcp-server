@@ -33,6 +33,26 @@ CORS(app, origins=production_config.CORS_ORIGINS)
 # Enable real API mode for production
 os.environ["HABU_USE_MOCK_DATA"] = "false"
 
+@app.route('/', methods=['GET'])
+def root():
+    """Root endpoint for health checks"""
+    return jsonify({
+        'service': 'Habu Enhanced Chat API',
+        'version': 'Phase C',
+        'status': 'operational',
+        'endpoints': [
+            '/api/enhanced-chat',
+            '/api/health',
+            '/api/mcp/habu_list_templates',
+            '/api/mcp/habu_list_partners'
+        ]
+    })
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Simple health check endpoint"""
+    return jsonify({'status': 'healthy', 'service': 'habu-chat-api'})
+
 @app.route('/api/enhanced-chat', methods=['POST'])
 def enhanced_chat():
     """Handle enhanced chat requests from React frontend"""
