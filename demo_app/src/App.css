@@ -138,6 +138,10 @@ body {
   background: #ed8936;
 }
 
+.status-dot.real {
+  background: #4299e1;
+}
+
 .user-info {
   display: flex;
   align-items: center;
@@ -612,6 +616,12 @@ body {
   background: rgba(255, 136, 0, 0.2);
   color: #FF8800;
   border: 1px solid #FF8800;
+}
+
+.status-badge.real-api {
+  background: rgba(66, 153, 225, 0.2);
+  color: #4299e1;
+  border: 1px solid #4299e1;
 }
 
 /* Page Layouts */

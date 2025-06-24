@@ -11,6 +11,14 @@ from flask_cors import CORS
 from agents.enhanced_habu_chat_agent import enhanced_habu_agent
 from config.production import production_config
 
+# Import MCP tools
+from tools.habu_list_partners import habu_list_partners
+from tools.habu_list_templates import habu_list_templates
+from tools.habu_submit_query import habu_submit_query
+from tools.habu_check_status import habu_check_status
+from tools.habu_get_results import habu_get_results
+import json
+
 # Configure logging
 logging.basicConfig(
     level=getattr(logging, production_config.LOG_LEVEL),
@@ -21,8 +29,8 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app, origins=production_config.CORS_ORIGINS)
 
-# Enable mock mode for demo
-os.environ["HABU_USE_MOCK_DATA"] = "true"
+# Enable real API mode for production
+os.environ["HABU_USE_MOCK_DATA"] = "false"
 
 @app.route('/api/enhanced-chat', methods=['POST'])
 def enhanced_chat():
@@ -60,6 +68,96 @@ def enhanced_chat():
             'error': 'Internal server error',
             'detail': str(e) if production_config.DEBUG else 'An error occurred processing your request'
         }), 500
+
+@app.route('/api/mcp/habu_list_templates', methods=['GET'])
+def api_list_templates():
+    """API endpoint for listing templates"""
+    try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            result = loop.run_until_complete(habu_list_templates())
+            return json.loads(result)
+        finally:
+            loop.close()
+    except Exception as e:
+        logger.error(f"Error in list_templates: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/mcp/habu_list_partners', methods=['GET'])
+def api_list_partners():
+    """API endpoint for listing partners"""
+    try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            result = loop.run_until_complete(habu_list_partners())
+            return json.loads(result)
+        finally:
+            loop.close()
+    except Exception as e:
+        logger.error(f"Error in list_partners: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/mcp/habu_submit_query', methods=['POST'])
+def api_submit_query():
+    """API endpoint for submitting queries"""
+    try:
+        data = request.json
+        template_id = data.get('template_id')
+        parameters = data.get('parameters', {})
+        
+        if not template_id:
+            return jsonify({'error': 'template_id is required'}), 400
+            
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            result = loop.run_until_complete(habu_submit_query(template_id, parameters))
+            return json.loads(result)
+        finally:
+            loop.close()
+    except Exception as e:
+        logger.error(f"Error in submit_query: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/mcp/habu_check_status', methods=['GET'])
+def api_check_status():
+    """API endpoint for checking status"""
+    try:
+        query_id = request.args.get('query_id')
+        if not query_id:
+            return jsonify({'error': 'query_id is required'}), 400
+            
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            result = loop.run_until_complete(habu_check_status(query_id))
+            return json.loads(result)
+        finally:
+            loop.close()
+    except Exception as e:
+        logger.error(f"Error in check_status: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/mcp/habu_get_results', methods=['GET'])
+def api_get_results():
+    """API endpoint for getting results"""
+    try:
+        query_id = request.args.get('query_id')
+        if not query_id:
+            return jsonify({'error': 'query_id is required'}), 400
+            
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            result = loop.run_until_complete(habu_get_results(query_id))
+            return json.loads(result)
+        finally:
+            loop.close()
+    except Exception as e:
+        logger.error(f"Error in get_results: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/health', methods=['GET'])
 def health_check():

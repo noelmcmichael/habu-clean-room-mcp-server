@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import ChatInterface from './components/ChatInterface';
+import Cleanrooms from './pages/Cleanrooms';
 import SystemHealth from './pages/SystemHealth';
 import ApiExplorer from './pages/ApiExplorer';
 import Architecture from './pages/Architecture';
@@ -11,6 +12,7 @@ const Navigation: React.FC = () => {
   
   const navItems = [
     { path: '/', icon: '🤖', label: 'AI Assistant' },
+    { path: '/cleanrooms', icon: '🏢', label: 'Cleanrooms' },
     { path: '/health', icon: '📊', label: 'System Health' },
     { path: '/api-explorer', icon: '🔧', label: 'API Explorer' },
     { path: '/architecture', icon: '🏗️', label: 'Architecture' },
@@ -45,8 +47,8 @@ const Navigation: React.FC = () => {
             <span>Production</span>
           </div>
           <div className="status-item">
-            <span className="status-dot mock"></span>
-            <span>Mock Data</span>
+            <span className="status-dot real"></span>
+            <span>Real API</span>
           </div>
         </div>
       </div>
@@ -59,6 +61,7 @@ const MainContent: React.FC = () => {
     <div className="main-content">
       <Routes>
         <Route path="/" element={<ChatPage />} />
+        <Route path="/cleanrooms" element={<Cleanrooms />} />
         <Route path="/health" element={<SystemHealth />} />
         <Route path="/api-explorer" element={<ApiExplorer />} />
         <Route path="/architecture" element={<Architecture />} />
@@ -93,7 +96,7 @@ function App() {
             </div>
             <div className="status-indicators">
               <span className="status-badge production">Production</span>
-              <span className="status-badge mock-data">Mock Data</span>
+              <span className="status-badge real-api">Real API</span>
             </div>
           </div>
         </header>

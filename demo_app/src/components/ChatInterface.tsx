@@ -12,7 +12,7 @@ const ChatInterface: React.FC = () => {
     {
       id: '1',
       type: 'assistant',
-      content: 'Hello! I\'m your Habu Clean Room assistant powered by OpenAI GPT-4. I can help you explore data partnerships, run analyses, and manage your clean room collaborations. What would you like to do?',
+      content: 'Hello! I\'m your Habu Clean Room assistant powered by OpenAI GPT-4 with **real API integration**. I can help you explore your live cleanroom "Data Marketplace Demo" with 4 real analytics templates. Try asking: "What templates are available?" or "Show me my cleanroom data".',
       timestamp: new Date()
     }
   ]);
