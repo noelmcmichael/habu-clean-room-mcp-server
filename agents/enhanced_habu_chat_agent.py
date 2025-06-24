@@ -150,7 +150,8 @@ class EnhancedHabuChatAgent:
         # Recent query activity
         if self.active_queries:
             recent_queries = list(self.active_queries.items())[-3:]  # Last 3 queries
-            context_parts.append(f"Recent queries: {[f'{qid[:8]}...({data['status']})' for qid, data in recent_queries]}")
+            recent_query_summaries = [f"{qid[:8]}...({data['status']})" for qid, data in recent_queries]
+            context_parts.append(f"Recent queries: {recent_query_summaries}")
         
         # Pending results
         if self.conversation_context["pending_results"]:
