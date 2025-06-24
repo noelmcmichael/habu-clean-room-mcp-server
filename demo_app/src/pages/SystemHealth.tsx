@@ -343,8 +343,8 @@ const SystemHealth: React.FC = () => {
             </div>
           )}
 
-          {/* CDN Performance Metrics */}
-          <CDNMetrics refreshInterval={30000} />
+          {/* CDN Performance Metrics - Temporarily disabled for debugging */}
+          {/* <CDNMetrics refreshInterval={30000} /> */}
 
           {/* MCP Tools Status */}
           <div className="mcp-tools-status">
