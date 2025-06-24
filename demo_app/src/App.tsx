@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ChatInterface from './components/ChatInterface';
 import { ConversationProvider } from './contexts/ConversationContext';
 import { NavigationProvider } from './contexts/NavigationContext';
+import { ChatModeProvider } from './contexts/ChatModeContext';
 import ResponsiveLayout from './components/layout/ResponsiveLayout';
 import './App.css';
 import './components/DemoPhase4.css';
@@ -54,9 +55,11 @@ function App() {
     <Router>
       <NavigationProvider>
         <ConversationProvider>
-          <ResponsiveLayout navItems={navItems}>
-            <MainContent />
-          </ResponsiveLayout>
+          <ChatModeProvider>
+            <ResponsiveLayout navItems={navItems}>
+              <MainContent />
+            </ResponsiveLayout>
+          </ChatModeProvider>
         </ConversationProvider>
       </NavigationProvider>
     </Router>
