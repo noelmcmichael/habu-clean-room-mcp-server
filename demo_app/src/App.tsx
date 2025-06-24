@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import ChatInterface from './components/ChatInterface';
 import SystemHealth from './pages/SystemHealth';
 import ApiExplorer from './pages/ApiExplorer';
+import Architecture from './pages/Architecture';
 import './App.css';
 
 const Navigation: React.FC = () => {
@@ -60,7 +61,7 @@ const MainContent: React.FC = () => {
         <Route path="/" element={<ChatPage />} />
         <Route path="/health" element={<SystemHealth />} />
         <Route path="/api-explorer" element={<ApiExplorer />} />
-        <Route path="/architecture" element={<ComingSoonPage title="Architecture" />} />
+        <Route path="/architecture" element={<Architecture />} />
       </Routes>
     </div>
   );
@@ -78,35 +79,7 @@ const ChatPage: React.FC = () => {
   );
 };
 
-const ComingSoonPage: React.FC<{ title: string }> = ({ title }) => {
-  return (
-    <div className="coming-soon">
-      <h1>{title}</h1>
-      <p>This page is coming soon as part of our phased development plan.</p>
-      <div className="features-preview">
-        <h3>Planned Features:</h3>
-        <ul>
-          {title === 'API Explorer' && (
-            <>
-              <li>Interactive Habu API endpoint testing</li>
-              <li>Real-time request/response debugging</li>
-              <li>Authentication status monitoring</li>
-              <li>Cleanroom discovery tools</li>
-            </>
-          )}
-          {title === 'Architecture' && (
-            <>
-              <li>System architecture diagrams</li>
-              <li>Data flow visualization</li>
-              <li>Component interaction maps</li>
-              <li>Technology stack documentation</li>
-            </>
-          )}
-        </ul>
-      </div>
-    </div>
-  );
-};
+
 
 function App() {
   return (

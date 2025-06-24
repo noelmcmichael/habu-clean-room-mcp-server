@@ -102,22 +102,57 @@ const ApiExplorer: React.FC = () => {
       category: 'System',
       requiresAuth: false
     },
-    // Habu API Direct (for future implementation)
+    // Habu API Direct (for debugging real API)
     {
-      name: 'List Cleanrooms',
-      method: 'GET',
-      path: '/cleanrooms',
-      description: 'Direct Habu API: List available cleanrooms',
+      name: 'Debug: List Cleanrooms',
+      method: 'POST',
+      path: '/api/enhanced-chat',
+      description: 'Debug Habu API cleanrooms endpoint - currently returns empty array',
       category: 'Habu API',
-      requiresAuth: true
+      requiresAuth: false,
+      parameters: [
+        {
+          name: 'user_input',
+          type: 'string',
+          required: true,
+          description: 'Debug request for cleanrooms',
+          defaultValue: 'Debug: Call the real Habu API /cleanrooms endpoint and show me the raw response'
+        }
+      ]
     },
     {
-      name: 'Get User Info',
-      method: 'GET',
-      path: '/users/me',
-      description: 'Direct Habu API: Get current user information',
+      name: 'Debug: User Info',
+      method: 'POST',
+      path: '/api/enhanced-chat',
+      description: 'Debug Habu API user endpoint - test authentication',
       category: 'Habu API',
-      requiresAuth: true
+      requiresAuth: false,
+      parameters: [
+        {
+          name: 'user_input',
+          type: 'string',
+          required: true,
+          description: 'Debug request for user info',
+          defaultValue: 'Debug: Call the real Habu API /users/me endpoint and show me the authentication status'
+        }
+      ]
+    },
+    {
+      name: 'Debug: Data Connections',
+      method: 'POST',
+      path: '/api/enhanced-chat',
+      description: 'Debug Habu API data connections - test working endpoint',
+      category: 'Habu API',
+      requiresAuth: false,
+      parameters: [
+        {
+          name: 'user_input',
+          type: 'string',
+          required: true,
+          description: 'Debug request for data connections',
+          defaultValue: 'Debug: Call the real Habu API /data-connections endpoint and compare with cleanrooms'
+        }
+      ]
     }
   ];
 
