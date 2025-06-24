@@ -31,10 +31,10 @@ class ProductionConfig:
     
     # CORS Configuration
     CORS_ORIGINS = [
-        "https://habu-demo-frontend-v2.onrender.com",
-        "https://habu-demo-frontend-v2.onrender.com/",
         "https://habu-demo-frontend.onrender.com",
         "https://habu-demo-frontend.onrender.com/",
+        "https://habu-demo-frontend-v2.onrender.com",
+        "https://habu-demo-frontend-v2.onrender.com/",
         "http://localhost:3000",
         "http://localhost:3001"
     ]
