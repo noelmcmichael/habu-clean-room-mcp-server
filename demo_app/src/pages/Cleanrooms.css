@@ -1,10 +1,17 @@
 .cleanrooms-container {
   flex: 1;
-  padding: 2rem;
+  padding: 1rem;
   background: #1a1d29;
   color: #ffffff;
   overflow-y: auto;
   max-height: 100vh;
+}
+
+/* Tablet and Desktop */
+@media (min-width: 768px) {
+  .cleanrooms-container {
+    padding: 2rem;
+  }
 }
 
 .cleanrooms-header {
@@ -12,13 +19,19 @@
 }
 
 .cleanrooms-header h1 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+@media (min-width: 768px) {
+  .cleanrooms-header h1 {
+    font-size: 2rem;
+  }
 }
 
 .subtitle {
@@ -260,24 +273,58 @@
 /* Templates Grid */
 .templates-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
   margin-bottom: 2rem;
+}
+
+/* Responsive template grid */
+@media (min-width: 640px) {
+  .templates-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .templates-grid {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+  }
 }
 
 .template-card {
   background: #232738;
   border: 1px solid #2d3748;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  min-height: 200px;
+}
+
+@media (min-width: 768px) {
+  .template-card {
+    padding: 1.5rem;
+  }
 }
 
 .template-card:hover {
   border-color: #667eea;
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
   transform: translateY(-2px);
+}
+
+/* Mobile touch improvements */
+@media (hover: none) and (pointer: coarse) {
+  .template-card:hover {
+    transform: none;
+  }
+  
+  .template-card:active {
+    transform: scale(0.98);
+    background: #1e2a3a;
+  }
 }
 
 .template-header {

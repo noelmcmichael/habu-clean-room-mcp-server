@@ -1,0 +1,66 @@
+/* Responsive Layout Styles */
+
+.responsive-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #1a1d29;
+  color: #ffffff;
+}
+
+.main-content-area {
+  flex: 1;
+  background: #1a1d29;
+  overflow: hidden;
+  transition: margin-left 0.3s ease;
+}
+
+/* Mobile Layout */
+.main-content-area.mobile {
+  margin-left: 0;
+  width: 100%;
+  padding-top: 0;
+}
+
+/* Desktop Layout */
+.main-content-area.desktop {
+  margin-left: 0;
+  width: 100%;
+}
+
+/* Responsive Padding */
+@media (max-width: 767px) {
+  .main-content-area {
+    /* Add top padding for mobile to account for status bar */
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Tablet and Desktop */
+@media (min-width: 768px) {
+  .main-content-area {
+    /* Adjust if needed for larger screens */
+  }
+}
+
+/* Page Content Wrapper */
+.page-content {
+  height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Mobile-specific content adjustments */
+@media (max-width: 767px) {
+  .page-content {
+    /* Add padding to prevent content from hiding behind hamburger button */
+    padding-top: 80px;
+  }
+}
+
+/* Desktop content adjustments */
+@media (min-width: 1024px) {
+  .page-content {
+    padding-top: 20px;
+  }
+}
