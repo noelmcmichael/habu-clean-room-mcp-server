@@ -255,7 +255,7 @@ const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
 
   return (
     <div className={`chat-message assistant-message ${message.mode}-mode`}>
-      {message.mode === ChatMode.MANAGER ? renderManagerModeMessage() : renderAPIExpertMessage()}
+      {message.mode === ChatMode.CUSTOMER_SUPPORT ? renderManagerModeMessage() : renderAPIExpertMessage()}
       
       <div className="message-footer">
         <div className="message-timestamp">

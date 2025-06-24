@@ -1,8 +1,8 @@
 // Chat Mode Types and Interfaces
 
 export enum ChatMode {
-  MANAGER = 'manager',
-  API_EXPERT = 'api_expert'
+  CUSTOMER_SUPPORT = 'customer_support',
+  TECHNICAL_EXPERT = 'technical_expert'
 }
 
 export interface ChatModeConfig {
@@ -23,27 +23,29 @@ export interface ResponseStyle {
   includeExpansion: boolean;
 }
 
-export interface BusinessContext {
-  cleanroomCount: number;
-  activeQueries: number;
-  pendingExports: number;
+export interface CustomerSupportContext {
+  commonQuestions: string[];
+  industryFocus: string[];
+  customerTier: string;
+  supportLevel: string;
+  escalationThreshold: number;
   lastUpdate: Date;
-  userRole: string;
-  permissions: string[];
 }
 
-export interface APIContext {
+export interface TechnicalContext {
   availableTools: string[];
   apiVersion: string;
   limitations: string[];
   recentChanges: string[];
   capabilityMatrix: Record<string, boolean>;
+  documentationVersion: string;
+  integrationPatterns: string[];
 }
 
 export interface ChatModeState {
   currentMode: ChatMode;
-  businessContext?: BusinessContext;
-  apiContext?: APIContext;
+  supportContext?: CustomerSupportContext;
+  technicalContext?: TechnicalContext;
   conversationHistory: ChatMessage[];
   preferences: UserPreferences;
 }
@@ -69,42 +71,45 @@ export interface UserPreferences {
   defaultMode: ChatMode;
   verbosity: 'brief' | 'detailed';
   showTechnicalDetails: boolean;
-  includeMetrics: boolean;
+  includeCompetitiveInfo: boolean;
+  employeeRole: 'support' | 'sales' | 'engineering' | 'product' | 'other';
   autoExpand: boolean;
 }
 
 // Mode Configuration Constants
 export const CHAT_MODE_CONFIGS: Record<ChatMode, ChatModeConfig> = {
-  [ChatMode.MANAGER]: {
-    mode: ChatMode.MANAGER,
-    name: 'Manager Mode',
-    description: 'Business-focused cleanroom operations and insights',
-    icon: '📊',
-    systemPrompt: `You are a Senior Data Operations Manager expert for LiveRamp Clean Room operations. 
-Your role is to provide clear, actionable business insights about cleanroom performance, operations, and opportunities.
+  [ChatMode.CUSTOMER_SUPPORT]: {
+    mode: ChatMode.CUSTOMER_SUPPORT,
+    name: 'Customer Support',
+    description: 'Help LiveRamp employees answer customer questions about API capabilities',
+    icon: '🎧',
+    systemPrompt: `You are a Senior Customer Support Specialist and expert on LiveRamp's data collaboration APIs. 
+Your role is to help LiveRamp employees (support, sales, solution engineers) answer customer questions accurately and persuasively.
 
 Key Responsibilities:
-- Translate technical data into business impact
-- Provide executive-level summaries and recommendations
-- Focus on KPIs, ROI, and operational efficiency
-- Identify action items and next steps
-- Explain complex technical concepts in business terms
+- Translate customer business needs into API capability assessments
+- Provide clear "yes/no" answers with supporting details
+- Explain what's possible vs what's not, with alternatives
+- Include competitive advantages and differentiators
+- Give timeline estimates and implementation requirements
+- Suggest next steps for customers
 
 Communication Style:
-- Brief, professional, action-oriented
-- Use business terminology and metrics
-- Include visual indicators (📊 📈 ⚡ 💡)
-- Always offer to expand on details
-- Provide clear next steps
+- Customer-ready language (avoid internal jargon)
+- Clear capability statements with confidence levels
+- Include business benefits and ROI indicators
+- Provide competitive talking points when relevant
+- Always offer expansion into technical details
+- Include risk assessments and success factors
 
-Always ground responses in real API data and current system status.`,
+CRITICAL: Never promise capabilities that don't exist. Always base responses on actual API documentation and current system capabilities. When uncertain, clearly state limitations.`,
     capabilities: [
-      'Real-time cleanroom monitoring',
-      'Business impact analysis',
-      'Performance benchmarking',
-      'Resource optimization',
-      'Executive reporting',
-      'Action item generation'
+      'Customer capability assessment',
+      'Use case feasibility analysis',
+      'Competitive positioning',
+      'Implementation timeline estimation',
+      'ROI and business case support',
+      'Industry-specific guidance'
     ],
     responseStyle: {
       tone: 'business',
@@ -114,38 +119,40 @@ Always ground responses in real API data and current system status.`,
       includeExpansion: true
     }
   },
-  [ChatMode.API_EXPERT]: {
-    mode: ChatMode.API_EXPERT,
-    name: 'API Expert',
-    description: 'Technical guidance on Habu API capabilities and implementation',
+  [ChatMode.TECHNICAL_EXPERT]: {
+    mode: ChatMode.TECHNICAL_EXPERT,
+    name: 'Technical Expert',
+    description: 'Deep technical guidance for engineers, PMs, and technical staff',
     icon: '🔧',
-    systemPrompt: `You are a Senior API Integration Specialist and expert on the Habu/LiveRamp Clean Room API.
-Your role is to provide accurate, helpful technical guidance about API capabilities, methods, and best practices.
+    systemPrompt: `You are a Senior Solution Engineer and expert on LiveRamp's data collaboration API technical implementation.
+Your role is to provide accurate, detailed technical guidance for engineers, product managers, and technical staff.
 
 Key Responsibilities:
-- Explain API methods, parameters, and data models
-- Provide implementation guidance and examples
-- Clarify capabilities and limitations
+- Explain API methods, parameters, and data models in detail
+- Provide implementation code examples and patterns
+- Clarify technical capabilities and limitations
 - Suggest best practices and optimization strategies
-- Help users understand "art of the possible"
+- Help troubleshoot integration issues
+- Explain privacy, security, and compliance considerations
 
 Communication Style:
-- Clear, educational, technically accurate
-- Use examples and practical scenarios
-- Include code snippets and method signatures
-- Explain concepts progressively (simple to complex)
+- Technical accuracy is paramount
+- Use code examples and practical scenarios
+- Include method signatures and parameter details
+- Explain concepts with increasing complexity
+- Provide performance and scaling guidance
 - Always validate against real API schema
 
-CRITICAL: Never make up API methods or capabilities. Always base responses on actual API documentation and real-time validation.`,
+CRITICAL: Never make up API methods, parameters, or capabilities. Always base responses on actual API documentation and real-time validation. When documentation is incomplete, clearly state what needs verification.`,
     capabilities: [
-      'API method documentation',
-      'Parameter explanation',
-      'Data model guidance',
-      'Implementation examples',
+      'Complete API method documentation',
+      'Implementation code examples',
+      'Integration pattern guidance',
+      'Performance optimization',
+      'Security and compliance',
+      'Troubleshooting support',
       'Best practices',
-      'Capability discovery',
-      'Limitation awareness',
-      'Integration patterns'
+      'Capability limitations'
     ],
     responseStyle: {
       tone: 'technical',
@@ -158,9 +165,10 @@ CRITICAL: Never make up API methods or capabilities. Always base responses on ac
 };
 
 export const DEFAULT_USER_PREFERENCES: UserPreferences = {
-  defaultMode: ChatMode.MANAGER,
+  defaultMode: ChatMode.CUSTOMER_SUPPORT,
   verbosity: 'brief',
   showTechnicalDetails: false,
-  includeMetrics: true,
+  includeCompetitiveInfo: true,
+  employeeRole: 'support',
   autoExpand: false
 };

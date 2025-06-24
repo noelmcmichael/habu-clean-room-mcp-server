@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState, useCallback, useEffect, Rea
 import {
   ChatMode,
   ChatModeState,
-  BusinessContext,
-  APIContext,
+  CustomerSupportContext,
+  TechnicalContext,
   ChatMessage,
   UserPreferences,
   DEFAULT_USER_PREFERENCES,
@@ -13,14 +13,14 @@ import {
 interface ChatModeContextType {
   modeState: ChatModeState;
   switchMode: (mode: ChatMode) => void;
-  updateBusinessContext: (context: Partial<BusinessContext>) => void;
-  updateAPIContext: (context: Partial<APIContext>) => void;
+  updateSupportContext: (context: Partial<CustomerSupportContext>) => void;
+  updateTechnicalContext: (context: Partial<TechnicalContext>) => void;
   addMessage: (message: Omit<ChatMessage, 'mode'>) => void;
   updatePreferences: (preferences: Partial<UserPreferences>) => void;
   getCurrentModeConfig: () => typeof CHAT_MODE_CONFIGS[ChatMode];
   getSystemPrompt: () => string;
-  isManagerMode: () => boolean;
-  isAPIExpertMode: () => boolean;
+  isCustomerSupportMode: () => boolean;
+  isTechnicalExpertMode: () => boolean;
 }
 
 const ChatModeContext = createContext<ChatModeContextType | undefined>(undefined);
@@ -31,64 +31,66 @@ interface ChatModeProviderProps {
 
 export const ChatModeProvider: React.FC<ChatModeProviderProps> = ({ children }) => {
   const [modeState, setModeState] = useState<ChatModeState>({
-    currentMode: ChatMode.MANAGER,
+    currentMode: ChatMode.CUSTOMER_SUPPORT,
     conversationHistory: [],
     preferences: DEFAULT_USER_PREFERENCES
   });
 
   // Initialize contexts on mount
   useEffect(() => {
-    // Initialize business context with default values
-    const defaultBusinessContext: BusinessContext = {
-      cleanroomCount: 0,
-      activeQueries: 0,
-      pendingExports: 0,
-      lastUpdate: new Date(),
-      userRole: 'manager',
-      permissions: ['read', 'execute']
+    // Initialize support context with default values
+    const defaultSupportContext: CustomerSupportContext = {
+      commonQuestions: [],
+      industryFocus: ['retail', 'automotive', 'finance'],
+      customerTier: 'enterprise',
+      supportLevel: 'standard',
+      escalationThreshold: 3,
+      lastUpdate: new Date()
     };
 
-    // Initialize API context with default values
-    const defaultAPIContext: APIContext = {
+    // Initialize technical context with default values
+    const defaultTechnicalContext: TechnicalContext = {
       availableTools: [],
       apiVersion: '2.0',
       limitations: [],
       recentChanges: [],
-      capabilityMatrix: {}
+      capabilityMatrix: {},
+      documentationVersion: '2.0.1',
+      integrationPatterns: []
     };
 
     setModeState(prev => ({
       ...prev,
-      businessContext: defaultBusinessContext,
-      apiContext: defaultAPIContext
+      supportContext: defaultSupportContext,
+      technicalContext: defaultTechnicalContext
     }));
 
     // Load contexts from API
-    loadBusinessContext();
-    loadAPIContext();
+    loadSupportContext();
+    loadTechnicalContext();
   }, []);
 
-  const loadBusinessContext = async () => {
+  const loadSupportContext = async () => {
     try {
-      const response = await fetch('/api/business-context');
+      const response = await fetch('/api/support-context');
       if (response.ok) {
         const context = await response.json();
-        updateBusinessContext(context);
+        updateSupportContext(context);
       }
     } catch (error) {
-      console.warn('Failed to load business context:', error);
+      console.warn('Failed to load support context:', error);
     }
   };
 
-  const loadAPIContext = async () => {
+  const loadTechnicalContext = async () => {
     try {
-      const response = await fetch('/api/api-context');
+      const response = await fetch('/api/technical-context');
       if (response.ok) {
         const context = await response.json();
-        updateAPIContext(context);
+        updateTechnicalContext(context);
       }
     } catch (error) {
-      console.warn('Failed to load API context:', error);
+      console.warn('Failed to load technical context:', error);
     }
   };
 
@@ -101,21 +103,21 @@ export const ChatModeProvider: React.FC<ChatModeProviderProps> = ({ children }) 
     }));
   }, []);
 
-  const updateBusinessContext = useCallback((context: Partial<BusinessContext>) => {
+  const updateSupportContext = useCallback((context: Partial<CustomerSupportContext>) => {
     setModeState(prev => ({
       ...prev,
-      businessContext: {
-        ...prev.businessContext!,
+      supportContext: {
+        ...prev.supportContext!,
         ...context
       }
     }));
   }, []);
 
-  const updateAPIContext = useCallback((context: Partial<APIContext>) => {
+  const updateTechnicalContext = useCallback((context: Partial<TechnicalContext>) => {
     setModeState(prev => ({
       ...prev,
-      apiContext: {
-        ...prev.apiContext!,
+      technicalContext: {
+        ...prev.technicalContext!,
         ...context
       }
     }));
@@ -152,44 +154,45 @@ export const ChatModeProvider: React.FC<ChatModeProviderProps> = ({ children }) 
     let prompt = config.systemPrompt;
 
     // Add context-specific information to the prompt
-    if (modeState.currentMode === ChatMode.MANAGER && modeState.businessContext) {
-      prompt += `\n\nCurrent Business Context:
-- Active Cleanrooms: ${modeState.businessContext.cleanroomCount}
-- Running Queries: ${modeState.businessContext.activeQueries}
-- Pending Exports: ${modeState.businessContext.pendingExports}
-- User Role: ${modeState.businessContext.userRole}
-- Last Update: ${modeState.businessContext.lastUpdate.toISOString()}`;
+    if (modeState.currentMode === ChatMode.CUSTOMER_SUPPORT && modeState.supportContext) {
+      prompt += `\n\nCurrent Support Context:
+- Customer Tier: ${modeState.supportContext.customerTier}
+- Industry Focus: ${modeState.supportContext.industryFocus.join(', ')}
+- Support Level: ${modeState.supportContext.supportLevel}
+- Employee Role: ${modeState.preferences.employeeRole}
+- Last Update: ${modeState.supportContext.lastUpdate.toISOString()}`;
     }
 
-    if (modeState.currentMode === ChatMode.API_EXPERT && modeState.apiContext) {
-      prompt += `\n\nCurrent API Context:
-- Available Tools: ${modeState.apiContext.availableTools.length}
-- API Version: ${modeState.apiContext.apiVersion}
-- Recent Changes: ${modeState.apiContext.recentChanges.length > 0 ? modeState.apiContext.recentChanges.join(', ') : 'None'}`;
+    if (modeState.currentMode === ChatMode.TECHNICAL_EXPERT && modeState.technicalContext) {
+      prompt += `\n\nCurrent Technical Context:
+- Available Tools: ${modeState.technicalContext.availableTools.length}
+- API Version: ${modeState.technicalContext.apiVersion}
+- Documentation Version: ${modeState.technicalContext.documentationVersion}
+- Recent Changes: ${modeState.technicalContext.recentChanges.length > 0 ? modeState.technicalContext.recentChanges.join(', ') : 'None'}`;
     }
 
     return prompt;
   }, [modeState, getCurrentModeConfig]);
 
-  const isManagerMode = useCallback(() => {
-    return modeState.currentMode === ChatMode.MANAGER;
+  const isCustomerSupportMode = useCallback(() => {
+    return modeState.currentMode === ChatMode.CUSTOMER_SUPPORT;
   }, [modeState.currentMode]);
 
-  const isAPIExpertMode = useCallback(() => {
-    return modeState.currentMode === ChatMode.API_EXPERT;
+  const isTechnicalExpertMode = useCallback(() => {
+    return modeState.currentMode === ChatMode.TECHNICAL_EXPERT;
   }, [modeState.currentMode]);
 
   const value: ChatModeContextType = {
     modeState,
     switchMode,
-    updateBusinessContext,
-    updateAPIContext,
+    updateSupportContext,
+    updateTechnicalContext,
     addMessage,
     updatePreferences,
     getCurrentModeConfig,
     getSystemPrompt,
-    isManagerMode,
-    isAPIExpertMode
+    isCustomerSupportMode,
+    isTechnicalExpertMode
   };
 
   return (

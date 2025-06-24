@@ -62,42 +62,46 @@ const ModeSwitcher: React.FC = () => {
       </div>
       
       <div className="mode-context-info">
-        {modeState.currentMode === ChatMode.MANAGER && modeState.businessContext && (
-          <div className="business-context">
-            <h4>📊 Current Status</h4>
+        {modeState.currentMode === ChatMode.CUSTOMER_SUPPORT && modeState.supportContext && (
+          <div className="support-context">
+            <h4>🎧 Support Status</h4>
             <div className="context-stats">
               <div className="stat">
-                <span className="stat-value">{modeState.businessContext.cleanroomCount}</span>
-                <span className="stat-label">Cleanrooms</span>
+                <span className="stat-value">{modeState.supportContext.industryFocus.length}</span>
+                <span className="stat-label">Industries</span>
               </div>
               <div className="stat">
-                <span className="stat-value">{modeState.businessContext.activeQueries}</span>
-                <span className="stat-label">Active Queries</span>
+                <span className="stat-value">{modeState.supportContext.customerTier}</span>
+                <span className="stat-label">Customer Tier</span>
               </div>
               <div className="stat">
-                <span className="stat-value">{modeState.businessContext.pendingExports}</span>
-                <span className="stat-label">Pending Exports</span>
+                <span className="stat-value">{modeState.preferences.employeeRole}</span>
+                <span className="stat-label">Your Role</span>
               </div>
             </div>
           </div>
         )}
         
-        {modeState.currentMode === ChatMode.API_EXPERT && modeState.apiContext && (
-          <div className="api-context">
-            <h4>🔧 API Status</h4>
+        {modeState.currentMode === ChatMode.TECHNICAL_EXPERT && modeState.technicalContext && (
+          <div className="technical-context">
+            <h4>🔧 Technical Status</h4>
             <div className="context-info">
               <div className="api-stat">
                 <span className="api-label">Available Tools:</span>
-                <span className="api-value">{modeState.apiContext.availableTools.length}</span>
+                <span className="api-value">{modeState.technicalContext.availableTools.length}</span>
               </div>
               <div className="api-stat">
                 <span className="api-label">API Version:</span>
-                <span className="api-value">{modeState.apiContext.apiVersion}</span>
+                <span className="api-value">{modeState.technicalContext.apiVersion}</span>
               </div>
-              {modeState.apiContext.recentChanges.length > 0 && (
+              <div className="api-stat">
+                <span className="api-label">Documentation:</span>
+                <span className="api-value">v{modeState.technicalContext.documentationVersion}</span>
+              </div>
+              {modeState.technicalContext.recentChanges.length > 0 && (
                 <div className="api-stat">
                   <span className="api-label">Recent Updates:</span>
-                  <span className="api-value">{modeState.apiContext.recentChanges.length} changes</span>
+                  <span className="api-value">{modeState.technicalContext.recentChanges.length} changes</span>
                 </div>
               )}
             </div>
