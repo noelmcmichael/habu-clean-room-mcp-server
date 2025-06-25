@@ -28,41 +28,23 @@ const navItems = [
   { path: '/architecture', icon: '📐', label: 'Architecture' },
 ];
 
-const MainContent: React.FC = () => {
-  return (
-    <div className="page-content">
-      <Routes>
-        <Route path="/cleanrooms" element={<Cleanrooms />} />
-        <Route path="/health" element={<SystemHealth />} />
-        <Route path="/api-explorer" element={<ApiExplorer />} />
-        <Route path="/architecture" element={<Architecture />} />
-      </Routes>
-    </div>
-  );
-};
-
-const ChatPage: React.FC = () => {
-  // For the chat page, we want full viewport without sidebar
-  return <ChatFocusedLayout />;
-};
-
 function App() {
   return (
     <Router>
       <NavigationProvider>
         <ConversationProvider>
           <ChatModeProvider>
-            <Routes>
-              {/* Chat page gets full viewport without sidebar */}
-              <Route path="/" element={<ChatPage />} />
-              
-              {/* Other pages use responsive layout with sidebar */}
-              <Route path="/*" element={
-                <ResponsiveLayout navItems={navItems}>
-                  <MainContent />
-                </ResponsiveLayout>
-              } />
-            </Routes>
+            <ResponsiveLayout navItems={navItems}>
+              <div className="page-content">
+                <Routes>
+                  <Route path="/" element={<EnhancedChatInterface />} />
+                  <Route path="/cleanrooms" element={<Cleanrooms />} />
+                  <Route path="/health" element={<SystemHealth />} />
+                  <Route path="/api-explorer" element={<ApiExplorer />} />
+                  <Route path="/architecture" element={<Architecture />} />
+                </Routes>
+              </div>
+            </ResponsiveLayout>
           </ChatModeProvider>
         </ConversationProvider>
       </NavigationProvider>

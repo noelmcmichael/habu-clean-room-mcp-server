@@ -8,13 +8,25 @@ import json
 import time
 from typing import Dict, Any
 
-# Update these URLs after deployment to Render
-BASE_URLS = {
-    'mcp_server': 'http://localhost:8000',  # Update: https://your-mcp-server.onrender.com
-    'demo_api': 'http://localhost:5001',    # Update: https://your-demo-api.onrender.com
-    'admin_app': 'http://localhost:5000',   # Update: https://your-admin-app.onrender.com
-    'react_frontend': 'http://localhost:3000'  # Update: https://your-frontend.onrender.com
+# Production URLs - Update these after deployment to Render
+PRODUCTION_URLS = {
+    'mcp_server': 'https://habu-mcp-server-v2.onrender.com',
+    'demo_api': 'https://habu-demo-api-v2.onrender.com',
+    'admin_app': 'https://habu-admin-app-v2.onrender.com',
+    'react_frontend': 'https://habu-demo-frontend-v2.onrender.com'
 }
+
+# Development URLs - For local testing
+LOCAL_URLS = {
+    'mcp_server': 'http://localhost:8000',
+    'demo_api': 'http://localhost:5001',
+    'admin_app': 'http://localhost:5000',
+    'react_frontend': 'http://localhost:3000'
+}
+
+# Use production URLs by default, set USE_LOCAL=True for local testing
+USE_LOCAL = False
+BASE_URLS = LOCAL_URLS if USE_LOCAL else PRODUCTION_URLS
 
 API_KEY = 'secure-habu-demo-key-2024'
 HEADERS = {'X-API-Key': API_KEY, 'Content-Type': 'application/json'}
