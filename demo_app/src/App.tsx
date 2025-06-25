@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ChatInterface from './components/ChatInterface';
+import EnhancedChatInterface from './components/EnhancedChatInterface';
 import { ConversationProvider } from './contexts/ConversationContext';
 import { NavigationProvider } from './contexts/NavigationContext';
 import { ChatModeProvider } from './contexts/ChatModeContext';
@@ -8,6 +9,7 @@ import ResponsiveLayout from './components/layout/ResponsiveLayout';
 import './App.css';
 import './components/DemoPhase4.css';
 import './styles/responsive.css';
+import './styles/enhanced-chat.css';
 
 // Direct imports instead of lazy loading for debugging
 import Cleanrooms from './pages/Cleanrooms';
@@ -41,11 +43,7 @@ const MainContent: React.FC = () => {
 const ChatPage: React.FC = () => {
   return (
     <div className="chat-page">
-      <div className="chat-header">
-        <h1>🤖 AI Assistant</h1>
-        <p>Powered by OpenAI GPT-4 | Model Context Protocol Integration</p>
-      </div>
-      <ChatInterface />
+      <EnhancedChatInterface />
     </div>
   );
 };
