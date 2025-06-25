@@ -1,5 +1,5 @@
-# render_v2_fixed.yaml - Working V2 Services with Redis
-# Phase H1.1 - Complete V2 Configuration
+# render_no_redis.yaml - Deploy without Redis to avoid free tier limits
+# Simplified version for immediate deployment
 
 databases:
   - name: habu-mcp-db
@@ -7,12 +7,8 @@ databases:
     user: habu_mcp_user
     plan: free
 
-  - name: habu-redis-cache
-    plan: starter
-    databaseName: redis_cache
-
 services:
-  # MCP Server V2 - Updated with Redis
+  # MCP Server V2 - No Redis
   - type: web
     name: habu-mcp-server-v2
     env: python
@@ -23,10 +19,6 @@ services:
       - key: DATABASE_URL
         fromDatabase:
           name: habu-mcp-db
-          property: connectionString
-      - key: REDIS_URL
-        fromDatabase:
-          name: habu-redis-cache
           property: connectionString
       - key: JOKE_MCP_SERVER_API_KEY
         value: secure-habu-demo-key-2024
@@ -41,7 +33,7 @@ services:
       - key: PORT
         value: "8000"
 
-  # Demo API V2 - Updated with Redis  
+  # Demo API V2 - No Redis
   - type: web
     name: habu-demo-api-v2
     env: python
@@ -52,10 +44,6 @@ services:
       - key: DATABASE_URL
         fromDatabase:
           name: habu-mcp-db
-          property: connectionString
-      - key: REDIS_URL
-        fromDatabase:
-          name: habu-redis-cache
           property: connectionString
       - key: JOKE_MCP_SERVER_API_KEY
         value: secure-habu-demo-key-2024
@@ -70,7 +58,7 @@ services:
       - key: PORT
         value: "5001"
 
-  # React Frontend - Points to V2 API
+  # React Frontend
   - type: web
     name: habu-demo-frontend-v2
     env: node
