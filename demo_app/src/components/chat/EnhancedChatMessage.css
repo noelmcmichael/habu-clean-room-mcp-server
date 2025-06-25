@@ -26,11 +26,22 @@
   align-items: flex-start;
 }
 
-/* Manager Mode Styling */
-.manager-mode .manager-message {
+/* Customer Support Mode Styling */
+.customer_support-mode .manager-message {
   background: rgba(44, 62, 80, 0.95);
   border: 1px solid #34495E;
   border-left: 4px solid #48bb78;
+  border-radius: 12px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Technical Expert Mode Styling */
+.technical_expert-mode .technical-expert-message {
+  background: rgba(31, 41, 55, 0.95);
+  border: 1px solid #374151;
+  border-left: 4px solid #3b82f6;
   border-radius: 12px;
   padding: 1.5rem;
   backdrop-filter: blur(10px);
@@ -392,4 +403,238 @@
   .tool-tag.technical {
     border-width: 2px;
   }
+}
+
+/* Technical Expert Mode Components */
+.technical-expert-message .code-examples {
+  margin: 1rem 0;
+  background: rgba(17, 24, 39, 0.8);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.code-examples h4 {
+  color: #60a5fa;
+  margin: 0 0 0.5rem 0;
+  padding: 0.75rem 1rem 0 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.code-example {
+  border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  padding: 1rem;
+}
+
+.code-example:last-child {
+  border-bottom: none;
+}
+
+.example-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.language-tag {
+  background: #3b82f6;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.example-title {
+  color: #e5e7eb;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.example-description {
+  color: #9ca3af;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.code-block {
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.code-block code {
+  color: #f3f4f6;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  white-space: pre;
+}
+
+.dependencies {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dependencies-label {
+  color: #9ca3af;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.dependency-tag {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.more-examples {
+  color: #60a5fa;
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 0.5rem;
+  font-style: italic;
+}
+
+.implementation-steps {
+  margin: 1rem 0;
+}
+
+.implementation-steps h4 {
+  color: #34d399;
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.implementation-steps ol {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #e5e7eb;
+}
+
+.implementation-steps li {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.more-steps {
+  color: #34d399;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.api-methods {
+  margin: 1rem 0;
+}
+
+.api-methods h4 {
+  color: #f59e0b;
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.api-method {
+  background: rgba(31, 41, 55, 0.5);
+  border: 1px solid #374151;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.method-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.method-name {
+  color: #fbbf24;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.method-endpoint {
+  background: rgba(75, 85, 99, 0.5);
+  color: #d1d5db;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.8rem;
+}
+
+.method-description {
+  color: #9ca3af;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.performance-section,
+.security-section {
+  margin: 1rem 0;
+}
+
+.performance-section h4 {
+  color: #10b981;
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.security-section h4 {
+  color: #ef4444;
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.performance-section ul,
+.security-section ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #e5e7eb;
+}
+
+.performance-section li,
+.security-section li {
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* Technical Action Buttons */
+.action-button.technical {
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid #3b82f6;
+  color: #60a5fa;
+}
+
+.action-button.technical:hover {
+  background: rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.expand-button.technical {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10b981;
+  color: #34d399;
+}
+
+.expand-button.technical:hover {
+  background: rgba(16, 185, 129, 0.3);
 }

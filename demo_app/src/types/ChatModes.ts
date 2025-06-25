@@ -64,6 +64,27 @@ export interface ChatMessage {
     confidenceScore?: number;
     sourceValidation?: boolean;
     businessImpact?: string;
+    // Customer Support specific
+    competitiveAdvantages?: string[];
+    suggestedActions?: string[];
+    // Technical Expert specific
+    codeExamples?: Array<{
+      language: string;
+      title: string;
+      description: string;
+      code: string;
+      dependencies: string[];
+      notes: string[];
+    }>;
+    apiMethods?: Array<{
+      name: string;
+      endpoint: string;
+      method: string;
+      description: string;
+    }>;
+    implementationSteps?: string[];
+    performanceConsiderations?: string[];
+    securityGuidance?: string[];
   };
 }
 

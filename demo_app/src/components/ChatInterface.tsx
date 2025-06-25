@@ -5,6 +5,7 @@ import { useChatMode } from '../contexts/ChatModeContext';
 import { ChatMessage as ModeChatMessage } from '../types/ChatModes';
 import ContextualPromptService from '../services/ContextualPromptService';
 import EnhancedChatService from '../services/EnhancedChatService';
+import TechnicalExpertResponseGenerator from '../services/TechnicalExpertResponseGenerator';
 import ModeSwitcher from './chat/ModeSwitcher';
 import EnhancedChatMessage from './chat/EnhancedChatMessage';
 
@@ -23,6 +24,24 @@ interface LegacyChatMessage {
     businessImpact?: string;
     competitiveAdvantages?: string[];
     suggestedActions?: string[];
+    // Technical Expert specific
+    codeExamples?: Array<{
+      language: string;
+      title: string;
+      description: string;
+      code: string;
+      dependencies: string[];
+      notes: string[];
+    }>;
+    apiMethods?: Array<{
+      name: string;
+      endpoint: string;
+      method: string;
+      description: string;
+    }>;
+    implementationSteps?: string[];
+    performanceConsiderations?: string[];
+    securityGuidance?: string[];
   };
 }
 
@@ -40,6 +59,7 @@ const ChatInterface: React.FC = () => {
     getCurrentModeConfig,
     getSystemPrompt,
     isCustomerSupportMode,
+    isTechnicalExpertMode,
     addMessage: addModeMessage
   } = useChatMode();
   
@@ -75,6 +95,7 @@ const ChatInterface: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const promptService = ContextualPromptService.getInstance();
   const enhancedChatService = EnhancedChatService.getInstance();
+  const technicalExpertService = TechnicalExpertResponseGenerator.getInstance();
   
   const currentModeConfig = getCurrentModeConfig();
   
@@ -114,6 +135,34 @@ const ChatInterface: React.FC = () => {
     if (queryLower.includes('small') || queryLower.includes('startup')) {
       return 'small';
     }
+    return undefined;
+  };
+
+  // Helper functions for technical expert mode
+  const extractLanguageFromQuery = (query: string): string | undefined => {
+    const queryLower = query.toLowerCase();
+    if (queryLower.includes('python')) return 'python';
+    if (queryLower.includes('javascript') || queryLower.includes('js')) return 'javascript';
+    if (queryLower.includes('java')) return 'java';
+    if (queryLower.includes('curl')) return 'curl';
+    return undefined;
+  };
+
+  const extractUseCaseFromQuery = (query: string): string | undefined => {
+    const queryLower = query.toLowerCase();
+    if (queryLower.includes('identity') || queryLower.includes('resolve')) return 'identity_resolution';
+    if (queryLower.includes('segment') || queryLower.includes('audience')) return 'audience_segmentation';
+    if (queryLower.includes('lookalike') || queryLower.includes('similar')) return 'lookalike_modeling';
+    if (queryLower.includes('attribution')) return 'cross_platform_attribution';
+    return undefined;
+  };
+
+  const extractErrorFromQuery = (query: string): string | undefined => {
+    const queryLower = query.toLowerCase();
+    if (queryLower.includes('401') || queryLower.includes('unauthorized')) return '401 Unauthorized';
+    if (queryLower.includes('429') || queryLower.includes('rate limit')) return '429 Rate Limit';
+    if (queryLower.includes('timeout')) return 'Request Timeout';
+    if (queryLower.includes('500') || queryLower.includes('server error')) return '500 Server Error';
     return undefined;
   };
 
@@ -168,14 +217,27 @@ const ChatInterface: React.FC = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-      // Use mode-specific endpoint if in customer support mode
-      const endpoint = isCustomerSupportMode() ? '/api/customer-support/assess' : '/api/enhanced-chat';
+      // Use mode-specific endpoint based on current mode
+      const endpoint = isCustomerSupportMode() 
+        ? '/api/customer-support/assess' 
+        : isTechnicalExpertMode() 
+        ? '/api/technical-expert/query'
+        : '/api/enhanced-chat';
       
       const requestBody = isCustomerSupportMode() 
         ? { 
             query: textToSend,
             industry: extractIndustryFromQuery(textToSend),
             customerSize: extractCustomerSizeFromQuery(textToSend)
+          }
+        : isTechnicalExpertMode()
+        ? {
+            query: textToSend,
+            context: {
+              implementationLanguage: extractLanguageFromQuery(textToSend),
+              useCase: extractUseCaseFromQuery(textToSend),
+              currentError: extractErrorFromQuery(textToSend)
+            }
           }
         : { user_input: textToSend };
 
@@ -200,6 +262,8 @@ const ChatInterface: React.FC = () => {
       // Handle mode-specific response format
       const responseContent = isCustomerSupportMode() 
         ? (data.summary || data.response || 'I processed your request successfully.')
+        : isTechnicalExpertMode()
+        ? (data.summary || data.response || 'I processed your technical request successfully.')
         : (data.response || 'I processed your request successfully.');
 
       const assistantMessage: LegacyChatMessage = {
@@ -213,11 +277,21 @@ const ChatInterface: React.FC = () => {
           processingTime,
           toolsUsed: data.tools_used || [],
           mode: modeState.currentMode,
-          // Customer support specific metadata
-          confidenceScore: data.confidence === 'high' ? 0.9 : (data.confidence === 'medium' ? 0.7 : 0.5),
+          // Mode-specific metadata
+          confidenceScore: isCustomerSupportMode() 
+            ? (data.confidence === 'high' ? 0.9 : (data.confidence === 'medium' ? 0.7 : 0.5))
+            : isTechnicalExpertMode()
+            ? (data.validation_status === 'verified' ? 0.95 : 0.7)
+            : undefined,
           businessImpact: data.business_value,
           competitiveAdvantages: data.competitive_advantage,
-          suggestedActions: data.next_steps
+          suggestedActions: data.next_steps || data.implementation_steps,
+          // Technical expert specific metadata
+          codeExamples: data.code_examples,
+          apiMethods: data.api_methods,
+          implementationSteps: data.implementation_steps,
+          performanceConsiderations: data.performance_considerations,
+          securityGuidance: data.security_guidance
         }
       };
 
@@ -349,13 +423,21 @@ const ChatInterface: React.FC = () => {
         "🔗 Identity resolution across platforms",
         "📊 Customer segmentation capabilities"
       ];
-    } else {
+    } else if (isTechnicalExpertMode()) {
       return [
         "🔧 Show me identity resolution API examples",
-        "📚 Best practices for secure data collaboration",
-        "⚡ Performance optimization for large datasets",
-        "🛡️ GDPR compliance implementation guide",
-        "🔍 Troubleshoot API integration issues"
+        "📚 How to implement secure data collaboration",
+        "⚡ Python code for audience segmentation",
+        "🛡️ Error handling best practices",
+        "🔍 Troubleshoot 401 authentication errors"
+      ];
+    } else {
+      return [
+        "🎯 Run a sentiment analysis",
+        "📍 Analyze location patterns", 
+        "🔧 Execute combined intelligence",
+        "📊 Show my analytics templates",
+        "⚡ What's ready for immediate execution?"
       ];
     }
   };
