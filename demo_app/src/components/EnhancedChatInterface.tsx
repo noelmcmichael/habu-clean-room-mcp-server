@@ -171,9 +171,9 @@ const EnhancedChatInterface: React.FC = () => {
       const context = extractContextFromQuery(messageText);
       
       const endpoint = isCustomerSupportMode() 
-        ? '/api/customer-support/assess' 
+        ? '/api/customer-support/quick-assess' 
         : isTechnicalExpertMode() 
-        ? '/api/technical-expert/query'
+        ? '/api/enhanced-chat'  // Use enhanced-chat for technical expert mode
         : '/api/enhanced-chat';
       
       const requestBody = isCustomerSupportMode() 
