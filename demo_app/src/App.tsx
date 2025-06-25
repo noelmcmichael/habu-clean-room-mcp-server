@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ChatInterface from './components/ChatInterface';
 import EnhancedChatInterface from './components/EnhancedChatInterface';
+import ChatFocusedLayout from './components/layout/ChatFocusedLayout';
 import { ConversationProvider } from './contexts/ConversationContext';
 import { NavigationProvider } from './contexts/NavigationContext';
 import { ChatModeProvider } from './contexts/ChatModeContext';
@@ -10,6 +11,7 @@ import './App.css';
 import './components/DemoPhase4.css';
 import './styles/responsive.css';
 import './styles/enhanced-chat.css';
+import './styles/chat-focused.css';
 
 // Direct imports instead of lazy loading for debugging
 import Cleanrooms from './pages/Cleanrooms';
@@ -30,7 +32,6 @@ const MainContent: React.FC = () => {
   return (
     <div className="page-content">
       <Routes>
-        <Route path="/" element={<ChatPage />} />
         <Route path="/cleanrooms" element={<Cleanrooms />} />
         <Route path="/health" element={<SystemHealth />} />
         <Route path="/api-explorer" element={<ApiExplorer />} />
@@ -41,11 +42,8 @@ const MainContent: React.FC = () => {
 };
 
 const ChatPage: React.FC = () => {
-  return (
-    <div className="chat-page">
-      <EnhancedChatInterface />
-    </div>
-  );
+  // For the chat page, we want full viewport without sidebar
+  return <ChatFocusedLayout />;
 };
 
 function App() {
@@ -54,9 +52,17 @@ function App() {
       <NavigationProvider>
         <ConversationProvider>
           <ChatModeProvider>
-            <ResponsiveLayout navItems={navItems}>
-              <MainContent />
-            </ResponsiveLayout>
+            <Routes>
+              {/* Chat page gets full viewport without sidebar */}
+              <Route path="/" element={<ChatPage />} />
+              
+              {/* Other pages use responsive layout with sidebar */}
+              <Route path="/*" element={
+                <ResponsiveLayout navItems={navItems}>
+                  <MainContent />
+                </ResponsiveLayout>
+              } />
+            </Routes>
           </ChatModeProvider>
         </ConversationProvider>
       </NavigationProvider>
